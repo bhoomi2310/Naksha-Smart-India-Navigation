@@ -1,115 +1,182 @@
-import React from 'react';
-import { Search, Navigation as NavigationIcon, ArrowUpDown } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Search, Navigation as NavigationIcon, ArrowUpDown, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { searchLocations } from '@/data/indianCities';
 
 interface SearchInterfaceProps {
   fromLocation: string;
   toLocation: string;
   setFromLocation: (value: string) => void;
   setToLocation: (value: string) => void;
+  onSearch?: () => void;
+  isLoading?: boolean;
 }
 
 const SearchInterface: React.FC<SearchInterfaceProps> = ({
   fromLocation,
   toLocation,
   setFromLocation,
-  setToLocation
+  setToLocation,
+  onSearch,
+  isLoading = false
 }) => {
+  const [fromSuggestions, setFromSuggestions] = useState<string[]>([]);
+  const [toSuggestions, setToSuggestions] = useState<string[]>([]);
+  const [showFromSuggestions, setShowFromSuggestions] = useState(false);
+  const [showToSuggestions, setShowToSuggestions] = useState(false);
+  const fromInputRef = useRef<HTMLInputElement>(null);
+  const toInputRef = useRef<HTMLInputElement>(null);
+  const fromDropdownRef = useRef<HTMLDivElement>(null);
+  const toDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (fromDropdownRef.current && !fromDropdownRef.current.contains(event.target as Node)) {
+        setShowFromSuggestions(false);
+      }
+      if (toDropdownRef.current && !toDropdownRef.current.contains(event.target as Node)) {
+        setShowToSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleFromChange = (value: string) => {
+    setFromLocation(value);
+    if (value.length > 0) {
+      const results = searchLocations(value);
+      setFromSuggestions(results.map(r => r.value));
+      setShowFromSuggestions(true);
+    } else {
+      setFromSuggestions([]);
+      setShowFromSuggestions(false);
+    }
+  };
+
+  const handleToChange = (value: string) => {
+    setToLocation(value);
+    if (value.length > 0) {
+      const results = searchLocations(value);
+      setToSuggestions(results.map(r => r.value));
+      setShowToSuggestions(true);
+    } else {
+      setToSuggestions([]);
+      setShowToSuggestions(false);
+    }
+  };
+
+  const selectFromLocation = (location: string) => {
+    setFromLocation(location);
+    setShowFromSuggestions(false);
+    fromInputRef.current?.blur();
+  };
+
+  const selectToLocation = (location: string) => {
+    setToLocation(location);
+    setShowToSuggestions(false);
+    toInputRef.current?.blur();
+  };
+
   const swapLocations = () => {
     const temp = fromLocation;
     setFromLocation(toLocation);
     setToLocation(temp);
   };
 
-  const handleSearch = () => {
-    // This would trigger the route search
-    console.log('Searching routes from', fromLocation, 'to', toLocation);
+  const handleSearch = async () => {
+    if (onSearch) {
+      onSearch();
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && fromLocation && toLocation) {
+      handleSearch();
+    }
   };
 
   return (
-    <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm rounded-2xl hover:shadow-2xl transition-all duration-300">
-      <CardContent className="p-8">
-        <div className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="flex-1 relative">
-              <div className="absolute left-4 top-4 w-2 h-2 rounded-full bg-success animate-pulse"></div>
+    <Card className="shadow-2xl border-2 border-orange-200 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md rounded-xl">
+      <CardContent className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="flex-1 relative" ref={fromDropdownRef}>
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-green-500 z-10"></div>
               <Input
-                placeholder="From: Current location"
+                ref={fromInputRef}
+                placeholder="From (e.g., Connaught Place, Delhi)"
                 value={fromLocation}
-                onChange={(e) => setFromLocation(e.target.value)}
-                className="pl-12 h-14 text-base rounded-xl border-2 focus:border-primary transition-colors"
+                onChange={(e) => handleFromChange(e.target.value)}
+                onFocus={() => fromLocation.length > 0 && setShowFromSuggestions(true)}
+                onKeyPress={handleKeyPress}
+                className="pl-8 h-12 text-base rounded-lg border-orange-200 focus:border-orange-400 focus:ring-orange-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
+              {showFromSuggestions && fromSuggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {fromSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => selectFromLocation(suggestion)}
+                      className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-900 dark:text-white"
+                    >
+                      <MapPin className="w-4 h-4 text-orange-500" />
+                      <span>{suggestion}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             
             <Button 
-              variant="outline" 
+              variant="ghost" 
               size="sm" 
               onClick={swapLocations}
-              className="p-3 h-14 w-14 rounded-xl hover:bg-accent hover:rotate-180 transition-all duration-300"
+              className="p-2 h-12 w-12 rounded-lg hover:bg-orange-50 transition-colors"
             >
-              <ArrowUpDown className="w-5 h-5" />
+              <ArrowUpDown className="w-4 h-4 text-orange-600" />
             </Button>
             
-            <div className="flex-1 relative">
-              <div className="absolute left-4 top-4 w-2 h-2 rounded-full bg-destructive animate-pulse"></div>
+            <div className="flex-1 relative" ref={toDropdownRef}>
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-orange-500 z-10"></div>
               <Input
-                placeholder="To: Destination"
+                ref={toInputRef}
+                placeholder="To (e.g., India Gate, Delhi)"
                 value={toLocation}
-                onChange={(e) => setToLocation(e.target.value)}
-                className="pl-12 h-14 text-base rounded-xl border-2 focus:border-primary transition-colors"
+                onChange={(e) => handleToChange(e.target.value)}
+                onFocus={() => toLocation.length > 0 && setShowToSuggestions(true)}
+                onKeyPress={handleKeyPress}
+                className="pl-8 h-12 text-base rounded-lg border-orange-200 focus:border-orange-400 focus:ring-orange-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               />
+              {showToSuggestions && toSuggestions.length > 0 && (
+                <div className="absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {toSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => selectToLocation(suggestion)}
+                      className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-gray-700 flex items-center gap-2 text-gray-900 dark:text-white"
+                    >
+                      <MapPin className="w-4 h-4 text-orange-500" />
+                      <span>{suggestion}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-          <div className="flex justify-center pt-2">
-            <Button 
-              onClick={handleSearch}
-              className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl"
-              disabled={!fromLocation || !toLocation}
-              size="lg"
-            >
-              <NavigationIcon className="w-5 h-5" />
-              Find Smart Routes
-            </Button>
-          </div>
-          
-          {/* Quick suggestions */}
-          <div className="flex flex-wrap gap-3 justify-center pt-4">
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => {
-                setFromLocation('Dwarka Sector 21 Metro');
-                setToLocation('Connaught Place');
-              }}
-              className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              Dwarka → CP
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => {
-                setFromLocation('IGI Airport Terminal 3');
-                setToLocation('Dwarka Sector 12');
-              }}
-              className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              Airport → Dwarka
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => {
-                setFromLocation('Dwarka City Center');
-                setToLocation('India Gate');
-              }}
-              className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-            >
-              City Center → India Gate
-            </Button>
-          </div>
+          <Button 
+            onClick={handleSearch}
+            className="w-full h-12 bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all"
+            disabled={!fromLocation || !toLocation || isLoading}
+          >
+            <NavigationIcon className="w-4 h-4 mr-2" />
+            {isLoading ? 'Searching...' : 'Find Routes'}
+          </Button>
         </div>
       </CardContent>
     </Card>

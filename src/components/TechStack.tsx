@@ -26,7 +26,7 @@ const TechStack = () => {
     {
       category: 'Backend',
       icon: Database,
-      items: ['Supabase', 'PostgreSQL', 'Edge Functions', 'Real-time APIs'],
+      items: ['Node.js', 'Express', 'OpenRouteService API', 'REST APIs'],
       color: 'bg-orange-500/10 border-orange-500/20 text-orange-700'
     },
     {

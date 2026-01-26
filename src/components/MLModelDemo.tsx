@@ -47,8 +47,7 @@ const MLModelDemo = () => {
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              To integrate your ML model, you'll need to connect to Supabase for backend functionality.
-              Your model can run as an Edge Function to predict road conditions in real-time.
+              ML model predictions are processed through our backend API. Road condition analysis runs in real-time.
             </AlertDescription>
           </Alert>
           

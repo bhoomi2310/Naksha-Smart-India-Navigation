@@ -25,76 +25,56 @@ const RouteCard: React.FC<RouteCardProps> = ({ route, isSelected, onSelect }) =>
 
   return (
     <Card 
-      className={`hover-lift cursor-pointer transition-all ${
+      className={`cursor-pointer transition-all border-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md ${
         isSelected 
-          ? 'ring-2 ring-primary shadow-lg' 
-          : 'hover:shadow-md'
-      } ${route.color} border-2`}
+          ? 'ring-2 ring-orange-500 shadow-xl border-orange-400 dark:border-orange-600 scale-105' 
+          : 'hover:shadow-lg border-orange-200 dark:border-gray-700 hover:scale-[1.02]'
+      } ${route.color}`}
       onClick={onSelect}
     >
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <Icon className="w-5 h-5" />
-            <CardTitle className="text-lg">{route.type}</CardTitle>
+            <CardTitle className="text-base font-bold text-gray-900 dark:text-white">{route.type}</CardTitle>
           </div>
           {isSelected && (
-            <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-              <Check className="w-4 h-4 text-primary-foreground" />
+            <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
+              <Check className="w-3 h-3 text-white" />
             </div>
           )}
         </div>
-        <CardDescription className="text-sm">
+        <CardDescription className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
           {route.description}
         </CardDescription>
       </CardHeader>
       
-      <CardContent className="pt-0">
-        <div className="space-y-3">
-          {/* Duration and Distance */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1 text-sm font-medium">
-                <Clock className="w-4 h-4" />
-                {route.duration}
-              </div>
-              <div className="flex items-center gap-1 text-sm">
-                <MapPin className="w-4 h-4" />
-                {route.distance}
-              </div>
-            </div>
+      <CardContent className="pt-0 space-y-3">
+        <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white">
+            <Clock className="w-4 h-4" />
+            {route.duration}
           </div>
-          
-          {/* ETA */}
-          <div className="text-sm text-muted-foreground">
-            {route.eta}
+          <div className="flex items-center gap-1.5 font-medium text-gray-600 dark:text-gray-400">
+            <MapPin className="w-4 h-4" />
+            {route.distance}
           </div>
-          
-          {/* Features */}
-          <div className="flex flex-wrap gap-1">
-            {route.features.map((feature, index) => (
-              <Badge 
-                key={index} 
-                variant="secondary" 
-                className="text-xs px-2 py-1"
-              >
-                {feature}
-              </Badge>
-            ))}
-          </div>
-          
-          {/* Select Button */}
-          <Button 
-            variant={isSelected ? "default" : "outline"} 
-            className="w-full"
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect();
-            }}
-          >
-            {isSelected ? 'Selected' : 'Select Route'}
-          </Button>
         </div>
+        
+        <Button 
+          variant={isSelected ? "default" : "outline"} 
+          className={`w-full font-semibold ${
+            isSelected 
+              ? 'bg-orange-500 hover:bg-orange-600 text-white border-orange-500' 
+              : 'border-2 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700'
+          }`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect();
+          }}
+        >
+          {isSelected ? 'Selected' : 'Select Route'}
+        </Button>
       </CardContent>
     </Card>
   );

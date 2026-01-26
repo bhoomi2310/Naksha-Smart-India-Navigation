@@ -1,22 +1,88 @@
 import React, { useState } from 'react';
-import { Search, MapPin, Navigation as NavigationIcon, Clock, Shield, Leaf, Camera, DollarSign, Users, Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Clock, Shield, Leaf, Camera, IndianRupee, Users } from 'lucide-react';
 import RouteCard from '@/components/RouteCard';
+import RouteDetails from '@/components/RouteDetails';
 import SearchInterface from '@/components/SearchInterface';
 import Navigation from '@/components/Navigation';
-import MLModelDemo from '@/components/MLModelDemo';
-
 import DataInsights from '@/components/DataInsights';
-import heroImage from '@/assets/naksha-hero.jpg';
-import routeOptionsImage from '@/assets/route-options.jpg';
+import { navigationAPI } from '@/lib/api';
+import { toast } from 'sonner';
+
+// Import image - if file doesn't exist, create it manually (see IMAGE_SETUP.md)
+import tajMahalImage from '@/assets/taj-mahal.png';
 
 const Index = () => {
   const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
+  const [selectedRouteData, setSelectedRouteData] = useState<any>(null);
   const [fromLocation, setFromLocation] = useState('');
   const [toLocation, setToLocation] = useState('');
+  const [routes, setRoutes] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSearch = async () => {
+    if (!fromLocation || !toLocation) {
+      toast.error('Please enter both starting location and destination');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Fetch routes for all types
+      const routeTypes = ['fastest', 'safest', 'eco', 'scenic', 'cheapest', 'popular'];
+      const routePromises = routeTypes.map(type => 
+        navigationAPI.getRoutes(fromLocation, toLocation, type).catch(err => {
+          console.error(`Error fetching ${type} route:`, err);
+          return null;
+        })
+      );
+
+      const results = await Promise.all(routePromises);
+      const validRoutes = results.filter(r => r !== null);
+      
+      if (validRoutes.length > 0) {
+        setRoutes(validRoutes);
+        toast.success(`Found ${validRoutes.length} route options!`);
+      } else {
+        toast.error('Could not find routes. Please check your locations.');
+      }
+    } catch (error: any) {
+      console.error('Route search error:', error);
+      toast.error(error.message || 'Failed to fetch routes');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRouteSelect = async (routeId: string) => {
+    if (!fromLocation || !toLocation) {
+      toast.error('Please search for routes first');
+      return;
+    }
+
+    setSelectedRoute(routeId);
+    
+    try {
+      const routeData = await navigationAPI.getRoutes(fromLocation, toLocation, routeId);
+      const routeOption = routeOptions.find(r => r.id === routeId);
+      
+      if (routeData?.routes?.[0]) {
+        const selectedData = {
+          ...routeData.routes[0],
+          type: routeOption?.type || routeId,
+          from: fromLocation,
+          to: toLocation,
+          features: routeOption?.features || []
+        };
+        setSelectedRouteData(selectedData);
+        toast.success(`${routeOption?.type} selected!`);
+      } else {
+        toast.error('Route data not available');
+      }
+    } catch (error: any) {
+      console.error('Route selection error:', error);
+      toast.error(error.message || 'Failed to load route details');
+    }
+  };
 
   const routeOptions = [
     {
@@ -66,7 +132,7 @@ const Index = () => {
     {
       id: 'cheapest',
       type: 'Cheapest Route',
-      icon: DollarSign,
+      icon: IndianRupee,
       duration: '35 mins',
       distance: '12.3 km',
       description: 'Bus + metro integration with fare calculation',
@@ -88,152 +154,115 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navigation />
-      
-      {/* Hero Section */}
-      <section 
-        className="hero-gradient py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+    <div className="min-h-screen bg-background w-full max-w-full overflow-x-hidden relative">
+      {/* Full Page Background - Taj Mahal (Image 1) */}
+      <div 
+        className="fixed inset-0 z-0"
         style={{
-          backgroundImage: `linear-gradient(135deg, rgba(255, 138, 30, 0.9), rgba(54, 54, 82, 0.9)), url(${heroImage})`,
+          backgroundImage: `url(${tajMahalImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
-        <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h1 className="text-5xl sm:text-7xl font-bold text-white mb-6 drop-shadow-lg">
-            <span className="text-white">Naksha</span>
-          </h1>
-          <p className="text-xl sm:text-2xl text-white/95 mb-8 max-w-4xl mx-auto drop-shadow-md">
-            India-specific navigation that understands real road conditions. Get routes that are not just shortest, 
-            but also safest, cheapest, greener, and culturally richer.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <Badge variant="secondary" className="px-4 py-2 bg-white/20 text-white backdrop-blur-sm">
-              <Shield className="w-4 h-4 mr-2" />
-              Real Road Data
-            </Badge>
-            <Badge variant="secondary" className="px-4 py-2 bg-white/20 text-white backdrop-blur-sm">
-              <MapPin className="w-4 h-4 mr-2" />
-              Indian Context
-            </Badge>
-            <Badge variant="secondary" className="px-4 py-2 bg-white/20 text-white backdrop-blur-sm">
-              <NavigationIcon className="w-4 h-4 mr-2" />
-              6 Route Types
-            </Badge>
-          </div>
-        </div>
-      </section>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
+      </div>
 
-      {/* Search Interface */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8 -mt-8">
-        <div className="max-w-4xl mx-auto">
-          <SearchInterface 
-            fromLocation={fromLocation}
-            toLocation={toLocation}
-            setFromLocation={setFromLocation}
-            setToLocation={setToLocation}
-          />
-        </div>
-      </section>
-
-      {/* Route Options */}
-      {(fromLocation || toLocation) && (
-        <section 
-          className="py-16 px-4 sm:px-6 lg:px-8 relative"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${routeOptionsImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12">Choose Your Perfect Route</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {routeOptions.map((route) => (
-                <RouteCard
-                  key={route.id}
-                  route={route}
-                  isSelected={selectedRoute === route.id}
-                  onSelect={() => setSelectedRoute(route.id)}
-                />
-              ))}
-            </div>
+      <div className="relative z-10">
+        <Navigation />
+        
+        {/* Hero Section */}
+        <section className="relative py-24 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="heading-hero text-white mb-6 drop-shadow-2xl font-extrabold">
+              Welcome to Naksha
+            </h1>
+            <p className="text-xl sm:text-2xl text-white/95 mb-10 max-w-2xl mx-auto font-light drop-shadow-lg">
+              Smart navigation for Indian roads. Routes that understand real conditions.
+            </p>
           </div>
         </section>
-      )}
 
-      {/* Features Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Our Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-success" />
-                  Ground Reality Data
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  We measure actual travel times, potholes, road roughness, and safety features for more accurate ETAs.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  Indian Context Awareness
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Our model includes encroachments, street vendors, broken drains, and unsafe alleys for safer route suggestions.
-                </CardDescription>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-lift">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <NavigationIcon className="w-5 h-5 text-secondary" />
-                  Multiple Meaningful Routes
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Choose from fastest, safest, eco-friendly, cheapest, scenic, or most popular routes based on your needs.
-                </CardDescription>
-              </CardContent>
-            </Card>
+        {/* Search Interface */}
+        <section className="py-8 px-4 sm:px-6 lg:px-8 -mt-8">
+          <div className="max-w-4xl mx-auto">
+            <SearchInterface 
+              fromLocation={fromLocation}
+              toLocation={toLocation}
+              setFromLocation={setFromLocation}
+              setToLocation={setToLocation}
+              onSearch={handleSearch}
+              isLoading={isLoading}
+            />
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ML Model Demo */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <MLModelDemo />
-        </div>
-      </section>
+        {/* Route Options */}
+        {(fromLocation && toLocation) && (
+          <section className="py-16 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="heading-section text-center mb-10 text-white drop-shadow-lg">Route Options</h2>
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <p className="text-white/90 text-lg">Finding best routes...</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {routeOptions.map((route) => {
+                    // Try to find real data for this route
+                    const realRouteData = routes.find(r => {
+                      const routeType = r.routes?.[0]?.type;
+                      return routeType === route.id || 
+                             (routeType === 'fastest' && route.id === 'fastest') ||
+                             (routeType && routeType.includes(route.id));
+                    });
+                    
+                    const displayRoute = realRouteData?.routes?.[0]
+                      ? {
+                          ...route,
+                          duration: `${Math.round(realRouteData.routes[0].summary.duration)} mins`,
+                          distance: `${realRouteData.routes[0].summary.distance.toFixed(1)} km`,
+                          realData: true
+                        }
+                      : route;
 
+                    return (
+                      <RouteCard
+                        key={route.id}
+                        route={displayRoute}
+                        isSelected={selectedRoute === route.id}
+                        onSelect={() => handleRouteSelect(route.id)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
 
-      {/* Data Insights */}
-      <DataInsights />
+        {/* Route Details Section */}
+        {selectedRoute && selectedRouteData && (
+          <section className="py-16 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+              <RouteDetails routeData={selectedRouteData} routeType={selectedRoute} />
+            </div>
+          </section>
+        )}
 
-      {/* Footer */}
-      <footer className="bg-secondary text-secondary-foreground py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h3 className="text-lg font-semibold mb-2">Naksha</h3>
-          <p className="text-secondary-foreground/80">
-            Smart Indian Navigation • Built with Real Road Data • Powered by ML
-          </p>
-        </div>
-      </footer>
+        {/* Data Insights */}
+        <DataInsights />
+
+        {/* Footer */}
+        <footer className="bg-black/40 backdrop-blur-md border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto text-center">
+            <h3 className="text-xl font-bold mb-2 text-white">Naksha</h3>
+            <p className="text-white/80 text-sm">
+              Smart navigation for Indian roads
+            </p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 };
