@@ -97,7 +97,7 @@ const Landing = () => {
 
   const quickCorridors = [
     { title: 'Delhi: CP to Gurgaon CyberHub', from: 'Connaught Place, Delhi', to: 'Cyber City, Gurgaon' },
-    { title: 'Mumbai: BKC to Marine Drive', from: 'BKC (Bandra Kurla Complex), Mumbai', to: 'Marine Drive, Mumbai' },
+    { title: 'Kolkata: Park Street to Howrah', from: 'Park Street, Kolkata', to: 'Howrah, Kolkata' },
     { title: 'Bengaluru: Koramangala to E-City', from: 'Koramangala, Bangalore', to: 'Electronic City, Bangalore' }
   ];
 
@@ -179,10 +179,6 @@ const Landing = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-zinc-950"></div>
 
         <div className="relative z-10 max-w-4xl mx-auto text-center py-16">
-          <Badge className="mb-4 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs px-3 py-1 font-semibold rounded-full">
-            Indian Road Navigation & Telemetry
-          </Badge>
-
           <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight mb-4 leading-tight">
             Navigation Built for
             <br />

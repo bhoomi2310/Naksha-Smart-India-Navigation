@@ -150,11 +150,11 @@ export const POPULAR_INDIAN_CORRIDORS = [
     description: 'NH-48 Corridor with Live Traffic & Flyover Navigation'
   },
   {
-    title: 'Mumbai: BKC ➔ Marine Drive',
-    from: 'BKC (Bandra Kurla Complex), Mumbai',
-    to: 'Marine Drive, Mumbai',
-    badge: 'Coastal Expressway',
-    description: 'Bandra-Worli Sea Link vs Western Expressway route'
+    title: 'Kolkata: Park Street ➔ Howrah',
+    from: 'Park Street, Kolkata',
+    to: 'Howrah, Kolkata',
+    badge: 'Heritage River Corridor',
+    description: 'Vidyasagar Setu & Riverfront scenic navigation'
   },
   {
     title: 'Bengaluru: Koramangala ➔ Electronic City',

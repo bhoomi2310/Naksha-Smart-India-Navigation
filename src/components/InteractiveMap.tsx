@@ -194,7 +194,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           }`}
         >
           <AlertTriangle className="w-3.5 h-3.5" />
-          <span>Indian Road Hazards</span>
+          <span>Hazards</span>
         </button>
       </div>
 

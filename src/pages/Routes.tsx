@@ -104,7 +104,7 @@ const RoutesPage = () => {
                 <span className="text-xs text-zinc-400">Pothole & Safety Heatmaps Active</span>
               </div>
               <h1 className="text-3xl font-black text-white tracking-tight">
-                Compare Indian Routes & Telemetry
+                Compare Routes & Travel Conditions
               </h1>
               <p className="text-sm text-zinc-400 mt-1 max-w-2xl">
                 Compare travel times, pothole density, street lighting index, fuel consumption, and public transit fares across 6 intelligent navigation models.
