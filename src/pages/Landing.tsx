@@ -186,7 +186,7 @@ const Landing = () => {
           </h1>
 
           <p className="text-base sm:text-xl text-zinc-300 mb-8 max-w-2xl mx-auto font-normal">
-            Real routes that factor in road quality, streetlight coverage, monsoon waterlogging, and multimodal transit fares.
+            Navigate India with confidence. Smarter routes that dodge potholes, find well-lit night corridors, and beat the rush with zero guesswork.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-10">
