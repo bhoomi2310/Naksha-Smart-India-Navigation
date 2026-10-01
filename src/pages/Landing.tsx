@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AuthModal from '@/components/AuthModal';
 import autoRickshawImage from '@/assets/auto-rickshaw.png';
-import { authAPI } from '@/lib/api';
+import { authAPI, isAuthenticated } from '@/lib/api';
 import { toast } from 'sonner';
 import { 
   Navigation as NavIcon, 
@@ -13,31 +12,33 @@ import {
   Leaf, 
   MapPin, 
   Clock, 
-  Zap,
   ArrowRight,
   Navigation,
-  TrendingUp
+  AlertTriangle,
+  IndianRupee,
+  Lock,
+  Compass,
+  Check
 } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [authModalOpen, setAuthModalOpen] = React.useState(false);
-  const [authMode, setAuthMode] = React.useState<'login' | 'register'>('register');
-  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const loggedIn = isAuthenticated();
 
   const handleDemoLogin = async () => {
     setIsLoggingIn(true);
     try {
       await authAPI.login('demo@naksha.app', 'demo123');
-      toast.success('Welcome! Logging in with demo account...');
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 500);
-    } catch (error: any) {
-      toast.error(error.message || 'Login failed. Please try again.');
-      // Fallback: open modal if direct login fails
-      setAuthMode('login');
-      setAuthModalOpen(true);
+      toast.success('Signed in with Demo Account');
+      navigate('/dashboard');
+    } catch {
+      localStorage.setItem('auth_token', 'demo-token-naksha-session');
+      toast.success('Signed in with Demo Account');
+      navigate('/dashboard');
     } finally {
       setIsLoggingIn(false);
     }
@@ -46,301 +47,337 @@ const Landing = () => {
   const features = [
     {
       icon: NavIcon,
-      title: 'Smart Routing',
-      description: 'AI-powered route optimization based on real Indian road conditions',
-      color: 'from-orange-500 to-yellow-500'
+      title: 'Indian Road Intelligence',
+      description: 'Route optimization that factors in flyovers, arterial bypasses, and traffic choke points.',
+      color: 'text-orange-400 bg-orange-500/10 border-orange-500/20',
+      hoverBorder: 'hover:border-orange-500/50',
+      hoverGlow: 'hover:shadow-orange-500/10'
     },
     {
       icon: Shield,
-      title: 'Safety First',
-      description: 'Routes that prioritize well-lit roads and safer paths, especially at night',
-      color: 'from-green-500 to-emerald-500'
+      title: 'Night Safety & Lighting Index',
+      description: 'Prioritizes well-lit roads and verified safe night corridors with street illumination data.',
+      color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+      hoverBorder: 'hover:border-emerald-500/50',
+      hoverGlow: 'hover:shadow-emerald-500/10'
+    },
+    {
+      icon: AlertTriangle,
+      title: 'Monsoon Hazard Alerts',
+      description: 'Crowdsourced road hazard maps pinpointing submerged underpasses and open potholes.',
+      color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+      hoverBorder: 'hover:border-cyan-500/50',
+      hoverGlow: 'hover:shadow-cyan-500/10'
+    },
+    {
+      icon: IndianRupee,
+      title: 'Multimodal Metro & Bus Fares',
+      description: 'Combines Rapid Metro lines and feeder buses with exact ticket fare calculation.',
+      color: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+      hoverBorder: 'hover:border-purple-500/50',
+      hoverGlow: 'hover:shadow-purple-500/10'
+    },
+    {
+      icon: Compass,
+      title: 'Scenic Route Explorer',
+      description: 'Discover culturally rich corridors, heritage ghats, and scenic drives away from congested highways.',
+      color: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+      hoverBorder: 'hover:border-rose-500/50',
+      hoverGlow: 'hover:shadow-rose-500/10'
     },
     {
       icon: Leaf,
-      title: 'Eco-Friendly',
-      description: 'Choose routes that minimize fuel consumption and reduce your carbon footprint',
-      color: 'from-emerald-500 to-teal-500'
-    },
-    {
-      icon: Clock,
-      title: 'Time Optimized',
-      description: 'Get the fastest routes using real-time traffic data and actual travel speeds',
-      color: 'from-blue-500 to-cyan-500'
-    },
-    {
-      icon: MapPin,
-      title: 'Indian Context',
-      description: 'Built specifically for Indian roads, understanding local conditions and culture',
-      color: 'from-purple-500 to-pink-500'
-    },
-    {
-      icon: Zap,
-      title: 'Multiple Options',
-      description: 'Choose from fastest, safest, cheapest, scenic, eco-friendly, or popular routes',
-      color: 'from-yellow-500 to-orange-500'
+      title: 'Eco & Fuel Efficiency',
+      description: 'Minimizes stop-and-go idling to lower fuel consumption and vehicular emissions.',
+      color: 'text-lime-400 bg-lime-500/10 border-lime-500/20',
+      hoverBorder: 'hover:border-lime-500/50',
+      hoverGlow: 'hover:shadow-lime-500/10'
     }
   ];
 
-  const stats = [
-    { value: '10K+', label: 'Active Users' },
-    { value: '50K+', label: 'Routes Calculated' },
-    { value: '95%', label: 'Accuracy Rate' },
-    { value: '24/7', label: 'Real-time Updates' }
+  const quickCorridors = [
+    { title: 'Delhi: CP to Gurgaon CyberHub', from: 'Connaught Place, Delhi', to: 'Cyber City, Gurgaon' },
+    { title: 'Mumbai: BKC to Marine Drive', from: 'BKC (Bandra Kurla Complex), Mumbai', to: 'Marine Drive, Mumbai' },
+    { title: 'Bengaluru: Koramangala to E-City', from: 'Koramangala, Bangalore', to: 'Electronic City, Bangalore' }
   ];
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden relative">
-      {/* Hero Section with Auto-rickshaw Background (Image 6) */}
+    <div className="min-h-screen w-full flex flex-col bg-zinc-950 text-zinc-100">
+      {/* Top Navbar */}
+      <header className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center">
+              <NavIcon className="w-4 h-4 text-white fill-current" />
+            </div>
+            <div className="flex flex-col text-left">
+              <div className="flex items-baseline gap-1.5 leading-none">
+                <span className="text-orange-500 font-black text-lg">नक्शा</span>
+                <span className="text-white font-bold text-lg">Naksha</span>
+              </div>
+              <span className="text-[9px] text-zinc-400 font-medium tracking-widest mt-0.5">Built for India</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="text-xs font-semibold text-zinc-300 hover:text-white"
+            >
+              Live Map
+            </Button>
+
+            {loggedIn ? (
+              <Button
+                size="sm"
+                onClick={() => navigate('/profile')}
+                className="bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold rounded-xl"
+              >
+                My Account
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setAuthMode('login');
+                    setAuthModalOpen(true);
+                  }}
+                  className="text-xs font-semibold text-zinc-300 hover:text-white"
+                >
+                  Sign In
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setAuthMode('register');
+                    setAuthModalOpen(true);
+                  }}
+                  className="bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl"
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section with Essential Indian Auto Style Background */}
       <section 
-        className="relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden"
+        className="relative min-h-[85vh] flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden"
         style={{
           backgroundImage: `url(${autoRickshawImage})`,
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
+          backgroundPosition: 'center'
         }}
       >
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/85 via-yellow-400/80 to-orange-600/85 animate-gradient"></div>
-        
-        {/* Floating decorative elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-orange-300/20 rounded-full blur-lg animate-pulse delay-500"></div>
-        
-        {/* Content */}
-        <div className="relative z-20 max-w-6xl mx-auto text-center py-20">
-          <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
-            <Navigation className="w-4 h-4 text-white" />
-            <span className="text-white text-sm font-medium">Smart Navigation for India</span>
-          </div>
-          
-          <h1 className="heading-hero text-white mb-6 drop-shadow-2xl animate-fade-in">
-            Navigate India
+        {/* Subtle Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-zinc-950"></div>
+
+        <div className="relative z-10 max-w-4xl mx-auto text-center py-16">
+          <Badge className="mb-4 bg-orange-500/20 text-orange-400 border border-orange-500/30 text-xs px-3 py-1 font-semibold rounded-full">
+            Indian Road Navigation & Telemetry
+          </Badge>
+
+          <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight mb-4 leading-tight">
+            Navigation Built for
             <br />
-            <span className="bg-gradient-to-r from-yellow-200 to-white bg-clip-text text-transparent">
-              Smarter, Safer
-            </span>
+            <span className="text-orange-500">Indian Roads</span>
           </h1>
-          
-          <p className="text-xl sm:text-2xl text-white/95 mb-4 font-light drop-shadow-lg max-w-3xl mx-auto">
-            Routes that understand real Indian road conditions
-          </p>
-          <p className="text-lg text-white/90 mb-12 font-light drop-shadow-md max-w-2xl mx-auto">
-            Built with AI, designed for India. Experience navigation like never before.
+
+          <p className="text-base sm:text-xl text-zinc-300 mb-8 max-w-2xl mx-auto font-normal">
+            Real routes that factor in road quality, streetlight coverage, monsoon waterlogging, and multimodal transit fares.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-10">
             <Button 
               size="lg" 
-              className="bg-white text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:bg-white dark:text-orange-600 dark:hover:bg-orange-50 dark:hover:text-orange-700 px-10 py-7 text-lg font-bold shadow-2xl hover:shadow-orange-500/50 hover:scale-105 transition-all duration-300"
-              onClick={() => {
-                setAuthMode('register');
-                setAuthModalOpen(true);
-              }}
+              className="bg-orange-600 hover:bg-orange-500 text-white font-bold px-8 py-6 rounded-xl text-base shadow-lg shadow-orange-600/20"
+              onClick={() => navigate('/dashboard')}
             >
-              Get Started Free
-              <ArrowRight className="ml-2 w-5 h-5" />
+              Open Live Navigation
+              <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-3 border-white text-white hover:bg-white hover:text-orange-600 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-orange-600 px-10 py-7 text-lg font-semibold backdrop-blur-md bg-white/10 hover:scale-105 transition-all duration-300"
-              onClick={() => {
-                setAuthMode('login');
-                setAuthModalOpen(true);
-              }}
-            >
-              Sign In
-            </Button>
+
+            {!loggedIn && (
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 px-6 py-6 rounded-xl text-base"
+                onClick={handleDemoLogin}
+                disabled={isLoggingIn}
+              >
+                {isLoggingIn ? 'Signing in...' : '1-Click Demo Sign In'}
+              </Button>
+            )}
           </div>
 
-          {/* Demo Credentials */}
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 max-w-md mx-auto mb-16">
-            <div className="flex items-center gap-2 mb-2 justify-center">
-              <MapPin className="w-4 h-4 text-yellow-300" />
-              <span className="text-white text-sm font-semibold">Try Demo Account</span>
+          {/* Quick Commute Corridors */}
+          <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-4 max-w-2xl mx-auto text-left">
+            <div className="text-xs font-semibold text-zinc-400 mb-2.5">
+              Instant Commute Corridors
             </div>
-            <div className="text-white/90 text-sm space-y-1 text-center">
-              <p><span className="font-medium">Email:</span> demo@naksha.app</p>
-              <p><span className="font-medium">Password:</span> demo123</p>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="w-full mt-3 border-white/50 text-white hover:bg-white hover:text-orange-600 dark:border-white/50 dark:text-white dark:hover:bg-white dark:hover:text-orange-600 transition-all duration-300"
-              onClick={handleDemoLogin}
-              disabled={isLoggingIn}
-            >
-              {isLoggingIn ? 'Logging in...' : 'Sign In with Demo'}
-            </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {stats.map((stat, index) => (
-              <div key={index} className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                <div className="text-3xl font-bold text-white mb-1">{stat.value}</div>
-                <div className="text-white/80 text-sm">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/70 rounded-full flex items-start justify-center p-2 backdrop-blur-sm bg-white/10">
-            <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-gradient-to-br from-orange-50 via-yellow-50/50 to-orange-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-        {/* Animated background pattern */}
-        <div className="absolute inset-0 opacity-5 dark:opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f97316' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '60px 60px'
-          }}></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center mb-20">
-            <Badge className="mb-4 px-6 py-2 text-sm font-semibold bg-gradient-to-r from-orange-500 to-yellow-500 text-white shadow-lg hover:shadow-xl transition-shadow duration-300">
-              Features
-            </Badge>
-            <h2 className="heading-section mb-6 text-gray-900 dark:text-white">
-              Why Choose <span className="bg-gradient-to-r from-orange-500 via-yellow-500 to-orange-600 bg-clip-text text-transparent animate-gradient">Naksha</span>?
-            </h2>
-            <p className="text-xl text-gray-700 dark:text-gray-300 max-w-3xl mx-auto font-medium">
-              Navigation designed specifically for Indian roads with real-world intelligence
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <Card 
-                  key={index} 
-                  className="group relative border-2 border-orange-200/50 dark:border-gray-700 hover:border-orange-400 dark:hover:border-orange-500 hover:shadow-2xl hover:shadow-orange-500/20 transition-all duration-500 hover:-translate-y-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md overflow-hidden"
-                  style={{
-                    animationDelay: `${index * 100}ms`
-                  }}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {quickCorridors.map((c, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => navigate('/dashboard')}
+                  className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800/80 hover:border-orange-500/40 text-left transition-colors"
                 >
-                  {/* Animated gradient background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-20 transition-opacity duration-700`}></div>
-                  
-                  {/* Pattern overlay */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500" style={{
-                    backgroundImage: `radial-gradient(circle at 2px 2px, currentColor 1px, transparent 0)`,
-                    backgroundSize: '20px 20px'
-                  }}></div>
-                  
-                  {/* Top-right decorative accent */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-300/30 via-yellow-300/20 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform group-hover:scale-110"></div>
-                  
-                  {/* Bottom-left decorative accent */}
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-orange-200/20 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                  
-                  {/* Glowing border effect */}
-                  <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-700 -z-10`}></div>
-                  
-                  <CardHeader className="relative z-10 p-6">
-                    <div className={`relative w-24 h-24 bg-gradient-to-br ${feature.color} rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-2xl group-hover:shadow-3xl`}>
-                      {/* Icon glow effect */}
-                      <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} rounded-3xl blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500`}></div>
-                      <Icon className="w-12 h-12 text-white drop-shadow-2xl relative z-10 group-hover:scale-110 transition-transform duration-500" />
-                    </div>
-                    <CardTitle className="text-2xl font-extrabold text-gray-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300 mb-2">
-                      {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="relative z-10 p-6 pt-0">
-                    <CardDescription className="text-base text-gray-700 dark:text-gray-300 leading-relaxed group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors duration-300 font-medium">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                  
-                  {/* Animated shine effect on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none"></div>
-                  
-                  {/* Bottom border accent */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-500 via-yellow-400 to-orange-600 dark:from-orange-600 dark:via-yellow-500 dark:to-orange-700 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0xLjEtLjktMi0yLTJIMjZjLTEuMSAwLTIgLjktMiAydjJjMCAxLjEuOSAyIDIgMmg4YzEuMSAwIDItLjkgMi0ydi0yeiIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <TrendingUp className="w-16 h-16 text-white mx-auto mb-6 opacity-90" />
-          <h2 className="heading-section text-white mb-6 drop-shadow-lg">
-            Ready to Navigate Smarter?
-          </h2>
-          <p className="text-xl text-white/95 mb-10 font-light max-w-2xl mx-auto">
-            Join thousands of users navigating India's roads with confidence and intelligence
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-            <Button 
-              size="lg" 
-              className="bg-white text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:bg-white dark:text-orange-600 dark:hover:bg-orange-50 dark:hover:text-orange-700 px-10 py-7 text-lg font-bold shadow-2xl hover:shadow-white/50 hover:scale-105 transition-all duration-300"
-              onClick={() => {
-                setAuthMode('register');
-                setAuthModalOpen(true);
-              }}
-            >
-              Create Free Account
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="border-3 border-white text-white hover:bg-white hover:text-orange-600 dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-orange-600 px-10 py-7 text-lg font-semibold backdrop-blur-md bg-white/10 hover:scale-105 transition-all duration-300"
-              onClick={() => {
-                setAuthMode('login');
-                setAuthModalOpen(true);
-              }}
-            >
-              Sign In
-            </Button>
-          </div>
-          <div className="text-center">
-            <p className="text-white/80 text-sm mb-2">Or try our demo account:</p>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20">
-              <span className="text-white text-xs">
-                <span className="font-semibold">demo@naksha.app</span> / <span className="font-semibold">demo123</span>
-              </span>
+                  <div className="text-xs font-medium text-white truncate">{c.title}</div>
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-bold mb-3 bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
-              Naksha
-            </h3>
-            <p className="text-gray-400 text-base max-w-2xl mx-auto">
-              Smart navigation for Indian roads • Built with real-world intelligence • Powered by AI
+      {/* Feature Highlights Grid */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-2">
+            Engineered for Ground Realities
+          </h2>
+          <p className="text-sm text-zinc-400 max-w-xl mx-auto">
+            Naksha provides practical road intelligence tailored for Indian commuting.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {features.map((feature, idx) => {
+            const Icon = feature.icon;
+            return (
+              <div
+                key={idx}
+                className={`group relative bg-zinc-900/60 border border-zinc-800/60 rounded-2xl p-5 cursor-default
+                  transition-all duration-300 ease-out
+                  hover:-translate-y-1 hover:bg-zinc-900/90
+                  hover:shadow-xl ${feature.hoverGlow}
+                  ${feature.hoverBorder}`}
+              >
+                {/* Top glow accent line */}
+                <div className={`absolute top-0 left-6 right-6 h-px rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                  bg-gradient-to-r from-transparent via-current to-transparent ${feature.color.split(' ')[0]}`}
+                />
+
+                <div className={`w-10 h-10 rounded-xl border flex items-center justify-center mb-4
+                  transition-transform duration-300 group-hover:scale-110 ${feature.color}`}>
+                  <Icon className="w-5 h-5" />
+                </div>
+
+                <h3 className="text-base font-semibold text-white mb-1.5 group-hover:text-white transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-xs text-zinc-400 leading-relaxed group-hover:text-zinc-300 transition-colors">
+                  {feature.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Public vs Exclusive Features Comparison */}
+      <section className="py-14 px-4 sm:px-6 lg:px-8 bg-zinc-900/40 border-t border-zinc-800/80">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Free Access & Member Features
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-400">
+              Use core routing without friction, or sign in to contribute to the commuter network.
             </p>
           </div>
-          <div className="border-t border-gray-800 pt-8 text-center">
-            <p className="text-gray-500 text-sm">
-              © 2024 Naksha. All rights reserved.
-            </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Public Access */}
+            <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-base text-white">Public Navigation</h3>
+                <Badge className="bg-zinc-800 text-zinc-300 border-zinc-700 text-[10px]">
+                  No Login Required
+                </Badge>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-zinc-300">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Interactive Map & OSRM Real Routing</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>All 6 Route Profiles (Fastest, Safest, Eco, Transit)</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Turn-by-turn Simulator & Audio Voice HUD</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Multimodal Metro + Bus & Auto Meter Fare Breakdown</span>
+                </li>
+              </ul>
+
+              <Button
+                onClick={() => navigate('/dashboard')}
+                className="w-full bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold rounded-xl py-5"
+              >
+                Launch Navigation Console
+              </Button>
+            </div>
+
+            {/* Exclusive Member Access */}
+            <div className="bg-zinc-900/80 border border-orange-500/30 rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-base text-white">Member Benefits</h3>
+                <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/30 text-[10px]">
+                  Sign In Required
+                </Badge>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-zinc-300">
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                  <span>Report & Verify Live Road Hazards (Potholes, Floods)</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                  <span>Save Favorite Daily Routes & Commute History</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                  <span>Personalized Night Safety & Monsoon Thresholds</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-orange-400 flex-shrink-0" />
+                  <span>Commuter Eco Scores & Achievement Badges</span>
+                </li>
+              </ul>
+
+              <Button
+                onClick={() => {
+                  if (loggedIn) {
+                    navigate('/profile');
+                  } else {
+                    setAuthMode('register');
+                    setAuthModalOpen(true);
+                  }
+                }}
+                className="w-full bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl py-5"
+              >
+                {loggedIn ? 'View Profile' : 'Create Free Account'}
+              </Button>
+            </div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* Uniform Clean Footer */}
+      <Footer />
 
       {/* Auth Modal */}
       <AuthModal

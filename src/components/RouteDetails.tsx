@@ -1,178 +1,168 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { RouteOptionData } from '@/lib/routingService';
+import { 
+  Clock, 
+  MapPin, 
+  Navigation, 
+  Shield, 
+  Leaf, 
+  AlertTriangle, 
+  Play, 
+  Compass
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Clock, MapPin, Navigation, TrendingUp, Fuel, Shield, Leaf } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { TransitFareCard } from './TransitFareCard';
 
 interface RouteDetailsProps {
-  routeData: {
-    type: string;
-    distance: string;
-    duration: string;
-    summary?: {
-      distance: number;
-      duration: number;
-    };
-    from?: string;
-    to?: string;
-    geometry?: any;
-    features?: string[];
-  } | null;
-  routeType: string;
+  routeData: RouteOptionData;
+  onStartNavigation?: () => void;
+  onReportHazard?: () => void;
 }
 
-const RouteDetails: React.FC<RouteDetailsProps> = ({ routeData, routeType }) => {
-  if (!routeData) {
-    return null;
-  }
-
-  const getRouteIcon = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'fastest':
-        return <Clock className="w-5 h-5" />;
-      case 'safest':
-        return <Shield className="w-5 h-5" />;
-      case 'eco':
-        return <Leaf className="w-5 h-5" />;
-      default:
-        return <Navigation className="w-5 h-5" />;
-    }
-  };
-
-  const getRouteColor = (type: string) => {
-    switch (type.toLowerCase()) {
-      case 'fastest':
-        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400';
-      case 'safest':
-        return 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400';
-      case 'eco':
-        return 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400';
-      case 'scenic':
-        return 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400';
-      case 'cheapest':
-        return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'popular':
-        return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400';
-      default:
-        return 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400';
-    }
-  };
+export const RouteDetails: React.FC<RouteDetailsProps> = ({ 
+  routeData, 
+  onStartNavigation,
+  onReportHazard 
+}) => {
+  if (!routeData) return null;
 
   return (
-    <Card className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-2 border-orange-200 dark:border-gray-800 shadow-2xl">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {getRouteIcon(routeType)}
-            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-              {routeData.type || routeType}
-            </CardTitle>
+    <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 text-white space-y-5">
+      {/* Route Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-zinc-800">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Badge className="bg-zinc-800 text-orange-400 border border-zinc-700 text-xs font-medium py-0.5 px-2.5 rounded-md">
+              {routeData.tag}
+            </Badge>
+            <span className="text-xs text-zinc-400">ETA: {routeData.eta}</span>
           </div>
-          <Badge className={`${getRouteColor(routeType)} font-semibold`}>
-            Selected
-          </Badge>
-        </div>
-        <CardDescription className="text-base mt-2">
-          Complete route information and details
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent className="space-y-6">
-        {/* Route Overview */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-900/20 dark:to-yellow-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-            <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-5 h-5 text-orange-600" />
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Distance</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{routeData.distance}</p>
-          </div>
-          
-          <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-5 h-5 text-blue-600" />
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Duration</span>
-            </div>
-            <p className="text-2xl font-bold text-gray-900 dark:text-white">{routeData.duration}</p>
-          </div>
+          <h3 className="text-xl font-bold text-white tracking-tight">
+            {routeData.type}
+          </h3>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            {routeData.summary}
+          </p>
         </div>
 
-        {/* Route Path */}
-        {routeData.from && routeData.to && (
-          <>
-            <Separator />
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <Navigation className="w-4 h-4 text-orange-500" />
-                Route Path
-              </h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="font-medium text-gray-900 dark:text-white">{routeData.from}</span>
-                </div>
-                <div className="flex items-center justify-center">
-                  <div className="w-0.5 h-8 bg-gradient-to-b from-green-500 to-orange-500"></div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                  <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                  <span className="font-medium text-gray-900 dark:text-white">{routeData.to}</span>
-                </div>
-              </div>
-            </div>
-          </>
+        {onStartNavigation && (
+          <Button
+            onClick={onStartNavigation}
+            className="bg-orange-600 hover:bg-orange-500 text-white font-semibold px-6 py-5 rounded-xl text-sm flex items-center gap-2"
+          >
+            <Play className="w-4 h-4 fill-current" />
+            Start Navigation
+          </Button>
         )}
+      </div>
 
-        {/* Route Features */}
-        {routeData.features && routeData.features.length > 0 && (
-          <>
-            <Separator />
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-orange-500" />
-                Route Features
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {routeData.features.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-800 rounded-md"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
+      {/* Key Telemetry Badges */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div className="bg-zinc-950/80 border border-zinc-800 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase text-zinc-400">Distance</div>
+          <div className="text-lg font-bold text-white mt-0.5">{routeData.distanceStr}</div>
+        </div>
+
+        <div className="bg-zinc-950/80 border border-zinc-800 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase text-zinc-400">Travel Time</div>
+          <div className="text-lg font-bold text-orange-400 mt-0.5">{routeData.durationStr}</div>
+        </div>
+
+        <div className="bg-zinc-950/80 border border-zinc-800 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase text-zinc-400">Road Score (RQI)</div>
+          <div className="text-lg font-bold text-emerald-400 mt-0.5">{routeData.roadQualityIndex}/100</div>
+        </div>
+
+        <div className="bg-zinc-950/80 border border-zinc-800 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase text-zinc-400">Streetlights</div>
+          <div className="text-lg font-bold text-purple-400 mt-0.5">{routeData.lightingScore}%</div>
+        </div>
+      </div>
+
+      {/* Multimodal Fare Calculator */}
+      <TransitFareCard route={routeData} />
+
+      {/* Road Features */}
+      {routeData.features && routeData.features.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="font-semibold text-xs text-zinc-300">
+            Route Characteristics
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {routeData.features.map((feat, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-2 bg-zinc-950/60 border border-zinc-800 p-2.5 rounded-xl text-xs text-zinc-300"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                <span>{feat}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Turn-by-Turn Steps Preview */}
+      {routeData.steps && routeData.steps.length > 0 && (
+        <div className="space-y-2.5">
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-xs text-zinc-300 flex items-center gap-1.5">
+              <Compass className="w-3.5 h-3.5 text-emerald-400" />
+              Turn-by-Turn Maneuvers ({routeData.steps.length} Steps)
+            </h4>
+            <span className="text-[11px] text-zinc-400">OSRM Step Directions</span>
+          </div>
+
+          <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1 divide-y divide-zinc-800/60 bg-zinc-950/60 rounded-xl p-2.5 border border-zinc-800">
+            {routeData.steps.map((step, idx) => (
+              <div key={idx} className="flex items-start justify-between py-1.5 text-xs">
+                <div className="flex items-start gap-2">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center font-bold text-[10px] text-orange-400">
+                    {idx + 1}
+                  </span>
+                  <div>
+                    <div className="font-medium text-white">{step.instruction}</div>
+                    <div className="text-[10px] text-zinc-400">{step.name}</div>
                   </div>
-                ))}
+                </div>
+                <div className="text-zinc-400 text-[11px] pl-2 whitespace-nowrap">
+                  {step.distance > 1000 ? `${(step.distance / 1000).toFixed(1)} km` : `${step.distance} m`}
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            ))}
+          </div>
+        </div>
+      )}
 
-        {/* Additional Stats */}
-        {routeData.summary && (
-          <>
-            <Separator />
-            <div className="space-y-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white">Route Statistics</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Total Distance</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {routeData.summary.distance.toFixed(2)} km
-                  </p>
-                </div>
-                <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Estimated Time</p>
-                  <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {Math.round(routeData.summary.duration)} minutes
-                  </p>
-                </div>
-              </div>
+      {/* Hazards on this Route */}
+      {routeData.hazards && routeData.hazards.length > 0 && (
+        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3.5 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-amber-400 font-semibold text-xs">
+              <AlertTriangle className="w-3.5 h-3.5" />
+              <span>{routeData.hazards.length} Road Hazards Reported on this Path</span>
             </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+            {onReportHazard && (
+              <button
+                onClick={onReportHazard}
+                className="text-[11px] font-medium text-amber-400 hover:text-amber-300 underline"
+              >
+                + Add Report
+              </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {routeData.hazards.slice(0, 4).map((hz) => (
+              <div key={hz.id} className="bg-zinc-950/80 border border-amber-500/20 p-2.5 rounded-lg">
+                <div className="font-medium text-white text-xs">{hz.title}</div>
+                <div className="text-[10px] text-zinc-400 line-clamp-1">{hz.description}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
-
 export default RouteDetails;

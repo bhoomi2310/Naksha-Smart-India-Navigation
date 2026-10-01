@@ -411,3 +411,9 @@
     box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
   }
 }
+
+/* Cyber Dark high-contrast styling for Leaflet OSM tiles */
+.map-tiles-dark {
+  filter: brightness(0.6) invert(1) contrast(2.5) hue-rotate(195deg) saturate(0.3) brightness(0.8) !important;
+}
+

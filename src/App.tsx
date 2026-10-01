@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Landing from "./pages/Landing";
 import Index from "./pages/Index";
-import RoutesPage from "./pages/Routes";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
@@ -32,7 +31,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/dashboard" element={<Index />} />
-              <Route path="/routes" element={<RoutesPage />} />
+              <Route path="/routes" element={<Index />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/login" element={<Login />} />

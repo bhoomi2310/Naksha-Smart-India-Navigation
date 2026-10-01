@@ -1,268 +1,249 @@
-import React, { useState } from 'react';
-import { Clock, Shield, Leaf, Camera, IndianRupee, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import Navigation from '@/components/Navigation';
+import SearchInterface from '@/components/SearchInterface';
 import RouteCard from '@/components/RouteCard';
 import RouteDetails from '@/components/RouteDetails';
-import SearchInterface from '@/components/SearchInterface';
-import Navigation from '@/components/Navigation';
-import DataInsights from '@/components/DataInsights';
-import { navigationAPI } from '@/lib/api';
+import { InteractiveMap } from '@/components/InteractiveMap';
+import { TurnByTurnNavigator } from '@/components/TurnByTurnNavigator';
+import { HazardReportModal } from '@/components/HazardReportModal';
+import AuthModal from '@/components/AuthModal';
+import Footer from '@/components/Footer';
+import { calculateIndianRoutes, RouteOptionData } from '@/lib/routingService';
+import { isAuthenticated } from '@/lib/api';
 import { toast } from 'sonner';
-
-// Import image - if file doesn't exist, create it manually (see IMAGE_SETUP.md)
-import tajMahalImage from '@/assets/taj-mahal.png';
+import { 
+  Compass, 
+  AlertTriangle,
+  Share2,
+  Lock
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  const [selectedRoute, setSelectedRoute] = useState<string | null>(null);
-  const [selectedRouteData, setSelectedRouteData] = useState<any>(null);
-  const [fromLocation, setFromLocation] = useState('');
-  const [toLocation, setToLocation] = useState('');
-  const [routes, setRoutes] = useState<any[]>([]);
+  const [fromLocation, setFromLocation] = useState('Connaught Place, Delhi');
+  const [toLocation, setToLocation] = useState('Cyber City, Gurgaon');
+  const [routes, setRoutes] = useState<RouteOptionData[]>([]);
+  const [selectedRouteId, setSelectedRouteId] = useState<string>('fastest');
   const [isLoading, setIsLoading] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [vehiclePosition, setVehiclePosition] = useState<[number, number] | null>(null);
+  const [vehicleHeading, setVehicleHeading] = useState(0);
+  const [isHazardModalOpen, setIsHazardModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
-  const handleSearch = async () => {
-    if (!fromLocation || !toLocation) {
+  useEffect(() => {
+    handleSearch('Connaught Place, Delhi', 'Cyber City, Gurgaon');
+  }, []);
+
+  const handleSearch = async (from = fromLocation, to = toLocation) => {
+    if (!from || !to) {
       toast.error('Please enter both starting location and destination');
       return;
     }
 
     setIsLoading(true);
-    try {
-      // Fetch routes for all types
-      const routeTypes = ['fastest', 'safest', 'eco', 'scenic', 'cheapest', 'popular'];
-      const routePromises = routeTypes.map(type => 
-        navigationAPI.getRoutes(fromLocation, toLocation, type).catch(err => {
-          console.error(`Error fetching ${type} route:`, err);
-          return null;
-        })
-      );
+    setIsNavigating(false);
+    setVehiclePosition(null);
 
-      const results = await Promise.all(routePromises);
-      const validRoutes = results.filter(r => r !== null);
-      
-      if (validRoutes.length > 0) {
-        setRoutes(validRoutes);
-        toast.success(`Found ${validRoutes.length} route options!`);
+    try {
+      const result = await calculateIndianRoutes(from, to);
+      if (result.routes && result.routes.length > 0) {
+        setRoutes(result.routes);
+        setSelectedRouteId(result.routes[0].id);
+        toast.success(`Calculated ${result.routes.length} Indian route options`);
       } else {
-        toast.error('Could not find routes. Please check your locations.');
+        toast.error('No routes found for these locations');
       }
     } catch (error: any) {
-      console.error('Route search error:', error);
-      toast.error(error.message || 'Failed to fetch routes');
+      console.error('Routing calculation error:', error);
+      toast.error('Failed to compute routes');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleRouteSelect = async (routeId: string) => {
-    if (!fromLocation || !toLocation) {
-      toast.error('Please search for routes first');
+  const activeRoute = routes.find(r => r.id === selectedRouteId) || routes[0];
+
+  const handleStartNavigation = () => {
+    if (!activeRoute) return;
+    setIsNavigating(true);
+    if (activeRoute.coordinates && activeRoute.coordinates[0]) {
+      setVehiclePosition(activeRoute.coordinates[0]);
+    }
+    toast.info('Live navigation simulation started');
+  };
+
+  const handleVehiclePositionChange = (pos: [number, number] | null, heading: number) => {
+    setVehiclePosition(pos);
+    setVehicleHeading(heading);
+  };
+
+  const handleOpenHazardReport = () => {
+    if (!isAuthenticated()) {
+      toast.info('Please sign in to report road hazards');
+      setIsAuthModalOpen(true);
       return;
     }
+    setIsHazardModalOpen(true);
+  };
 
-    setSelectedRoute(routeId);
-    
-    try {
-      const routeData = await navigationAPI.getRoutes(fromLocation, toLocation, routeId);
-      const routeOption = routeOptions.find(r => r.id === routeId);
-      
-      if (routeData?.routes?.[0]) {
-        const selectedData = {
-          ...routeData.routes[0],
-          type: routeOption?.type || routeId,
-          from: fromLocation,
-          to: toLocation,
-          features: routeOption?.features || []
-        };
-        setSelectedRouteData(selectedData);
-        toast.success(`${routeOption?.type} selected!`);
-      } else {
-        toast.error('Route data not available');
-      }
-    } catch (error: any) {
-      console.error('Route selection error:', error);
-      toast.error(error.message || 'Failed to load route details');
+  const handleHazardReported = (newHazard: any) => {
+    if (activeRoute) {
+      activeRoute.hazards = [newHazard, ...(activeRoute.hazards || [])];
+      setRoutes([...routes]);
     }
   };
 
-  const routeOptions = [
-    {
-      id: 'fastest',
-      type: 'Fastest Route',
-      icon: Clock,
-      duration: '18 mins',
-      distance: '7.2 km',
-      description: 'Time-optimized using real measured speeds',
-      features: ['Real traffic data', 'Dynamic routing', 'Live updates'],
-      eta: 'Arrives by 3:45 PM',
-      color: 'route-fastest'
-    },
-    {
-      id: 'safest', 
-      type: 'Safest Route',
-      icon: Shield,
-      duration: '22 mins',
-      distance: '8.1 km',
-      description: 'Well-lit roads, fewer potholes, safer at night',
-      features: ['Good lighting', 'Better road condition', 'Lower crime rate'],
-      eta: 'Arrives by 3:49 PM',
-      color: 'route-safest'
-    },
-    {
-      id: 'eco',
-      type: 'Eco-Friendly Route',
-      icon: Leaf,
-      duration: '25 mins',
-      distance: '7.8 km',
-      description: 'Minimum stop-and-go, fuel efficient',
-      features: ['Less fuel consumption', 'Fewer signals', 'Smooth traffic'],
-      eta: 'Arrives by 3:52 PM',
-      color: 'route-eco'
-    },
-    {
-      id: 'scenic',
-      type: 'Scenic Route',
-      icon: Camera,
-      duration: '28 mins',
-      distance: '9.5 km',
-      description: 'Routes through parks, markets, monuments',
-      features: ['Beautiful views', 'Cultural sites', 'Local attractions'],
-      eta: 'Arrives by 3:55 PM',
-      color: 'route-scenic'
-    },
-    {
-      id: 'cheapest',
-      type: 'Cheapest Route',
-      icon: IndianRupee,
-      duration: '35 mins',
-      distance: '12.3 km',
-      description: 'Bus + metro integration with fare calculation',
-      features: ['₹25 total fare', 'Public transport', 'Metro + bus combo'],
-      eta: 'Arrives by 4:02 PM',
-      color: 'route-cheapest'
-    },
-    {
-      id: 'popular',
-      type: 'Most Popular Route',
-      icon: Users,
-      duration: '20 mins',
-      distance: '7.5 km',
-      description: 'What most locals actually take',
-      features: ['Local favorite', 'Familiar roads', 'Community tested'],
-      eta: 'Arrives by 3:47 PM',
-      color: 'route-popular'
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-background w-full max-w-full overflow-x-hidden relative">
-      {/* Full Page Background - Taj Mahal (Image 1) */}
-      <div 
-        className="fixed inset-0 z-0"
-        style={{
-          backgroundImage: `url(${tajMahalImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
-      </div>
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+      <Navigation />
 
-      <div className="relative z-10">
-        <Navigation />
-        
-        {/* Hero Section */}
-        <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="heading-hero text-white mb-6 drop-shadow-2xl font-extrabold">
-              Welcome to Naksha
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-5">
+        {/* Top Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900/80 border border-zinc-800 p-5 rounded-2xl">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="text-xs font-semibold text-orange-400 uppercase tracking-wide">
+                Live Indian Route Engine
+              </span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Navigation Console
             </h1>
-            <p className="text-xl sm:text-2xl text-white/95 mb-10 max-w-2xl mx-auto font-light drop-shadow-lg">
-              Smart navigation for Indian roads. Routes that understand real conditions.
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Real-time routing with road condition scoring, night lighting index, and transit fares.
             </p>
           </div>
-        </section>
 
-        {/* Search Interface */}
-        <section className="py-8 px-4 sm:px-6 lg:px-8 -mt-8">
-          <div className="max-w-4xl mx-auto">
-            <SearchInterface 
-              fromLocation={fromLocation}
-              toLocation={toLocation}
-              setFromLocation={setFromLocation}
-              setToLocation={setToLocation}
-              onSearch={handleSearch}
-              isLoading={isLoading}
+          <div className="flex items-center gap-2.5">
+            <Button
+              onClick={handleOpenHazardReport}
+              variant="outline"
+              size="sm"
+              className="border-zinc-700 bg-zinc-800 text-zinc-200 hover:bg-zinc-700 hover:text-white rounded-xl text-xs font-medium h-9"
+            >
+              <AlertTriangle className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
+              Report Hazard
+            </Button>
+            <Button
+              onClick={() => {
+                navigator.clipboard?.writeText(window.location.href);
+                toast.success('Link copied');
+              }}
+              variant="ghost"
+              size="sm"
+              className="text-zinc-400 hover:text-white text-xs h-9 px-3 rounded-xl"
+            >
+              <Share2 className="w-3.5 h-3.5 mr-1.5" />
+              Share
+            </Button>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <SearchInterface
+          fromLocation={fromLocation}
+          toLocation={toLocation}
+          setFromLocation={setFromLocation}
+          setToLocation={setToLocation}
+          onSearch={() => handleSearch(fromLocation, toLocation)}
+          isLoading={isLoading}
+        />
+
+        {/* Split Screen Workspace */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+          {/* Left Column: Route Profile Cards */}
+          <div className="lg:col-span-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-white flex items-center gap-1.5">
+                <Compass className="w-4 h-4 text-orange-400" />
+                Route Profiles ({routes.length})
+              </h2>
+              <span className="text-xs text-zinc-400">Select to inspect</span>
+            </div>
+
+            {isLoading ? (
+              <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-10 text-center space-y-2">
+                <div className="w-6 h-6 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <div className="text-xs font-medium text-zinc-300">Calculating Indian road routes...</div>
+              </div>
+            ) : (
+              <div className="space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
+                {routes.map((route) => (
+                  <RouteCard
+                    key={route.id}
+                    route={route}
+                    isSelected={selectedRouteId === route.id}
+                    onSelect={() => {
+                      setSelectedRouteId(route.id);
+                      setIsNavigating(false);
+                      setVehiclePosition(null);
+                    }}
+                    onStartNavigate={() => {
+                      setSelectedRouteId(route.id);
+                      handleStartNavigation();
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Interactive Map & Simulator */}
+          <div className="lg:col-span-7 space-y-3 sticky top-20">
+            {isNavigating && activeRoute && (
+              <TurnByTurnNavigator
+                route={activeRoute}
+                onVehiclePositionChange={handleVehiclePositionChange}
+                onClose={() => setIsNavigating(false)}
+              />
+            )}
+
+            <div className="h-[480px] sm:h-[540px] w-full">
+              <InteractiveMap
+                routes={routes}
+                selectedRouteId={selectedRouteId}
+                onSelectRoute={(id) => setSelectedRouteId(id)}
+                originName={fromLocation}
+                destName={toLocation}
+                vehiclePosition={vehiclePosition}
+                vehicleHeading={vehicleHeading}
+                onReportHazardClick={handleOpenHazardReport}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Selected Route In-Depth Details */}
+        {activeRoute && (
+          <div className="pt-2">
+            <RouteDetails
+              routeData={activeRoute}
+              onStartNavigation={handleStartNavigation}
+              onReportHazard={handleOpenHazardReport}
             />
           </div>
-        </section>
-
-        {/* Route Options */}
-        {(fromLocation && toLocation) && (
-          <section className="py-16 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="heading-section text-center mb-10 text-white drop-shadow-lg">Route Options</h2>
-              {isLoading ? (
-                <div className="text-center py-12">
-                  <p className="text-white/90 text-lg">Finding best routes...</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {routeOptions.map((route) => {
-                    // Try to find real data for this route
-                    const realRouteData = routes.find(r => {
-                      const routeType = r.routes?.[0]?.type;
-                      return routeType === route.id || 
-                             (routeType === 'fastest' && route.id === 'fastest') ||
-                             (routeType && routeType.includes(route.id));
-                    });
-                    
-                    const displayRoute = realRouteData?.routes?.[0]
-                      ? {
-                          ...route,
-                          duration: `${Math.round(realRouteData.routes[0].summary.duration)} mins`,
-                          distance: `${realRouteData.routes[0].summary.distance.toFixed(1)} km`,
-                          realData: true
-                        }
-                      : route;
-
-                    return (
-                      <RouteCard
-                        key={route.id}
-                        route={displayRoute}
-                        isSelected={selectedRoute === route.id}
-                        onSelect={() => handleRouteSelect(route.id)}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </section>
         )}
+      </main>
 
-        {/* Route Details Section */}
-        {selectedRoute && selectedRouteData && (
-          <section className="py-16 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto">
-              <RouteDetails routeData={selectedRouteData} routeType={selectedRoute} />
-            </div>
-          </section>
-        )}
+      <Footer />
 
-        {/* Data Insights */}
-        <DataInsights />
+      {/* Hazard Report Modal */}
+      <HazardReportModal
+        isOpen={isHazardModalOpen}
+        onClose={() => setIsHazardModalOpen(false)}
+        currentLocationName={fromLocation}
+        onReportSubmitted={handleHazardReported}
+      />
 
-        {/* Footer */}
-        <footer className="bg-black/40 backdrop-blur-md border-t border-white/10 py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto text-center">
-            <h3 className="text-xl font-bold mb-2 text-white">Naksha</h3>
-            <p className="text-white/80 text-sm">
-              Smart navigation for Indian roads
-            </p>
-          </div>
-        </footer>
-      </div>
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        mode="login"
+        onSwitchMode={() => {}}
+      />
     </div>
   );
 };

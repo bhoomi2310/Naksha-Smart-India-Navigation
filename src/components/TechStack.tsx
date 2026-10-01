@@ -1,56 +1,60 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Database, Globe, Smartphone, Zap, Code } from 'lucide-react';
+import { Brain, Database, Globe, Smartphone, Zap, Server, ShieldCheck } from 'lucide-react';
 
-const TechStack = () => {
+export const TechStack = () => {
   const technologies = [
     {
       category: 'Frontend',
       icon: Globe,
-      items: ['React + TypeScript', 'Tailwind CSS', 'shadcn/ui', 'Vite'],
-      color: 'bg-blue-500/10 border-blue-500/20 text-blue-700'
+      items: ['React 18', 'TypeScript', 'Vite', 'Leaflet Interactive Maps', 'Tailwind CSS'],
+      color: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400'
     },
     {
-      category: 'Mobile',
-      icon: Smartphone,
-      items: ['Capacitor', 'PWA Support', 'Native APIs', 'Cross-platform'],
-      color: 'bg-green-500/10 border-green-500/20 text-green-700'
+      category: 'Backend Engine',
+      icon: Server,
+      items: ['Node.js', 'Express.js', 'REST APIs', 'JWT Security', 'Axios'],
+      color: 'bg-orange-500/10 border-orange-500/30 text-orange-400'
     },
     {
-      category: 'ML & AI',
-      icon: Brain,
-      items: ['XGBoost', 'Scikit-learn', 'Pandas', 'NumPy', 'Poisson Regression'],
-      color: 'bg-purple-500/10 border-purple-500/20 text-purple-700'
-    },
-    {
-      category: 'Backend',
+      category: 'Database',
       icon: Database,
-      items: ['Node.js', 'Express', 'OpenRouteService API', 'REST APIs'],
-      color: 'bg-orange-500/10 border-orange-500/20 text-orange-700'
+      items: ['PostgreSQL', 'node-postgres (pg)', 'Spatial PostGIS', 'Supabase SQL'],
+      color: 'bg-blue-500/10 border-blue-500/30 text-blue-400'
     },
     {
-      category: 'Performance',
-      icon: Zap,
-      items: ['Edge Computing', 'Real-time Data', 'Caching', 'CDN'],
-      color: 'bg-yellow-500/10 border-yellow-500/20 text-yellow-700'
+      category: 'Native Mobile SDK',
+      icon: Smartphone,
+      items: ['Android SDK (Kotlin)', 'Jetpack Compose', 'Coroutines', 'OkHttp Client'],
+      color: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
     },
     {
-      category: 'Development',
-      icon: Code,
-      items: ['TypeScript', 'ESLint', 'Git', 'Hot Reload'],
-      color: 'bg-red-500/10 border-red-500/20 text-red-700'
+      category: 'Routing & AI Telemetry',
+      icon: Brain,
+      items: ['OSRM Driving Engine', 'Nominatim Geocoding', 'Open-Meteo Weather', 'Poisson RQI Model'],
+      color: 'bg-purple-500/10 border-purple-500/30 text-purple-400'
+    },
+    {
+      category: 'Safety & Audio',
+      icon: ShieldCheck,
+      items: ['Web Speech API Voice HUD', 'Crowdsourced Hazards', 'Streetlight Safety Index'],
+      color: 'bg-amber-500/10 border-amber-500/30 text-amber-400'
     }
   ];
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-zinc-950 border-t border-white/10 text-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Built with Modern Technology</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Naksha combines cutting-edge ML models with modern web technologies to deliver 
-            real-time, intelligent navigation for Indian roads.
+          <Badge className="bg-orange-500/20 text-orange-400 border border-orange-500/40 text-xs mb-2">
+            Engineering Architecture
+          </Badge>
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-3">
+            Core Tech Stack: React • Node.js • PostgreSQL
+          </h2>
+          <p className="text-sm sm:text-base text-zinc-400 max-w-3xl mx-auto">
+            Naksha combines React & Leaflet for real-time interactive mapping, Node.js Express for routing services, and PostgreSQL for trip telemetry, user authentication, and road hazard persistence.
           </p>
         </div>
 
@@ -58,47 +62,30 @@ const TechStack = () => {
           {technologies.map((tech) => {
             const Icon = tech.icon;
             return (
-              <Card key={tech.category} className="hover-lift">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+              <div 
+                key={tech.category} 
+                className="bg-zinc-900/80 border border-white/10 p-6 rounded-3xl shadow-xl hover:border-orange-500/40 transition-all hover:-translate-y-1"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-orange-400">
                     <Icon className="w-5 h-5" />
-                    {tech.category}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {tech.items.map((item) => (
-                      <Badge 
-                        key={item} 
-                        variant="outline" 
-                        className={`text-xs ${tech.color}`}
-                      >
-                        {item}
-                      </Badge>
-                    ))}
                   </div>
-                </CardContent>
-              </Card>
+                  <h3 className="font-bold text-base text-white">{tech.category}</h3>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {tech.items.map((item) => (
+                    <span 
+                      key={item} 
+                      className={`text-xs px-2.5 py-1 rounded-xl border font-medium ${tech.color}`}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
             );
           })}
-        </div>
-
-        <div className="mt-12 text-center">
-          <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
-            <CardContent className="p-8">
-              <h3 className="text-2xl font-bold mb-4">Your ML Model Integration</h3>
-              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                Your XGBoost model with 627 features analyzing road conditions, potholes, traffic patterns, 
-                and safety metrics will power the intelligent routing decisions in production.
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Badge className="px-4 py-2">Two-stage Poisson Regression</Badge>
-                <Badge className="px-4 py-2">627 Feature Engineering</Badge>
-                <Badge className="px-4 py-2">Real-time Predictions</Badge>
-                <Badge className="px-4 py-2">80%+ Accuracy</Badge>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </section>
