@@ -7,19 +7,19 @@
 
 @layer base {
   :root {
-    /* Core colors - Clean white background */
-    --background: 0 0% 100%;
-    --foreground: 20 14% 15%;
+    /* Core colors - Pure Dark Canvas by default */
+    --background: 20 14% 8%;
+    --foreground: 30 20% 95%;
 
     /* Primary brand colors - Orange-Yellow (Saffron inspired) */
     --primary: 30 100% 55%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 20 14% 8%;
     --primary-glow: 40 100% 65%;
     --primary-dark: 25 100% 45%;
 
     /* Secondary colors - Warm yellow accent */
     --secondary: 50 100% 50%;
-    --secondary-foreground: 20 14% 15%;
+    --secondary-foreground: 20 14% 8%;
     --secondary-light: 50 100% 60%;
 
     /* Success/Safe route - Green */
@@ -35,29 +35,29 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Neutral shades - Warm grays */
-    --muted: 30 20% 96%;
-    --muted-foreground: 20 10% 40%;
-    --accent: 30 20% 94%;
-    --accent-foreground: 20 14% 15%;
+    /* Neutral shades - Dark grays */
+    --muted: 20 14% 15%;
+    --muted-foreground: 30 10% 60%;
+    --accent: 20 14% 15%;
+    --accent-foreground: 30 20% 95%;
 
     /* Interface elements */
-    --card: 0 0% 100%;
-    --card-foreground: 20 14% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14% 15%;
-    --border: 30 15% 88%;
-    --input: 30 15% 88%;
+    --card: 20 14% 11%;
+    --card-foreground: 30 20% 95%;
+    --popover: 20 14% 11%;
+    --popover-foreground: 30 20% 95%;
+    --border: 20 14% 20%;
+    --input: 20 14% 20%;
     --ring: 30 100% 55%;
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-hero: linear-gradient(135deg, hsl(30 100% 55%) 0%, hsl(50 100% 50%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(20 14% 11%) 0%, hsl(20 14% 8%) 100%);
     
     /* Shadows */
     --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.25);
-    --shadow-card: 0 4px 20px -2px hsl(20 14% 15% / 0.08);
+    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.5);
     --shadow-glow: 0 0 40px hsl(var(--primary) / 0.3);
 
     /* Typography */
@@ -86,9 +86,9 @@
     --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
     
-    --card: 20 14% 12%;
+    --card: 20 14% 11%;
     --card-foreground: 30 20% 95%;
-    --popover: 20 14% 12%;
+    --popover: 20 14% 11%;
     --popover-foreground: 30 20% 95%;
     
     --muted: 20 14% 15%;
@@ -101,7 +101,7 @@
     --ring: 30 100% 55%;
 
     --gradient-hero: linear-gradient(135deg, hsl(30 100% 55%) 0%, hsl(50 100% 50%) 100%);
-    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.4);
+    --shadow-card: 0 4px 20px -2px hsl(0 0% 0% / 0.5);
   }
 }
 
@@ -140,10 +140,9 @@
     position: relative;
   }
 
-  /* Prevent horizontal scroll on all containers */
+  /* Prevent horizontal scroll on root containers */
   .min-h-screen,
   section,
-  div[class*="max-w"],
   .container,
   nav,
   main,
@@ -412,8 +411,455 @@
   }
 }
 
+/* Atmospheric Glowing Aurora & Mesh Animation (Orange & Black theme) */
+@keyframes aura-drift-1 {
+  0%, 100% {
+    transform: translate(-10%, -5%) scale(1) rotate(0deg);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(8%, 12%) scale(1.18) rotate(12deg);
+    opacity: 0.8;
+  }
+}
+
+@keyframes aura-drift-2 {
+  0%, 100% {
+    transform: translate(12%, 8%) scale(1.1) rotate(0deg);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate(-12%, -8%) scale(0.95) rotate(-15deg);
+    opacity: 0.7;
+  }
+}
+
+@keyframes aura-drift-3 {
+  0%, 100% {
+    transform: translate(-5%, 15%) scale(0.9) rotate(0deg);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(15%, -10%) scale(1.1) rotate(18deg);
+    opacity: 0.65;
+  }
+}
+
+@keyframes floating-slow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Auto Drive Forward Entrance Animation on Page Open */
+@keyframes auto-drive-in {
+  0% {
+    transform: scale(0.88) translateY(24px);
+    filter: blur(2px);
+  }
+  65% {
+    transform: scale(1.03) translateY(-2px);
+    filter: blur(0px);
+  }
+  100% {
+    transform: scale(1.02) translateY(0);
+    filter: blur(0px);
+  }
+}
+
+
+/* Continuous Road Cruising with Engine Vibration & Suspension */
+@keyframes auto-cruising {
+  0%, 100% {
+    transform: scale(1.04) translateY(0px) rotate(0deg);
+  }
+  20% {
+    transform: scale(1.045) translateY(-3px) rotate(0.2deg);
+  }
+  45% {
+    transform: scale(1.038) translateY(2px) rotate(-0.15deg);
+  }
+  70% {
+    transform: scale(1.044) translateY(-2px) rotate(0.1deg);
+  }
+  85% {
+    transform: scale(1.04) translateY(1px) rotate(-0.05deg);
+  }
+}
+
+/* Moving Road Markings Flowing Downwards to Convey Forward Speed */
+@keyframes road-flow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 48px;
+  }
+}
+
+/* Headlight Beam Pulse */
+@keyframes headlight-glow {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+.animate-auto-drive {
+  animation: 
+    auto-drive-in 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    auto-cruising 7s ease-in-out 2.2s infinite alternate;
+}
+
+.animate-road-flow {
+  animation: road-flow 0.85s linear infinite;
+}
+
+.animate-headlight {
+  animation: headlight-glow 3s ease-in-out infinite alternate;
+}
+
+
+
+/* 3D Perspective Card Showcase Styles */
+.perspective-container {
+  perspective: 1400px;
+}
+
+.card-left-perspective {
+  transform: perspective(1200px) rotateY(18deg) scale(0.88) translateZ(-40px);
+  transform-style: preserve-3d;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-right-perspective {
+  transform: perspective(1200px) rotateY(-18deg) scale(0.88) translateZ(-40px);
+  transform-style: preserve-3d;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-center-active {
+  transform: perspective(1200px) rotateY(0deg) scale(1) translateZ(30px);
+  transform-style: preserve-3d;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 1024px) {
+  .card-left-perspective,
+  .card-right-perspective,
+  .card-center-active {
+    transform: none !important;
+  }
+}
+
+
 /* Cyber Dark high-contrast styling for Leaflet OSM tiles */
 .map-tiles-dark {
   filter: brightness(0.6) invert(1) contrast(2.5) hue-rotate(195deg) saturate(0.3) brightness(0.8) !important;
+}
+
+/* --- Cool Naksha Loading Animation Styles --- */
+@keyframes radar-sweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-ring-expand {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes grid-perspective-travel {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 60px;
+  }
+}
+
+@keyframes telemetry-glitch {
+  0%, 100% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.85; transform: translateY(-1px); }
+}
+
+@keyframes auto-suspension-hum {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-2px) rotate(0.4deg);
+  }
+  75% {
+    transform: translateY(1.5px) rotate(-0.3deg);
+  }
+}
+
+.animate-radar-sweep {
+  animation: radar-sweep 2.8s linear infinite;
+}
+
+.animate-pulse-ring-1 {
+  animation: pulse-ring-expand 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.animate-pulse-ring-2 {
+  animation: pulse-ring-expand 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) 0.75s infinite;
+}
+
+.animate-pulse-ring-3 {
+  animation: pulse-ring-expand 2.2s cubic-bezier(0.215, 0.61, 0.355, 1) 1.5s infinite;
+}
+
+.animate-grid-travel {
+  animation: grid-perspective-travel 0.75s linear infinite;
+}
+
+.animate-auto-hum {
+  animation: auto-suspension-hum 1.2s ease-in-out infinite;
+}
+
+.animate-telemetry {
+  animation: telemetry-glitch 2s ease-in-out infinite;
+}
+
+/* --- Scroll Reveal & Micro-Interactions --- */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delay-100 { transition-delay: 0.1s; }
+.delay-150 { transition-delay: 0.15s; }
+.delay-200 { transition-delay: 0.2s; }
+.delay-250 { transition-delay: 0.25s; }
+.delay-300 { transition-delay: 0.3s; }
+.delay-400 { transition-delay: 0.4s; }
+
+/* Interactive Hover Elevation & Glow */
+.hover-card-lift {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.35s ease, 
+              border-color 0.35s ease, 
+              background-color 0.35s ease;
+}
+
+.hover-card-lift:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 36px -8px rgba(249, 115, 22, 0.22), 0 0 0 1px rgba(249, 115, 22, 0.3);
+}
+
+/* Icon Glow Zoom on Card Hover */
+.icon-glow-box {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.group:hover .icon-glow-box {
+  transform: scale(1.1) rotate(-3deg);
+  box-shadow: 0 0 20px currentColor;
+}
+
+/* Button Light Glare Shimmer Effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  transform: rotate(25deg);
+  transition: none;
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+  left: 140%;
+  transition: all 0.75s ease-in-out;
+}
+
+/* ====================================================
+   SASSY ANIMATIONS & TRANSITIONS SYSTEM
+   High-energy, springy micro-interactions, holographic
+   saffron glows, and lively transitions.
+   ==================================================== */
+
+@keyframes sassy-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-1.5deg);
+  }
+}
+
+@keyframes sassy-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.25), inset 0 0 15px rgba(249, 115, 22, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(249, 115, 22, 0.6), inset 0 0 20px rgba(249, 115, 22, 0.2);
+  }
+}
+
+@keyframes sassy-shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes sassy-pulse-radar {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+  }
+}
+
+@keyframes sassy-badge-wiggle {
+  0%, 88%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  90% {
+    transform: scale(1.05) rotate(-3deg);
+  }
+  92% {
+    transform: scale(1.05) rotate(3deg);
+  }
+  94% {
+    transform: scale(1.02) rotate(-1.5deg);
+  }
+  96% {
+    transform: scale(1.02) rotate(1.5deg);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Sassy Interactive Classes */
+.sassy-card-lift {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              border-color 0.3s ease;
+}
+
+.sassy-card-lift:hover {
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 42px -10px rgba(249, 115, 22, 0.28), 0 0 0 1px rgba(249, 115, 22, 0.45);
+}
+
+.sassy-btn {
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sassy-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 30px -5px rgba(249, 115, 22, 0.45);
+}
+
+.sassy-btn:active {
+  transform: translateY(1px) scale(0.96);
+}
+
+.sassy-shimmer-text {
+  background: linear-gradient(90deg, #f97316 0%, #fbbf24 35%, #ffffff 50%, #fbbf24 65%, #f97316 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: sassy-shimmer-sweep 5s linear infinite;
+}
+
+.sassy-badge-bounce {
+  animation: sassy-badge-wiggle 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.sassy-radar-dot {
+  animation: sassy-pulse-radar 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Always visible custom scrollbar for route lists & side panels */
+.custom-scrollbar-visible {
+  scrollbar-width: thin;
+  scrollbar-color: #ea580c rgba(150, 150, 150, 0.15);
+}
+
+.custom-scrollbar-visible::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block;
+}
+
+.custom-scrollbar-visible::-webkit-scrollbar-track {
+  background: rgba(150, 150, 150, 0.1);
+  border-radius: 9999px;
+}
+
+.custom-scrollbar-visible::-webkit-scrollbar-thumb {
+  background: #ea580c;
+  border-radius: 9999px;
+}
+
+.custom-scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background: #f97316;
 }
 

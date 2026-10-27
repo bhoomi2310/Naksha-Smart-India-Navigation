@@ -33,28 +33,15 @@ const Onboarding = () => {
 
     setIsLoading(true);
     try {
-      // Update user profile with onboarding data
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/user/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          phone: formData.phone.trim(),
-          onboardingCompleted: true
-        })
+      await authAPI.updateProfile({
+        phone: formData.phone.trim(),
+        onboardingCompleted: true
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to save profile');
-      }
 
       toast.success('Profile setup complete!');
       setTimeout(() => {
         navigate('/dashboard');
-      }, 500);
+      }, 300);
     } catch (error: any) {
       console.error('Onboarding error:', error);
       toast.error(error.message || 'Failed to save profile');

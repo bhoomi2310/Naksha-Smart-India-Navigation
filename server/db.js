@@ -101,21 +101,6 @@ export async function initDatabase() {
         );
       `);
 
-      // Seed Demo User in PostgreSQL
-      const demoCheck = await client.query('SELECT * FROM users WHERE email = $1', ['demo@naksha.app']);
-      if (demoCheck.rows.length === 0) {
-        const hashedPassword = await bcrypt.hash('demo123', 10);
-        await client.query(
-          'INSERT INTO users (id, email, password, full_name, phone) VALUES ($1, $2, $3, $4, $5)',
-          ['demo-user-001', 'demo@naksha.app', hashedPassword, 'Demo User', '+91 98765 43210']
-        );
-        await client.query(
-          'INSERT INTO user_stats (user_id, routes_taken, time_saved, distance_traveled, eco_score) VALUES ($1, $2, $3, $4, $5)',
-          ['demo-user-001', 28, 380, 342.5, 92]
-        );
-        console.log('✅ Demo user seeded in PostgreSQL');
-      }
-
       client.release();
       return true;
     } catch (err) {
@@ -125,45 +110,7 @@ export async function initDatabase() {
   }
 
   console.log('📁 Using local persistent JSON data store');
-  await ensureLocalDemoUser();
   return false;
-}
-
-// Ensure demo user in local file
-async function ensureLocalDemoUser() {
-  try {
-    let users = [];
-    try {
-      const data = await fs.readFile(USERS_FILE, 'utf-8');
-      users = JSON.parse(data);
-    } catch {
-      users = [];
-    }
-
-    if (!users.find(u => u.email === 'demo@naksha.app')) {
-      users.push({
-        id: 'demo-user-001',
-        email: 'demo@naksha.app',
-        password: await bcrypt.hash('demo123', 10),
-        fullName: 'Demo User',
-        phone: '+91 98765 43210',
-        stats: { routesTaken: 28, timeSaved: 380, distanceTraveled: 342.5, ecoScore: 92 },
-        recentTrips: [
-          { from: 'Connaught Place, Delhi', to: 'Cyber City, Gurgaon', date: 'Today, 8:45 AM', duration: '38 mins', type: 'Fastest Route', saved: '14 mins' },
-          { from: 'BKC, Mumbai', to: 'Marine Drive, Mumbai', date: 'Yesterday', duration: '26 mins', type: 'Safest Route', saved: '8 mins' }
-        ],
-        achievements: [
-          { title: 'Desi Navigator', description: 'Explored over 20 unique Indian arterial routes', icon: '🧭' },
-          { title: 'Monsoon Survivor', description: 'Avoided 5 flooded underpasses with live hazard alerts', icon: '🌊' }
-        ],
-        createdAt: new Date().toISOString()
-      });
-      await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
-      console.log('✅ Demo user seeded in local storage');
-    }
-  } catch (e) {
-    console.error('Error ensuring local demo user:', e);
-  }
 }
 
 // Database query helpers
@@ -317,30 +264,103 @@ export async function saveTripLog(userId, trip) {
 }
 
 export async function saveRoadHazard(hazard) {
+  const hazardRecord = {
+    id: hazard.id || `hz-${Date.now()}`,
+    type: hazard.type || 'pothole',
+    title: hazard.title || 'Road Hazard',
+    description: hazard.description || '',
+    severity: hazard.severity || 'medium',
+    lat: parseFloat(hazard.lat) || 28.6139,
+    lng: parseFloat(hazard.lng) || 77.2090,
+    locationText: hazard.locationText || '',
+    verifiedCount: 1,
+    createdAt: new Date().toISOString()
+  };
+
   if (isPostgresConnected && pool) {
     try {
       await pool.query(
         'INSERT INTO road_hazards (id, hazard_type, title, description, severity, latitude, longitude, location_text, verification_count) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
         [
-          hazard.id || `hz-${Date.now()}`,
-          hazard.type,
-          hazard.title,
-          hazard.description || '',
-          hazard.severity || 'medium',
-          hazard.lat,
-          hazard.lng,
-          hazard.locationText || '',
+          hazardRecord.id,
+          hazardRecord.type,
+          hazardRecord.title,
+          hazardRecord.description,
+          hazardRecord.severity,
+          hazardRecord.lat,
+          hazardRecord.lng,
+          hazardRecord.locationText,
           1
         ]
       );
-      return true;
+      return hazardRecord;
     } catch (e) {
       console.warn('Error saving hazard in PostgreSQL:', e.message);
     }
   }
-  return true;
+
+  // Local JSON store fallback
+  try {
+    let hazards = [];
+    try {
+      const data = await fs.readFile(HAZARDS_FILE, 'utf-8');
+      hazards = JSON.parse(data);
+    } catch {
+      hazards = [];
+    }
+    hazards.unshift(hazardRecord);
+    await fs.writeFile(HAZARDS_FILE, JSON.stringify(hazards.slice(0, 100), null, 2));
+  } catch (err) {
+    console.warn('Error writing hazard to local file:', err);
+  }
+
+  return hazardRecord;
+}
+
+export async function getRoadHazards(limit = 60) {
+  if (isPostgresConnected && pool) {
+    try {
+      const res = await pool.query(
+        'SELECT * FROM road_hazards ORDER BY created_at DESC LIMIT $1',
+        [limit]
+      );
+      return res.rows.map(r => ({
+        id: r.id,
+        type: r.hazard_type,
+        title: r.title,
+        description: r.description,
+        severity: r.severity,
+        coordinates: [parseFloat(r.latitude), parseFloat(r.longitude)],
+        locationText: r.location_text,
+        verifiedCount: r.verification_count || 1,
+        reportedAt: r.created_at
+      }));
+    } catch (e) {
+      console.warn('Error getting hazards from PostgreSQL:', e.message);
+    }
+  }
+
+  // Local JSON fallback
+  try {
+    const data = await fs.readFile(HAZARDS_FILE, 'utf-8');
+    const hazards = JSON.parse(data);
+    return hazards.slice(0, limit).map(h => ({
+      id: h.id,
+      type: h.type,
+      title: h.title,
+      description: h.description,
+      severity: h.severity,
+      coordinates: [h.lat, h.lng],
+      locationText: h.locationText,
+      verifiedCount: h.verifiedCount || 1,
+      reportedAt: h.createdAt
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export function isDbPostgres() {
   return isPostgresConnected;
 }
+

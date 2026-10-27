@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Compass, Settings, User, Navigation as NavIcon, LogOut } from 'lucide-react';
+import { Menu, X, Compass, Settings, User, Navigation as NavIcon, LogOut, GitFork } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import ThemeToggle from '@/components/ThemeToggle';
 import { isAuthenticated, authAPI } from '@/lib/api';
 import AuthModal from '@/components/AuthModal';
 import { toast } from 'sonner';
@@ -20,11 +19,19 @@ export const Navigation = () => {
     setLoggedIn(isAuthenticated());
   }, [location]);
 
-  const navItems = [
-    { icon: Compass, label: 'Navigation', href: '/dashboard' },
-    { icon: User, label: 'Profile & Trips', href: '/profile' },
-    { icon: Settings, label: 'Settings', href: '/settings' },
-  ];
+  // Unauthenticated users see public exploration items
+  // Authenticated users get their personal Profile & Settings
+  const navItems = loggedIn
+    ? [
+        { icon: Compass, label: 'Navigation', href: '/dashboard' },
+        { icon: GitFork, label: 'Route Profiles', href: '/routes' },
+        { icon: User, label: 'Profile & Trips', href: '/profile' },
+        { icon: Settings, label: 'Settings', href: '/settings' },
+      ]
+    : [
+        { icon: Compass, label: 'Navigation', href: '/dashboard' },
+        { icon: GitFork, label: 'Route Profiles', href: '/routes' },
+      ];
 
   const handleLogout = () => {
     authAPI.logout();
@@ -35,20 +42,20 @@ export const Navigation = () => {
 
   return (
     <>
-      <nav className="bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 sticky top-0 z-50">
+      <nav className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 sticky top-0 z-50 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Brand Logo */}
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center text-white font-bold">
+              <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center text-white font-bold shadow-md shadow-orange-600/20 group-hover:scale-105 transition-transform">
                 <NavIcon className="w-4 h-4 fill-current" />
               </div>
               <div className="flex flex-col text-left">
                 <div className="flex items-center gap-1.5 leading-none">
                   <span className="text-orange-500 font-bold text-lg">नक्शा</span>
-                  <span className="text-white font-bold text-lg">Naksha</span>
+                  <span className="text-zinc-900 dark:text-white font-bold text-lg">Naksha</span>
                 </div>
-                <span className="text-[9px] text-zinc-400 font-medium mt-0.5">
+                <span className="text-[9px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
                   Built for India
                 </span>
               </div>
@@ -66,8 +73,8 @@ export const Navigation = () => {
                       to={item.href}
                       className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors ${
                         isActive
-                          ? 'bg-zinc-800 text-orange-400 border border-zinc-700'
-                          : 'text-zinc-300 hover:text-white hover:bg-zinc-900'
+                          ? 'bg-orange-50 text-orange-600 border border-orange-200 dark:bg-zinc-800 dark:text-orange-400 dark:border-zinc-700'
+                          : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-900'
                       }`}
                     >
                       <Icon className="w-3.5 h-3.5" />
@@ -77,17 +84,15 @@ export const Navigation = () => {
                 })}
               </div>
 
-              <div className="h-5 w-px bg-zinc-800"></div>
+              <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-800"></div>
 
               <div className="flex items-center space-x-2">
-                <ThemeToggle />
-
                 {loggedIn ? (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleLogout}
-                    className="text-xs font-medium text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl flex items-center gap-1.5"
+                    className="text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-500/10 rounded-xl flex items-center gap-1.5"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                     Sign Out
@@ -101,7 +106,7 @@ export const Navigation = () => {
                         setAuthMode('login');
                         setAuthModalOpen(true);
                       }}
-                      className="text-xs font-semibold text-zinc-300 hover:text-white hover:bg-zinc-900 rounded-xl"
+                      className="text-xs font-semibold text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-900 rounded-xl"
                     >
                       Sign In
                     </Button>
@@ -111,7 +116,7 @@ export const Navigation = () => {
                         setAuthMode('register');
                         setAuthModalOpen(true);
                       }}
-                      className="bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl"
+                      className="bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl shadow-sm"
                     >
                       Sign Up
                     </Button>
@@ -122,17 +127,16 @@ export const Navigation = () => {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-2">
-              <ThemeToggle />
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="p-2 text-zinc-300 hover:text-white rounded-xl">
+                  <Button variant="ghost" size="sm" className="p-2 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white rounded-xl">
                     <Menu className="w-5 h-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-64 bg-zinc-950 border-zinc-800 text-white p-6">
+                <SheetContent side="right" className="w-64 bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white p-6">
                   <div className="flex items-center gap-2 mb-6">
                     <span className="text-orange-500 font-bold text-lg">नक्शा</span>
-                    <span className="text-white font-bold text-lg">Naksha</span>
+                    <span className="text-zinc-900 dark:text-white font-bold text-lg">Naksha</span>
                   </div>
                   <nav className="space-y-2">
                     {navItems.map((item) => {
@@ -144,8 +148,8 @@ export const Navigation = () => {
                           to={item.href}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
                             isActive
-                              ? 'bg-zinc-800 text-orange-400'
-                              : 'text-zinc-300 hover:text-white hover:bg-zinc-900'
+                              ? 'bg-orange-50 text-orange-600 dark:bg-zinc-800 dark:text-orange-400'
+                              : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-900'
                           }`}
                           onClick={() => setIsOpen(false)}
                         >
@@ -155,7 +159,7 @@ export const Navigation = () => {
                       );
                     })}
 
-                    <div className="pt-4 border-t border-zinc-800 space-y-2">
+                    <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
                       {loggedIn ? (
                         <Button
                           variant="ghost"
@@ -163,7 +167,7 @@ export const Navigation = () => {
                             setIsOpen(false);
                             handleLogout();
                           }}
-                          className="w-full justify-start text-xs text-rose-400"
+                          className="w-full justify-start text-xs text-rose-600 dark:text-rose-400"
                         >
                           <LogOut className="w-4 h-4 mr-2" />
                           Sign Out
@@ -172,7 +176,7 @@ export const Navigation = () => {
                         <>
                           <Button
                             variant="outline"
-                            className="w-full justify-center text-xs border-zinc-800 text-zinc-200 rounded-xl"
+                            className="w-full justify-center text-xs border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 rounded-xl"
                             onClick={() => {
                               setIsOpen(false);
                               setAuthMode('login');

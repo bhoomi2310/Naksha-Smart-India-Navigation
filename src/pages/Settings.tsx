@@ -19,8 +19,33 @@ const Settings = () => {
   const [monsoonAlerts, setMonsoonAlerts] = useState(true);
   const [nightSafetyFilter, setNightSafetyFilter] = useState(true);
 
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem('naksha_nav_preferences');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.voiceGuidance !== undefined) setVoiceGuidance(parsed.voiceGuidance);
+        if (parsed.voiceLanguage !== undefined) setVoiceLanguage(parsed.voiceLanguage);
+        if (parsed.potholeSensitivity !== undefined) setPotholeSensitivity(parsed.potholeSensitivity);
+        if (parsed.monsoonAlerts !== undefined) setMonsoonAlerts(parsed.monsoonAlerts);
+        if (parsed.nightSafetyFilter !== undefined) setNightSafetyFilter(parsed.nightSafetyFilter);
+      }
+    } catch {}
+  }, []);
+
   const handleSavePreferences = () => {
-    toast.success('Navigation preferences saved');
+    try {
+      localStorage.setItem('naksha_nav_preferences', JSON.stringify({
+        voiceGuidance,
+        voiceLanguage,
+        potholeSensitivity,
+        monsoonAlerts,
+        nightSafetyFilter
+      }));
+      toast.success('Navigation preferences saved successfully');
+    } catch {
+      toast.error('Failed to save preferences');
+    }
   };
 
   return (

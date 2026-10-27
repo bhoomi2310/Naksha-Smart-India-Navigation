@@ -70,6 +70,9 @@ const hazardIcon = (type: RoadHazard['type'], severity: RoadHazard['severity']) 
   } else if (type === 'police_check') {
     emoji = '👮';
     bgColor = '#3b82f6';
+  } else if (type === 'other') {
+    emoji = '⚠️';
+    bgColor = severity === 'critical' ? '#ef4444' : '#ec4899';
   }
 
   return createCustomIcon(`
@@ -141,15 +144,15 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const endPoint = activeRoute?.coordinates?.[activeRoute.coordinates.length - 1];
 
   const tileUrls = {
-    dark: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
     street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
   };
 
   const tileAttributions = {
-    dark: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
+    dark: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
     street: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
-    satellite: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS'
+    satellite: 'Tiles &copy; Esri - Source: Esri, i-cubed, USDA, USGS'
   };
 
   return (
@@ -333,27 +336,42 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
 
         {/* Road Hazards Overlay */}
-        {showHazards && showPotholeHeatmap && activeRoute?.hazards && activeRoute.hazards.map((hazard) => (
-          <Marker
-            key={hazard.id}
-            position={hazard.coordinates}
-            icon={hazardIcon(hazard.type, hazard.severity)}
-          >
-            <Popup className="custom-leaflet-popup">
-              <div className="p-1 max-w-[220px]">
-                <div className="flex items-center justify-between mb-1 gap-1">
-                  <Badge variant={hazard.severity === 'critical' || hazard.severity === 'high' ? 'destructive' : 'secondary'} className="text-[10px]">
-                    {hazard.type.replace('_', ' ').toUpperCase()}
-                  </Badge>
-                  <span className="text-[10px] text-zinc-400">{hazard.verifiedCount} verified</span>
+        {showHazards && showPotholeHeatmap && activeRoute?.hazards && activeRoute.hazards.map((hazard) => {
+          if (
+            !hazard || 
+            !hazard.coordinates || 
+            !Array.isArray(hazard.coordinates) || 
+            hazard.coordinates.length < 2 ||
+            typeof hazard.coordinates[0] !== 'number' ||
+            typeof hazard.coordinates[1] !== 'number' ||
+            isNaN(hazard.coordinates[0]) ||
+            isNaN(hazard.coordinates[1])
+          ) {
+            return null;
+          }
+
+          return (
+            <Marker
+              key={hazard.id}
+              position={[hazard.coordinates[0], hazard.coordinates[1]]}
+              icon={hazardIcon(hazard.type, hazard.severity)}
+            >
+              <Popup className="custom-leaflet-popup">
+                <div className="p-1 max-w-[220px]">
+                  <div className="flex items-center justify-between mb-1 gap-1">
+                    <Badge variant={hazard.severity === 'critical' || hazard.severity === 'high' ? 'destructive' : 'secondary'} className="text-[10px]">
+                      {(hazard.type || 'HAZARD').replace('_', ' ').toUpperCase()}
+                    </Badge>
+                    <span className="text-[10px] text-zinc-400">{hazard.verifiedCount || 1} verified</span>
+                  </div>
+                  <div className="font-semibold text-xs text-zinc-900 mb-0.5">{hazard.title}</div>
+                  <div className="text-[11px] text-zinc-600 leading-tight">{hazard.description}</div>
+                  <div className="text-[9px] text-zinc-400 mt-1">{hazard.reportedAt || 'Just now'}</div>
                 </div>
-                <div className="font-semibold text-xs text-zinc-900 mb-0.5">{hazard.title}</div>
-                <div className="text-[11px] text-zinc-600 leading-tight">{hazard.description}</div>
-                <div className="text-[9px] text-zinc-400 mt-1">{hazard.reportedAt}</div>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
 
       {/* Floating Bottom Quick Legend & Action */}

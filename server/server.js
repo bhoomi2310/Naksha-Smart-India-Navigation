@@ -12,6 +12,7 @@ import {
   updateUserProfile, 
   saveTripLog, 
   saveRoadHazard,
+  getRoadHazards,
   isDbPostgres 
 } from './db.js';
 
@@ -307,11 +308,50 @@ app.post('/api/routes', async (req, res) => {
   }
 });
 
+// Save Trip Endpoint (Authenticated User - PostgreSQL)
+app.post('/api/trips/save', authenticateToken, async (req, res) => {
+  try {
+    const { from, to, duration, distance, type, saved } = req.body;
+    if (!from || !to) {
+      return res.status(400).json({ error: 'Origin and destination are required' });
+    }
+
+    await saveTripLog(req.user.id, {
+      from,
+      to,
+      duration: duration || '25 mins',
+      distance: distance || '8.5 km',
+      type: type || 'fastest',
+      saved: saved || '10 mins'
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Trip successfully saved to commuter profile'
+    });
+  } catch (error) {
+    console.error('Save trip error:', error);
+    res.status(500).json({ error: 'Failed to record trip log' });
+  }
+});
+
+// Get Road Hazards (PostgreSQL + Local fallback)
+app.get('/api/hazards', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit || '100');
+    const hazards = await getRoadHazards(limit);
+    res.json({ hazards });
+  } catch (error) {
+    console.error('Fetch hazards error:', error);
+    res.status(500).json({ error: 'Failed to retrieve hazards' });
+  }
+});
+
 // Report Road Hazard (PostgreSQL)
 app.post('/api/hazards/report', async (req, res) => {
   try {
     const { type, title, description, severity, lat, lng, locationText } = req.body;
-    await saveRoadHazard({
+    const saved = await saveRoadHazard({
       id: `hz-${Date.now()}`,
       type,
       title,
@@ -321,7 +361,11 @@ app.post('/api/hazards/report', async (req, res) => {
       lng: parseFloat(lng) || 77.2090,
       locationText
     });
-    res.status(201).json({ success: true, message: 'Hazard reported successfully to Naksha database' });
+    res.status(201).json({ 
+      success: true, 
+      message: 'Hazard reported successfully to Naksha database',
+      hazard: saved 
+    });
   } catch (error) {
     console.error('Hazard report error:', error);
     res.status(500).json({ error: 'Failed to record road hazard' });
@@ -333,7 +377,6 @@ initDatabase().then(() => {
   app.listen(PORT, () => {
     console.log(`\n🚀 Naksha Backend Server running on http://localhost:${PORT}`);
     console.log(`📦 Tech Stack: Node.js (Express) + PostgreSQL (pg) + React`);
-    console.log(`🔑 Demo Account: demo@naksha.app / demo123`);
     console.log(`📍 Geocoding: OpenStreetMap Nominatim`);
     console.log(`🛣️ Routing: OpenStreetMap OSRM Public Engine\n`);
   });

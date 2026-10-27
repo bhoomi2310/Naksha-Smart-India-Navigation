@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Navigation, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Navigation, ArrowRight, X } from 'lucide-react';
 import { authAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -9,12 +9,22 @@ import { useNavigate } from 'react-router-dom';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mode: 'login' | 'register';
-  onSwitchMode: () => void;
+  mode?: 'login' | 'register';
+  initialMode?: 'login' | 'register';
+  onSwitchMode?: () => void;
+  onSuccess?: () => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMode }) => {
+const AuthModal: React.FC<AuthModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  mode, 
+  initialMode = 'login', 
+  onSwitchMode,
+  onSuccess
+}) => {
   const navigate = useNavigate();
+  const [currentMode, setCurrentMode] = useState<'login' | 'register'>(mode || initialMode);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -26,10 +36,18 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
     confirmPassword: ''
   });
 
+  useEffect(() => {
+    if (mode) {
+      setCurrentMode(mode);
+    } else if (initialMode) {
+      setCurrentMode(initialMode);
+    }
+  }, [mode, initialMode, isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (mode === 'register') {
+    if (currentMode === 'register') {
       if (formData.password !== formData.confirmPassword) {
         toast.error('Passwords do not match');
         return;
@@ -42,55 +60,53 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
 
     setIsLoading(true);
     try {
-      if (mode === 'login') {
-        await authAPI.login(formData.email, formData.password);
-        toast.success('Signed in successfully');
+      if (currentMode === 'login') {
+        const res = await authAPI.login(formData.email.trim(), formData.password);
+        toast.success(`Welcome back, ${res.user?.fullName || 'Commuter'}!`);
         onClose();
-        setTimeout(() => navigate('/dashboard'), 100);
+        onSuccess?.();
+        setTimeout(() => navigate('/dashboard'), 150);
       } else {
-        await authAPI.register(formData.email, formData.password, formData.fullName);
-        toast.success('Account created!');
+        const res = await authAPI.register(
+          formData.email.trim(), 
+          formData.password, 
+          formData.fullName.trim()
+        );
+        toast.success(`Account created! Welcome to Naksha, ${res.user?.fullName || 'Commuter'}!`);
         onClose();
-        setTimeout(() => navigate('/onboarding'), 100);
+        onSuccess?.();
+        setTimeout(() => navigate('/dashboard'), 150);
       }
     } catch (error: any) {
-      toast.error(error.message || `${mode === 'login' ? 'Sign in' : 'Registration'} failed`);
+      toast.error(error.message || `${currentMode === 'login' ? 'Sign in' : 'Registration'} failed`);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleToggleMode = () => {
+    const next = currentMode === 'login' ? 'register' : 'login';
+    setCurrentMode(next);
+    onSwitchMode?.();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const useDemoAccount = async () => {
-    if (mode === 'login') {
-      setIsLoading(true);
-      try {
-        await authAPI.login('demo@naksha.app', 'demo123');
-        toast.success('Signed in with demo account');
-        onClose();
-        setTimeout(() => navigate('/dashboard'), 300);
-      } catch {
-        localStorage.setItem('auth_token', 'demo-token-naksha-session');
-        toast.success('Signed in with demo account');
-        onClose();
-        setTimeout(() => navigate('/dashboard'), 300);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      setFormData({ fullName: 'Demo User', email: 'demo@naksha.app', password: 'demo123', confirmPassword: 'demo123' });
-      setAcceptTerms(true);
-      toast.info('Demo credentials filled — click Create Account to proceed.');
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="p-0 border-0 bg-transparent shadow-none max-w-sm w-full [&>button]:hidden overflow-visible">
-        <div className="relative bg-zinc-900 border border-zinc-700/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/60">
+        <div className="relative bg-zinc-900 border border-zinc-700/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/80">
+
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-3.5 right-3.5 z-20 w-7 h-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
           {/* Top accent bar */}
           <div className="h-0.5 w-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-600" />
@@ -100,7 +116,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             {/* Logo */}
             <div className="text-center space-y-1">
               <div className="flex items-center justify-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center shadow-md shadow-orange-600/30">
                   <Navigation className="w-4 h-4 text-white fill-current" />
                 </div>
                 <div className="flex items-baseline gap-1.5">
@@ -108,7 +124,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                   <span className="text-white font-bold text-xl leading-none">Naksha</span>
                 </div>
               </div>
-              <p className="text-[10px] text-zinc-500 tracking-widest font-medium">Built for India</p>
+              <p className="text-[10px] text-zinc-400 tracking-widest font-medium">Built for India</p>
             </div>
 
             {/* Divider */}
@@ -117,10 +133,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
             {/* Heading */}
             <div>
               <h2 className="text-lg font-bold text-white">
-                {mode === 'login' ? 'Welcome back' : 'Create account'}
+                {currentMode === 'login' ? 'Welcome back' : 'Create account'}
               </h2>
               <p className="text-xs text-zinc-400 mt-0.5">
-                {mode === 'login'
+                {currentMode === 'login'
                   ? 'Sign in to access your routes and saved journeys'
                   : 'Join the Naksha community and navigate smarter'}
               </p>
@@ -128,7 +144,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-3">
-              {mode === 'register' && (
+              {currentMode === 'register' && (
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-zinc-300">Full Name</label>
                   <input
@@ -162,7 +178,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                   <input
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={mode === 'login' ? 'Enter your password' : 'Min. 6 characters'}
+                    placeholder={currentMode === 'login' ? 'Enter your password' : 'Min. 6 characters'}
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -178,7 +194,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                 </div>
               </div>
 
-              {mode === 'register' && (
+              {currentMode === 'register' && (
                 <div className="space-y-1.5">
                   <label className="text-xs font-medium text-zinc-300">Confirm Password</label>
                   <div className="relative">
@@ -202,7 +218,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
                 </div>
               )}
 
-              {mode === 'register' && (
+              {currentMode === 'register' && (
                 <label className="flex items-start gap-2.5 cursor-pointer group">
                   <input
                     type="checkbox"
@@ -223,36 +239,24 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, mode, onSwitchMo
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-10 mt-1 rounded-xl bg-orange-600 hover:bg-orange-500 disabled:opacity-60 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                className="w-full h-10 mt-1 rounded-xl bg-orange-600 hover:bg-orange-500 disabled:opacity-60 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-orange-600/20 active:scale-[0.99]"
               >
                 {isLoading
-                  ? (mode === 'login' ? 'Signing in…' : 'Creating account…')
-                  : (mode === 'login' ? 'Sign In' : 'Create Account')}
+                  ? (currentMode === 'login' ? 'Signing in…' : 'Creating account…')
+                  : (currentMode === 'login' ? 'Sign In' : 'Create Account')}
                 {!isLoading && <ArrowRight className="w-3.5 h-3.5" />}
               </button>
-
-              {/* Demo account shortcut */}
-              {mode === 'login' && (
-                <button
-                  type="button"
-                  onClick={useDemoAccount}
-                  disabled={isLoading}
-                  className="w-full h-9 rounded-xl border border-zinc-700 bg-zinc-800/60 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-medium transition-colors"
-                >
-                  Try with Demo Account
-                </button>
-              )}
             </form>
 
             {/* Switch mode */}
             <p className="text-center text-xs text-zinc-500">
-              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              {currentMode === 'login' ? "Don't have an account? " : 'Already have an account? '}
               <button
                 type="button"
-                onClick={onSwitchMode}
+                onClick={handleToggleMode}
                 className="text-orange-400 hover:text-orange-300 font-semibold transition-colors"
               >
-                {mode === 'login' ? 'Sign up' : 'Sign in'}
+                {currentMode === 'login' ? 'Sign up' : 'Sign in'}
               </button>
             </p>
           </div>
