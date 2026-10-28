@@ -24,6 +24,7 @@ import {
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import AuthModal from '@/components/AuthModal';
+import { AmbientBackground } from '@/components/ui/AmbientBackground';
 import { authAPI, isAuthenticated } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -138,7 +139,8 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative selection:bg-orange-500 selection:text-white">
+      <AmbientBackground variant="subtle" />
       <Navigation />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">

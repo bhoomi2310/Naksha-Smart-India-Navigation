@@ -4,6 +4,7 @@ import AuthModal from '@/components/AuthModal';
 import Footer from '@/components/Footer';
 import { isAuthenticated } from '@/lib/api';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { AmbientBackground } from '@/components/ui/AmbientBackground';
 
 // Modular Landing Page Components
 import LandingNavbar from '@/components/landing/LandingNavbar';
@@ -29,6 +30,9 @@ const Landing: React.FC = () => {
 
   return (
     <div className="min-h-[100dvh] w-full flex flex-col bg-zinc-950 text-zinc-100 font-sans selection:bg-orange-500 selection:text-white overflow-x-hidden relative">
+      {/* Dynamic Cyber Navigation Background */}
+      <AmbientBackground variant="hero" />
+
       {/* Dynamic Scroll Progress Bar */}
       <ScrollProgressBar progress={scrollProgress} />
 

@@ -42,20 +42,20 @@ export const Navigation = () => {
 
   return (
     <>
-      <nav className="bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800/80 sticky top-0 z-50 transition-colors duration-200">
+      <nav className="bg-zinc-950/85 backdrop-blur-xl border-b border-zinc-800/80 sticky top-0 z-50 transition-all duration-300 shadow-lg shadow-black/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Brand Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center text-white font-bold shadow-md shadow-orange-600/20 group-hover:scale-105 transition-transform">
-                <NavIcon className="w-4 h-4 fill-current" />
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center text-white font-bold shadow-md shadow-orange-600/30 group-hover:scale-105 group-hover:shadow-orange-500/50 transition-all duration-300">
+                <NavIcon className="w-4 h-4 fill-current transform group-hover:rotate-12 transition-transform duration-300" />
               </div>
               <div className="flex flex-col text-left">
                 <div className="flex items-center gap-1.5 leading-none">
-                  <span className="text-orange-500 font-bold text-lg">नक्शा</span>
-                  <span className="text-zinc-900 dark:text-white font-bold text-lg">Naksha</span>
+                  <span className="text-orange-500 font-bold text-lg tracking-tight">नक्शा</span>
+                  <span className="text-white font-bold text-lg tracking-tight">Naksha</span>
                 </div>
-                <span className="text-[9px] text-zinc-500 dark:text-zinc-400 font-medium mt-0.5">
+                <span className="text-[9px] text-zinc-400 font-medium mt-0.5 tracking-wider">
                   Built for India
                 </span>
               </div>
@@ -63,7 +63,7 @@ export const Navigation = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-6">
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center space-x-1.5">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.href;
@@ -71,13 +71,13 @@ export const Navigation = () => {
                     <Link
                       key={item.label}
                       to={item.href}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 ${
                         isActive
-                          ? 'bg-orange-50 text-orange-600 border border-orange-200 dark:bg-zinc-800 dark:text-orange-400 dark:border-zinc-700'
-                          : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:text-white dark:hover:bg-zinc-900'
+                          ? 'bg-zinc-800/90 text-orange-400 border border-orange-500/30 shadow-sm shadow-orange-500/10'
+                          : 'text-zinc-300 hover:text-white hover:bg-zinc-900/80 border border-transparent'
                       }`}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-orange-400' : 'text-zinc-400'}`} />
                       {item.label}
                     </Link>
                   );

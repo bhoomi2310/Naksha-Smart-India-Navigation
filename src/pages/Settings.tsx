@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import { AmbientBackground } from '@/components/ui/AmbientBackground';
 import { toast } from 'sonner';
 
 const Settings = () => {
@@ -49,7 +50,8 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative selection:bg-orange-500 selection:text-white">
+      <AmbientBackground variant="subtle" />
       <Navigation />
 
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
