@@ -50,7 +50,7 @@ const vehicleIcon = (heading: number = 0) => createCustomIcon(`
   </div>
 `, [44, 44], [22, 22]);
 
-// Hazard Icons — using text labels instead of emoji for consistency
+// Hazard Icons: using text labels instead of emoji for consistency
 const hazardIcon = (type: RoadHazard['type'], severity: RoadHazard['severity']) => {
   let label = '!';
   let bgColor = '#f59e0b';

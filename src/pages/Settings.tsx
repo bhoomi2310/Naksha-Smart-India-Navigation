@@ -50,23 +50,23 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#F6EFE3] text-[#14121F] flex flex-col relative selection:bg-[#F2A31B] selection:text-[#14121F] paper-grain">
       <AmbientBackground variant="subtle" />
       <Navigation />
 
       <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {/* Header */}
-        <div className="bg-zinc-900/80 border border-zinc-800 p-5 rounded-2xl">
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+        <div className="ink-card p-5 rounded-2xl">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#14121F] font-display tracking-tight">
             Navigation Preferences
           </h1>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-xs text-[#524C61] mt-0.5">
             Configure routing sensitivity, voice accent, and safety algorithms.
           </p>
         </div>
 
         {/* Indian Road Condition Settings */}
-        <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5 space-y-5">
+        <div className="ink-card rounded-2xl p-5 space-y-5">
           <div className="flex items-center gap-2 pb-3 border-b border-zinc-800">
             <div className="p-1.5 rounded-lg bg-orange-600/10 text-orange-400 border border-orange-500/20">
               <Map className="w-4 h-4" />

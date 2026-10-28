@@ -138,7 +138,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#F6EFE3] text-[#14121F] flex flex-col relative selection:bg-[#F2A31B] selection:text-[#14121F] paper-grain">
       <AmbientBackground variant="subtle" />
       <Navigation />
 
@@ -148,21 +148,19 @@ const Profile = () => {
         {!loggedIn && (
           <div className="space-y-8 py-4">
             {/* Header Banner */}
-            <div className="bg-gradient-to-br from-zinc-900 via-zinc-900/90 to-zinc-950 border border-zinc-800 rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-              
+            <div className="ink-card rounded-3xl p-8 sm:p-10 text-left relative overflow-hidden">
               <div className="relative z-10 max-w-2xl space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-semibold">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-[#D8472B] text-xs font-bold">
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Guest Mode • Sign in to save journeys</span>
+                  <span>Guest Mode · Sign in to save journeys</span>
                 </div>
                 
-                <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-                  Commuter Profile & Trip Log
+                <h1 className="text-3xl sm:text-4xl font-black text-[#14121F] font-display tracking-tight">
+                  Commuter Profile &amp; Trip Log
                 </h1>
                 
-                <p className="text-sm sm:text-base text-zinc-400 leading-relaxed">
-                  You are currently browsing Naksha as a guest. Create a free account or sign in to permanently save your routes, track fuel & time savings, and record live hazard reports across India.
+                <p className="text-sm sm:text-base text-[#524C61] leading-relaxed">
+                  You are currently browsing Naksha as a guest. Create a free account or sign in to permanently save your routes, track fuel &amp; time savings, and record live hazard reports across India.
                 </p>
 
                 <div className="flex flex-wrap items-center gap-3 pt-2">

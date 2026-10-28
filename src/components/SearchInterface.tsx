@@ -319,25 +319,25 @@ export const SearchInterface: React.FC<SearchInterfaceProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 space-y-4 text-zinc-900 dark:text-white shadow-md dark:shadow-none transition-colors">
+    <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[4px_4px_0_#14121F] rounded-2xl p-5 space-y-4 text-[#14121F]">
       {/* Search Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-orange-600/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+          <div className="p-1.5 rounded-lg bg-[#FDF0ED] text-[#D8472B] border-[1.2px] border-[#14121F]">
             <Compass className="w-4 h-4" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm text-zinc-900 dark:text-white">Smart Route Planner</h3>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400">Road quality, lighting index, and transit fares</p>
+            <h3 className="font-bold text-sm text-[#14121F]">Smart Route Planner</h3>
+            <p className="text-xs text-[#524C61]">Road quality, lighting index, and transit fares</p>
           </div>
         </div>
 
         <button
           onClick={handleUseCurrentLocation}
           type="button"
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-xs font-medium text-emerald-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-emerald-400 border border-zinc-200 dark:border-zinc-700 transition-colors"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF5EC] hover:bg-[#EAF4F3] text-xs font-bold text-[#1F6F6B] border-[1.2px] border-[#14121F] shadow-[1px_1px_0_#14121F] transition-colors"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span className="w-2 h-2 rounded-full bg-[#1F6F6B]"></span>
           Use Current Location
         </button>
       </div>
@@ -436,7 +436,7 @@ export const SearchInterface: React.FC<SearchInterfaceProps> = ({
             variant="ghost"
             size="sm"
             onClick={swapLocations}
-            className="h-10 w-10 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-700 hover:text-zinc-900 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-300 dark:hover:text-white border border-zinc-200 dark:border-transparent"
+            className="h-10 w-10 rounded-xl bg-[#FAF5EC] hover:bg-[#F6EFE3] text-[#14121F] border-[1.5px] border-[#14121F] shadow-[2px_2px_0_#14121F]"
             title="Swap Origin & Destination"
           >
             <ArrowRightLeft className="w-3.5 h-3.5" />
@@ -534,7 +534,7 @@ export const SearchInterface: React.FC<SearchInterfaceProps> = ({
         type="button"
         disabled={isLoading || !fromLocation || !toLocation}
         onClick={onSearch}
-        className="w-full h-12 bg-orange-600 hover:bg-orange-500 text-white font-semibold text-sm rounded-xl shadow-md shadow-orange-600/20 transition-all active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="ink-btn-primary w-full h-12 text-sm rounded-xl font-bold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <span className="flex items-center gap-2">

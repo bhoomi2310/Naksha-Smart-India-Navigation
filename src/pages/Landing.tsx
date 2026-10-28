@@ -29,14 +29,14 @@ const Landing: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full flex flex-col bg-zinc-950 text-zinc-100 font-sans selection:bg-orange-500 selection:text-white overflow-x-hidden relative">
-      {/* Dynamic Cyber Navigation Background */}
+    <div className="min-h-[100dvh] w-full flex flex-col bg-[#F6EFE3] text-[#14121F] font-sans selection:bg-[#F2A31B] selection:text-[#14121F] overflow-x-hidden relative paper-grain">
+      {/* Warm Cartographic Paper Background with Grain */}
       <AmbientBackground variant="hero" />
 
-      {/* Dynamic Scroll Progress Bar */}
+      {/* Subtle Top Scroll Progress Bar */}
       <ScrollProgressBar progress={scrollProgress} />
 
-      {/* Modular Navbar with Scroll-Aware Blur & Glow */}
+      {/* Sticky Header with Border on Scroll & Mobile Drawer */}
       <LandingNavbar
         loggedIn={loggedIn}
         scrollY={scrollY}
@@ -45,19 +45,19 @@ const Landing: React.FC = () => {
         onOpenProfile={() => navigate('/profile')}
       />
 
-      {/* Hero Section with Driving Animation & Built for India Header */}
+      {/* Asymmetric Split Hero: Fraunces Headline, Swash Underline, Framed Auto-Rickshaw Poster */}
       <HeroSection onStartNavigation={() => navigate('/dashboard')} />
 
-      {/* 3D Perspective Route Switcher Deck */}
+      {/* Interactive Printed Route Switcher Deck */}
       <PerspectiveDeck
         onNavigateToDashboard={() => navigate('/dashboard')}
         onNavigateToRoutes={() => navigate('/routes')}
       />
 
-      {/* 6 Specialized Indian Route Profiles Section with Hover Micro-Interactions */}
+      {/* 6 Specialized Indian Route Profiles with Distinct Truck-Art Accent Colors */}
       <RouteProfilesSection onSelectRoute={() => navigate('/routes')} />
 
-      {/* Free Public Navigation vs Commuter Network Section */}
+      {/* Free Public Navigation vs Commuter Contributor Network */}
       <FreeAccessSection
         loggedIn={loggedIn}
         onOpenDashboard={() => navigate('/dashboard')}
@@ -65,20 +65,21 @@ const Landing: React.FC = () => {
         onOpenProfile={() => navigate('/profile')}
       />
 
-      {/* Final Call to Action Banner with Shimmer Button */}
+      {/* Final Call to Action Banner with Watermark & Vermilion Button */}
       <CtaBanner onOpenDashboard={() => navigate('/dashboard')} />
 
-      {/* Unified Site Footer */}
+      {/* Unified Indian Craft Site Footer */}
       <Footer />
 
-      {/* Floating Smooth Scroll-To-Top Button */}
+      {/* Smooth Scroll-To-Top Button */}
       <ScrollToTop scrollY={scrollY} />
 
       {/* Sign In / Sign Up Modal */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
-        initialMode={authMode}
+        mode={authMode}
+        onSwitchMode={() => setAuthMode((m) => (m === 'login' ? 'register' : 'login'))}
       />
     </div>
   );

@@ -129,17 +129,17 @@ export const HazardReportModal: React.FC<HazardReportModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-white/15 text-zinc-900 dark:text-white p-6 rounded-3xl shadow-2xl transition-colors">
+      <DialogContent className="sm:max-w-lg bg-[#FFFDF9] border-2 border-[#14121F] text-[#14121F] p-6 rounded-2xl shadow-[6px_6px_0_#14121F]">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-xl bg-orange-500/15 text-orange-600 dark:text-orange-400 border border-orange-500/30">
+            <span className="p-2 rounded-xl bg-[#FDF0ED] text-[#D8472B] border-[1.2px] border-[#14121F]">
               <AlertTriangle className="w-5 h-5" />
             </span>
-            <DialogTitle className="text-xl font-black text-zinc-900 dark:text-white">
+            <DialogTitle className="text-xl font-bold text-[#14121F] font-display">
               Report Indian Road Hazard
             </DialogTitle>
           </div>
-          <DialogDescription className="text-zinc-600 dark:text-zinc-400 text-sm">
+          <DialogDescription className="text-[#524C61] text-xs">
             Crowdsource live hazards for fellow commuters in real-time.
           </DialogDescription>
         </DialogHeader>
@@ -246,14 +246,14 @@ export const HazardReportModal: React.FC<HazardReportModalProps> = ({
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-zinc-200 dark:border-white/15 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl"
+              className="ink-btn-secondary flex-1 rounded-xl text-xs"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30"
+              className="ink-btn-primary flex-1 rounded-xl text-xs"
             >
               {isSubmitting ? 'Publishing Alert...' : 'Submit Road Report'}
             </Button>

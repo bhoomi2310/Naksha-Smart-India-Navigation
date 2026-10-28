@@ -120,7 +120,7 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#F6EFE3] text-[#14121F] flex flex-col relative selection:bg-[#F2A31B] selection:text-[#14121F] paper-grain">
       {/* Dynamic Cyber Navigation Background with Glowing Saffron & NavIC Orbs */}
       <AmbientBackground variant="console" />
 

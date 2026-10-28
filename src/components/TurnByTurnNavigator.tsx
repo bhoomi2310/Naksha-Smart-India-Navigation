@@ -151,25 +151,25 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
   const nextStep = steps[currentStepIndex + 1];
 
   return (
-    <div className="bg-gradient-to-br from-zinc-900/95 via-black/90 to-zinc-950/95 backdrop-blur-xl border border-white/15 rounded-3xl p-5 shadow-2xl text-white">
+    <div className="bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] rounded-2xl p-5 text-[#14121F]">
       {/* Top Banner: Current Instruction */}
-      <div className="flex items-start justify-between gap-4 pb-4 border-b border-white/10">
+      <div className="flex items-start justify-between gap-4 pb-4 border-b border-[#14121F]/15">
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center shadow-inner flex-shrink-0">
+          <div className="w-14 h-14 rounded-2xl bg-[#FAF5EC] border-[1.5px] border-[#14121F] flex items-center justify-center flex-shrink-0">
             {getManeuverIcon(currentStep.type, currentStep.modifier)}
           </div>
           <div>
-            <div className="text-xs uppercase font-semibold tracking-wider text-orange-400 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+            <div className="text-xs uppercase font-bold tracking-wider text-[#D8472B] flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#D8472B] animate-pulse"></span>
               In {currentStep.distance > 1000 ? `${(currentStep.distance / 1000).toFixed(1)} km` : `${currentStep.distance} m`}
             </div>
-            <h3 className="text-lg font-bold text-white leading-tight mt-0.5">
+            <h3 className="text-lg font-bold text-[#14121F] font-sans leading-tight mt-0.5">
               {currentStep.instruction}
             </h3>
             {nextStep && (
-              <div className="text-xs text-zinc-400 mt-1 flex items-center gap-1">
+              <div className="text-xs text-[#524C61] mt-1 flex items-center gap-1">
                 <span>Then:</span>
-                <span className="text-zinc-300 font-medium">{nextStep.instruction}</span>
+                <span className="text-[#14121F] font-semibold">{nextStep.instruction}</span>
               </div>
             )}
           </div>
@@ -178,10 +178,10 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
         {/* Voice Guidance Button */}
         <button
           onClick={handleToggleMute}
-          className={`p-3 rounded-2xl border transition-all ${
+          className={`p-3 rounded-xl border-[1.2px] border-[#14121F] transition-all ${
             isMuted 
-              ? 'bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30' 
-              : 'bg-orange-500/20 text-orange-400 border-orange-500/40 hover:bg-orange-500/30'
+              ? 'bg-[#FDF0ED] text-[#D8472B]' 
+              : 'bg-[#FAF5EC] text-[#14121F] hover:bg-[#FEF8EA]'
           }`}
           title={isMuted ? 'Unmute Audio Voice' : 'Mute Audio Voice'}
         >
@@ -190,33 +190,33 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
       </div>
 
       {/* Middle Telemetry Strip: Speed, ETA, Progress */}
-      <div className="grid grid-cols-3 gap-3 py-4 border-b border-white/10">
-        <div className="bg-white/5 rounded-2xl p-3 border border-white/10 text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-400 flex items-center justify-center gap-1">
-            <Gauge className="w-3 h-3 text-cyan-400" />
+      <div className="grid grid-cols-3 gap-3 py-4 border-b border-[#14121F]/15">
+        <div className="bg-[#FAF5EC] rounded-xl p-3 border border-[#14121F]/20 text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61] flex items-center justify-center gap-1">
+            <Gauge className="w-3 h-3 text-[#1F6F6B]" />
             Live Speed
           </div>
-          <div className="text-xl font-black text-white mt-1">
-            {isPlaying ? currentSpeed : 0} <span className="text-xs font-normal text-zinc-400">km/h</span>
+          <div className="text-xl font-black text-[#14121F] mt-1">
+            {isPlaying ? currentSpeed : 0} <span className="text-xs font-normal text-[#524C61]">km/h</span>
           </div>
         </div>
 
-        <div className="bg-white/5 rounded-2xl p-3 border border-white/10 text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-400 flex items-center justify-center gap-1">
-            <Compass className="w-3 h-3 text-orange-400" />
+        <div className="bg-[#FAF5EC] rounded-xl p-3 border border-[#14121F]/20 text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61] flex items-center justify-center gap-1">
+            <Compass className="w-3 h-3 text-[#D8472B]" />
             Estimated ETA
           </div>
-          <div className="text-xl font-black text-orange-400 mt-1">
+          <div className="text-xl font-black text-[#D8472B] mt-1">
             {route.eta}
           </div>
         </div>
 
-        <div className="bg-white/5 rounded-2xl p-3 border border-white/10 text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-400 flex items-center justify-center gap-1">
-            <NavIcon className="w-3 h-3 text-emerald-400" />
+        <div className="bg-[#FAF5EC] rounded-xl p-3 border border-[#14121F]/20 text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61] flex items-center justify-center gap-1">
+            <NavIcon className="w-3 h-3 text-[#1F6F6B]" />
             Remaining
           </div>
-          <div className="text-xl font-black text-emerald-400 mt-1">
+          <div className="text-xl font-black text-[#1F6F6B] mt-1">
             {route.distanceStr}
           </div>
         </div>
@@ -227,10 +227,10 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
         <div className="flex items-center gap-2">
           <Button
             onClick={togglePlay}
-            className={`font-semibold px-6 py-5 rounded-2xl shadow-lg transition-all ${
+            className={`font-bold px-6 py-5 rounded-xl shadow-[3px_3px_0_#14121F] border-[1.5px] border-[#14121F] transition-all ${
               isPlaying 
-                ? 'bg-amber-500 hover:bg-amber-600 text-black shadow-amber-500/30' 
-                : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/30'
+                ? 'bg-[#F2A31B] hover:bg-[#C98109] text-[#14121F]' 
+                : 'ink-btn-primary'
             }`}
           >
             {isPlaying ? (
@@ -249,7 +249,7 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
           <Button
             variant="outline"
             onClick={handleReset}
-            className="border-white/20 text-zinc-300 hover:text-white hover:bg-white/10 py-5 rounded-2xl"
+            className="ink-btn-secondary py-5 rounded-xl"
             title="Reset to Start"
           >
             <RotateCcw className="w-4 h-4" />
@@ -257,8 +257,8 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
         </div>
 
         {/* Step Counter Indicator */}
-        <div className="text-xs text-zinc-400 font-medium">
-          Step <span className="text-white font-bold">{currentStepIndex + 1}</span> of {steps.length}
+        <div className="text-xs text-[#524C61] font-semibold">
+          Step <span className="text-[#14121F] font-bold">{currentStepIndex + 1}</span> of {steps.length}
         </div>
       </div>
     </div>

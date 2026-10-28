@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { RouteOptionData } from '@/lib/routingService';
-import RouteCard from '@/components/RouteCard';
-import RouteQuickSelector from './RouteQuickSelector';
+import { RouteCard } from '@/components/RouteCard';
+import { RouteQuickSelector } from './RouteQuickSelector';
 import { RouteCalculationLoader } from '@/components/NakshaLoader';
-import { Compass, ChevronDown, LayoutGrid, List } from 'lucide-react';
+import { Compass, List, LayoutGrid, ChevronDown } from 'lucide-react';
 
 interface RouteProfilesListProps {
   routes: RouteOptionData[];
@@ -25,8 +25,8 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
   const [viewMode, setViewMode] = useState<'detailed' | 'compact'>('detailed');
 
   const starterCorridors = [
-    { label: 'Delhi → Gurgaon', from: 'Connaught Place, Delhi', to: 'Cyber City, Gurgaon' },
-    { label: 'Mumbai → BKC', from: 'Chhatrapati Shivaji Airport, Mumbai', to: 'Bandra Kurla Complex, Mumbai' },
+    { label: 'Delhi → Gurgaon CyberHub', from: 'Connaught Place, Delhi', to: 'Cyber City, Gurgaon' },
+    { label: 'Mumbai → Bandra Kurla Complex', from: 'Chhatrapati Shivaji Airport, Mumbai', to: 'Bandra Kurla Complex, Mumbai' },
     { label: 'Bengaluru IT Corridor', from: 'Indiranagar, Bengaluru', to: 'Electronic City, Bengaluru' },
   ];
 
@@ -34,22 +34,23 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
     <div className="space-y-3">
       {/* List Header with Count & View Mode Toggle */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-white flex items-center gap-1.5">
-          <Compass className="w-4 h-4 text-orange-400" />
+        <h2 className="text-sm font-bold text-[#14121F] flex items-center gap-1.5 font-display">
+          <Compass className="w-4 h-4 text-[#D8472B]" />
           <span>Available Routes</span>
         </h2>
 
         {routes.length > 0 && (
-          <div className="flex items-center gap-1 bg-zinc-900 border border-zinc-800 p-0.5 rounded-lg">
+          <div className="flex items-center gap-1 bg-[#FFFDF9] border-[1.2px] border-[#14121F] p-0.5 rounded-lg shadow-[1px_1px_0_#14121F]">
             <button
               type="button"
               onClick={() => setViewMode('detailed')}
               className={`p-1 rounded-md text-xs transition-colors ${
                 viewMode === 'detailed'
-                  ? 'bg-orange-600 text-white shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-[#D8472B] text-white shadow-sm'
+                  : 'text-[#524C61] hover:text-[#14121F]'
               }`}
               title="Detailed Cards"
+              aria-label="Detailed cards view"
             >
               <List className="w-3.5 h-3.5" />
             </button>
@@ -58,10 +59,11 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
               onClick={() => setViewMode('compact')}
               className={`p-1 rounded-md text-xs transition-colors ${
                 viewMode === 'compact'
-                  ? 'bg-orange-600 text-white shadow-sm'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-[#D8472B] text-white shadow-sm'
+                  : 'text-[#524C61] hover:text-[#14121F]'
               }`}
               title="Compact View"
+              aria-label="Compact view"
             >
               <LayoutGrid className="w-3.5 h-3.5" />
             </button>
@@ -88,7 +90,7 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
 
       {/* Main Content: Loading, List, or Empty State */}
       {isLoading ? (
-        <div className="glass-panel rounded-2xl p-6 border border-zinc-800">
+        <div className="rounded-2xl p-6">
           <RouteCalculationLoader message="Computing Indian Road Routes & Live Traffic..." />
         </div>
       ) : routes.length > 0 ? (
@@ -114,23 +116,23 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
 
           {/* Visible Scroll Down Indicator */}
           {routes.length > 2 && (
-            <div className="flex items-center justify-center gap-1.5 text-[11px] font-medium text-zinc-400 py-1.5 px-3 rounded-xl bg-zinc-900/80 border border-zinc-800/80 backdrop-blur">
-              <ChevronDown className="w-3.5 h-3.5 text-orange-400 animate-bounce" />
+            <div className="flex items-center justify-center gap-1.5 text-[11px] font-bold text-[#524C61] py-1.5 px-3 rounded-lg bg-[#FAF5EC] border-[1.2px] border-[#14121F]">
+              <ChevronDown className="w-3.5 h-3.5 text-[#D8472B] animate-bounce" />
               <span>Scroll down to inspect remaining route profiles</span>
             </div>
           )}
         </div>
       ) : (
         /* Elevated Empty State with 1-Click Corridor Starters */
-        <div className="glass-panel rounded-2xl p-6 text-center border border-dashed border-zinc-800 hover:border-orange-500/30 transition-all duration-300 space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-400 mx-auto flex items-center justify-center shadow-inner">
+        <div className="rounded-2xl p-6 text-center bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] space-y-4">
+          <div className="w-12 h-12 rounded-xl bg-[#FDF0ED] border-[1.5px] border-[#D8472B] text-[#D8472B] mx-auto flex items-center justify-center shadow-[2px_2px_0_#14121F]">
             <Compass className="w-6 h-6 animate-pulse" />
           </div>
 
           <div>
-            <h3 className="text-sm font-bold text-white">Plan Your Journey</h3>
-            <p className="text-xs text-zinc-400 mt-1 max-w-xs mx-auto leading-relaxed">
-              Enter your pickup and destination above, or launch a popular Indian corridor:
+            <h3 className="text-sm font-bold text-[#14121F] font-display">Plan Your Journey</h3>
+            <p className="text-xs text-[#524C61] mt-1 max-w-xs mx-auto leading-relaxed">
+              Enter starting point and destination above, or pick a popular Indian corridor to test:
             </p>
           </div>
 
@@ -141,11 +143,11 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
                   key={c.label}
                   type="button"
                   onClick={() => onSelectStarterCorridor(c.from, c.to)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-xs bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white transition-all text-left"
+                  className="flex items-center justify-between px-3.5 py-2.5 rounded-lg text-xs bg-[#FAF5EC] hover:bg-[#FEF8EA] border-[1.2px] border-[#14121F] shadow-[2px_2px_0_#14121F] text-[#14121F] transition-all text-left group"
                 >
-                  <span className="font-medium text-[11px]">{c.label}</span>
-                  <span className="text-[11px] text-orange-400">
-                    View Route →
+                  <span className="font-bold text-[11px]">{c.label}</span>
+                  <span className="text-[11px] font-bold text-[#D8472B] group-hover:translate-x-0.5 transition-transform">
+                    View Route &rarr;
                   </span>
                 </button>
               ))}
@@ -158,4 +160,3 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
 };
 
 export default RouteProfilesList;
-

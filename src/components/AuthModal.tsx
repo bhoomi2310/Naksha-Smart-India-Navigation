@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Eye, EyeOff, Navigation, ArrowRight, X } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, X } from 'lucide-react';
 import { authAPI } from '@/lib/api';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import NakshaLogo from '@/components/NakshaLogo';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface AuthModalProps {
   onSuccess?: () => void;
 }
 
-const AuthModal: React.FC<AuthModalProps> = ({ 
+export const AuthModal: React.FC<AuthModalProps> = ({ 
   isOpen, 
   onClose, 
   mode, 
@@ -78,75 +79,65 @@ const AuthModal: React.FC<AuthModalProps> = ({
         setTimeout(() => navigate('/dashboard'), 150);
       }
     } catch (error: any) {
-      toast.error(error.message || `${currentMode === 'login' ? 'Sign in' : 'Registration'} failed`);
+      toast.error(error.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleToggleMode = () => {
-    const next = currentMode === 'login' ? 'register' : 'login';
-    setCurrentMode(next);
-    onSwitchMode?.();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleToggleMode = () => {
+    if (onSwitchMode) {
+      onSwitchMode();
+    } else {
+      setCurrentMode(prev => (prev === 'login' ? 'register' : 'login'));
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="p-0 border-0 bg-transparent shadow-none max-w-sm w-full [&>button]:hidden overflow-visible">
-        <div className="relative bg-zinc-900 border border-zinc-700/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/80">
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
+      <DialogContent className="p-0 border-0 max-w-sm sm:max-w-md bg-transparent shadow-none">
+        <div className="relative rounded-2xl bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] text-[#14121F] overflow-hidden">
+          
+          {/* Top accent bar */}
+          <div className="h-1.5 w-full bg-[#D8472B]" />
 
           {/* Close button */}
           <button
-            type="button"
             onClick={onClose}
-            className="absolute top-3.5 right-3.5 z-20 w-7 h-7 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center transition-colors"
+            aria-label="Close dialog"
+            className="absolute right-4 top-4 p-1.5 rounded-lg border-[1.2px] border-[#14121F] bg-[#FAF5EC] hover:bg-[#FDF0ED] text-[#14121F] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
 
-          {/* Top accent bar */}
-          <div className="h-0.5 w-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-600" />
-
-          <div className="px-7 pt-7 pb-8 space-y-5">
+          <div className="p-6 sm:p-7 space-y-5 text-left">
 
             {/* Logo */}
-            <div className="text-center space-y-1">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center shadow-md shadow-orange-600/30">
-                  <Navigation className="w-4 h-4 text-white fill-current" />
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-orange-500 font-black text-xl leading-none">नक्शा</span>
-                  <span className="text-white font-bold text-xl leading-none">Naksha</span>
-                </div>
-              </div>
-              <p className="text-[10px] text-zinc-400 tracking-widest font-medium">Built for India</p>
+            <div className="text-center flex justify-center pb-1">
+              <NakshaLogo size="md" />
             </div>
 
-            {/* Divider */}
-            <div className="border-t border-zinc-800" />
-
             {/* Heading */}
-            <div>
-              <h2 className="text-lg font-bold text-white">
-                {currentMode === 'login' ? 'Welcome back' : 'Create account'}
+            <div className="text-center space-y-1">
+              <h2 className="text-xl font-black text-[#14121F] font-display">
+                {currentMode === 'login' ? 'Sign in to Naksha' : 'Join the Commuter Network'}
               </h2>
-              <p className="text-xs text-zinc-400 mt-0.5">
+              <p className="text-xs text-[#524C61]">
                 {currentMode === 'login'
-                  ? 'Sign in to access your routes and saved journeys'
-                  : 'Join the Naksha community and navigate smarter'}
+                  ? 'Access your saved trips and preferred commute routes'
+                  : 'Report road hazards and save your daily travel preferences'}
               </p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3.5">
               {currentMode === 'register' && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-zinc-300">Full Name</label>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#14121F]">Full Name</label>
                   <input
                     name="fullName"
                     type="text"
@@ -154,40 +145,41 @@ const AuthModal: React.FC<AuthModalProps> = ({
                     value={formData.fullName}
                     onChange={handleChange}
                     required
-                    className="w-full h-10 px-3.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
+                    className="w-full h-10 px-3.5 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
                   />
                 </div>
               )}
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-300">Email</label>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-[#14121F]">Email</label>
                 <input
                   name="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="commuter@example.com"
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full h-10 px-3.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
+                  className="w-full h-10 px-3.5 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-zinc-300">Password</label>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-[#14121F]">Password</label>
                 <div className="relative">
                   <input
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder={currentMode === 'login' ? 'Enter your password' : 'Min. 6 characters'}
+                    placeholder={currentMode === 'login' ? 'Enter your password' : 'At least 6 characters'}
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full h-10 px-3.5 pr-10 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
+                    className="w-full h-10 px-3.5 pr-10 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#524C61] hover:text-[#14121F] transition-colors"
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -195,8 +187,8 @@ const AuthModal: React.FC<AuthModalProps> = ({
               </div>
 
               {currentMode === 'register' && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-zinc-300">Confirm Password</label>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-[#14121F]">Confirm Password</label>
                   <div className="relative">
                     <input
                       name="confirmPassword"
@@ -205,12 +197,13 @@ const AuthModal: React.FC<AuthModalProps> = ({
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
-                      className="w-full h-10 px-3.5 pr-10 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30 transition-all"
+                      className="w-full h-10 px-3.5 pr-10 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#524C61] hover:text-[#14121F] transition-colors"
                     >
                       {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
@@ -219,18 +212,15 @@ const AuthModal: React.FC<AuthModalProps> = ({
               )}
 
               {currentMode === 'register' && (
-                <label className="flex items-start gap-2.5 cursor-pointer group">
+                <label className="flex items-start gap-2.5 cursor-pointer pt-1">
                   <input
                     type="checkbox"
                     checked={acceptTerms}
                     onChange={e => setAcceptTerms(e.target.checked)}
-                    className="mt-0.5 accent-orange-500 w-3.5 h-3.5 flex-shrink-0"
+                    className="mt-0.5 accent-[#D8472B] w-4 h-4 flex-shrink-0"
                   />
-                  <span className="text-[11px] text-zinc-400 leading-relaxed group-hover:text-zinc-300 transition-colors">
-                    I agree to the{' '}
-                    <span className="text-orange-400 hover:underline cursor-pointer">Terms of Service</span>
-                    {' '}and{' '}
-                    <span className="text-orange-400 hover:underline cursor-pointer">Privacy Policy</span>
+                  <span className="text-[11px] text-[#524C61] leading-relaxed">
+                    I agree to the Community Guidelines and Road Hazard Reporting terms.
                   </span>
                 </label>
               )}
@@ -239,22 +229,22 @@ const AuthModal: React.FC<AuthModalProps> = ({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-10 mt-1 rounded-xl bg-orange-600 hover:bg-orange-500 disabled:opacity-60 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-orange-600/20 active:scale-[0.99]"
+                className="ink-btn-primary w-full h-11 mt-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
                 {isLoading
-                  ? (currentMode === 'login' ? 'Signing in…' : 'Creating account…')
-                  : (currentMode === 'login' ? 'Sign In' : 'Create Account')}
+                  ? (currentMode === 'login' ? 'Signing in...' : 'Creating account...')
+                  : (currentMode === 'login' ? 'Sign In' : 'Create Free Account')}
                 {!isLoading && <ArrowRight className="w-3.5 h-3.5" />}
               </button>
             </form>
 
             {/* Switch mode */}
-            <p className="text-center text-xs text-zinc-500">
-              {currentMode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+            <p className="text-center text-xs text-[#524C61] pt-1">
+              {currentMode === 'login' ? "Don't have an account? " : 'Already registered? '}
               <button
                 type="button"
                 onClick={handleToggleMode}
-                className="text-orange-400 hover:text-orange-300 font-semibold transition-colors"
+                className="text-[#D8472B] hover:underline font-bold transition-colors ml-1"
               >
                 {currentMode === 'login' ? 'Sign up' : 'Sign in'}
               </button>

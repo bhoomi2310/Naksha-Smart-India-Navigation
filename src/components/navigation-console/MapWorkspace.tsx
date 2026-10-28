@@ -2,7 +2,7 @@ import React from 'react';
 import { RouteOptionData } from '@/lib/routingService';
 import { InteractiveMap } from '@/components/InteractiveMap';
 import { TurnByTurnNavigator } from '@/components/TurnByTurnNavigator';
-import { Satellite, Navigation, Compass } from 'lucide-react';
+import { Satellite, Navigation } from 'lucide-react';
 
 interface MapWorkspaceProps {
   routes: RouteOptionData[];
@@ -46,13 +46,13 @@ export const MapWorkspace: React.FC<MapWorkspaceProps> = ({
         </div>
       )}
 
-      {/* Map Cyber Frame */}
-      <div className="glass-panel rounded-2xl overflow-hidden border border-zinc-800/90 shadow-2xl relative transition-all duration-300">
+      {/* Map Paper Frame */}
+      <div className="rounded-2xl overflow-hidden border-[1.5px] border-[#14121F] shadow-[4px_4px_0_#14121F] bg-[#FFFDF9] relative transition-all duration-300">
         {/* Top Map Telemetry Bar */}
-        <div className="px-3.5 py-2 bg-zinc-950/80 border-b border-zinc-800/80 flex items-center justify-between text-xs backdrop-blur-md">
+        <div className="px-3.5 py-2.5 bg-[#FAF5EC] border-b-[1.5px] border-[#14121F] flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse flex-shrink-0" />
-            <span className="font-semibold text-zinc-300 truncate text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-[#D8472B] animate-pulse flex-shrink-0" />
+            <span className="font-bold text-[#14121F] truncate text-[11px]">
               {originName && destName
                 ? `${originName.split(',')[0]} → ${destName.split(',')[0]}`
                 : 'India Navigation Map · All Corridors'}
@@ -61,13 +61,13 @@ export const MapWorkspace: React.FC<MapWorkspaceProps> = ({
 
           <div className="flex items-center gap-2 flex-shrink-0">
             {isNavigating ? (
-              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                <Navigation className="w-3 h-3 animate-spin-slow" />
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#1F6F6B] bg-[#EAF4F3] px-2 py-0.5 rounded-md border border-[#9DCBC8]">
+                <Navigation className="w-3 h-3 text-[#1F6F6B]" />
                 Live Turn-by-Turn
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 text-[10px] text-zinc-400">
-                <Satellite className="w-3 h-3 text-orange-400" />
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[#524C61]">
+                <Satellite className="w-3 h-3 text-[#D8472B]" />
                 NavIC + Dual GPS
               </span>
             )}
@@ -93,4 +93,3 @@ export const MapWorkspace: React.FC<MapWorkspaceProps> = ({
 };
 
 export default MapWorkspace;
-

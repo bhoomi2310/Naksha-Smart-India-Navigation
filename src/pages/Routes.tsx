@@ -111,21 +111,21 @@ const RoutesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col relative selection:bg-orange-500 selection:text-white">
-      {/* Background with Ambient Orbs & Navigational Grid */}
+    <div className="min-h-screen bg-[#F6EFE3] text-[#14121F] flex flex-col relative selection:bg-[#F2A31B] selection:text-[#14121F] paper-grain">
+      {/* Background with Paper Grid */}
       <AmbientBackground variant="console" />
 
       <Navigation />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Comparative Page Header */}
-        <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-zinc-800/80 shadow-md">
+        <div className="ink-card p-5 sm:p-6 rounded-2xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                Compare Routes & Travel Conditions
+              <h1 className="text-xl sm:text-2xl font-bold text-[#14121F] font-display tracking-tight">
+                Compare Routes &amp; Travel Conditions
               </h1>
-              <p className="text-xs text-zinc-400 max-w-2xl leading-relaxed">
+              <p className="text-xs text-[#524C61] max-w-2xl leading-relaxed">
                 Analyze travel time, pavement quality (RQI), street illumination, fuel usage, and transit fares across multiple routes.
               </p>
             </div>
@@ -134,9 +134,9 @@ const RoutesPage: React.FC = () => {
               onClick={handleOpenHazardReport}
               variant="outline"
               size="sm"
-              className="h-9 px-3.5 border-zinc-700 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors self-start md:self-auto"
+              className="ink-btn-secondary h-9 px-3.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 self-start md:self-auto"
             >
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+              <AlertTriangle className="w-3.5 h-3.5 text-[#D8472B]" />
               <span>Report Hazard</span>
             </Button>
           </div>

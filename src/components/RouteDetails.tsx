@@ -28,17 +28,17 @@ export const RouteDetails: React.FC<RouteDetailsProps> = ({
   if (!routeData) return null;
 
   return (
-    <div className="bg-white dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 text-zinc-900 dark:text-white shadow-md dark:shadow-none space-y-5 transition-colors">
+    <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[4px_4px_0_#14121F] rounded-2xl p-5 text-[#14121F] space-y-5">
       {/* Route Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-[#14121F]/15">
         <div>
-          <div className="flex items-center gap-2 mb-1 text-xs text-zinc-500 dark:text-zinc-400">
-            <span>Estimated Arrival: <strong className="text-zinc-900 dark:text-zinc-200">{routeData.eta}</strong></span>
+          <div className="flex items-center gap-2 mb-1 text-xs text-[#524C61]">
+            <span>Estimated Arrival: <strong className="text-[#14121F]">{routeData.eta}</strong></span>
           </div>
-          <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
+          <h3 className="text-xl font-bold text-[#14121F] font-display tracking-tight">
             {routeData.type}
           </h3>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
+          <p className="text-xs text-[#524C61] mt-0.5">
             {routeData.summary}
           </p>
         </div>
@@ -46,7 +46,7 @@ export const RouteDetails: React.FC<RouteDetailsProps> = ({
         {onStartNavigation && (
           <Button
             onClick={onStartNavigation}
-            className="bg-orange-600 hover:bg-orange-500 text-white font-bold px-6 py-5 rounded-xl text-sm flex items-center gap-2 shadow-md shadow-orange-600/25 active:scale-95 transition-transform"
+            className="ink-btn-primary px-6 py-5 rounded-xl text-sm flex items-center gap-2"
           >
             <Play className="w-4 h-4 fill-current" />
             Start Navigation
@@ -56,24 +56,24 @@ export const RouteDetails: React.FC<RouteDetailsProps> = ({
 
       {/* Key Telemetry Badges */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <div className="bg-slate-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-500 dark:text-zinc-400">Distance</div>
-          <div className="text-lg font-black text-zinc-900 dark:text-white mt-0.5">{routeData.distanceStr}</div>
+        <div className="bg-[#FAF5EC] border-[1.2px] border-[#14121F]/20 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61]">Distance</div>
+          <div className="text-lg font-black text-[#14121F] mt-0.5">{routeData.distanceStr}</div>
         </div>
 
-        <div className="bg-slate-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-500 dark:text-zinc-400">Travel Time</div>
-          <div className="text-lg font-black text-orange-600 dark:text-orange-400 mt-0.5">{routeData.durationStr}</div>
+        <div className="bg-[#FAF5EC] border-[1.2px] border-[#14121F]/20 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61]">Travel Time</div>
+          <div className="text-lg font-black text-[#D8472B] mt-0.5">{routeData.durationStr}</div>
         </div>
 
-        <div className="bg-slate-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-500 dark:text-zinc-400">Road Score (RQI)</div>
-          <div className="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-0.5">{routeData.roadQualityIndex}/100</div>
+        <div className="bg-[#FAF5EC] border-[1.2px] border-[#14121F]/20 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61]">Road Score (RQI)</div>
+          <div className="text-lg font-black text-[#1F6F6B] mt-0.5">{routeData.roadQualityIndex}/100</div>
         </div>
 
-        <div className="bg-slate-50 dark:bg-zinc-950/80 border border-zinc-200 dark:border-zinc-800 p-3 rounded-xl text-center">
-          <div className="text-[10px] uppercase font-semibold text-zinc-500 dark:text-zinc-400">Streetlights</div>
-          <div className="text-lg font-black text-purple-600 dark:text-purple-400 mt-0.5">{routeData.lightingScore}%</div>
+        <div className="bg-[#FAF5EC] border-[1.2px] border-[#14121F]/20 p-3 rounded-xl text-center">
+          <div className="text-[10px] uppercase font-bold text-[#524C61]">Streetlights</div>
+          <div className="text-lg font-black text-[#C98109] mt-0.5">{routeData.lightingScore}%</div>
         </div>
       </div>
 

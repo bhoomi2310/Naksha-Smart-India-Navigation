@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Navigation as NavIcon, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { authAPI } from '@/lib/api';
 import { toast } from 'sonner';
+import NakshaLogo from '@/components/NakshaLogo';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -23,21 +22,19 @@ const Register = () => {
       toast.error('Please fill in all required fields');
       return;
     }
-
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
     if (password.length < 6) {
       toast.error('Password must be at least 6 characters');
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match');
       return;
     }
 
     setIsLoading(true);
     try {
       await authAPI.register(email.trim(), password, fullName.trim(), phone.trim());
-      toast.success('Account created successfully');
+      toast.success('Account created successfully! Welcome to Naksha.');
       navigate('/dashboard');
     } catch (err: any) {
       toast.error(err.message || 'Registration failed');
@@ -47,133 +44,118 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full flex flex-col justify-center items-center bg-zinc-950 text-zinc-100 px-4 py-12 selection:bg-orange-500 selection:text-white">
+    <div className="min-h-[100dvh] w-full flex flex-col justify-center items-center bg-[#F6EFE3] text-[#14121F] px-4 py-12 paper-grain selection:bg-[#F2A31B] selection:text-[#14121F]">
       <div className="w-full max-w-md space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center shadow-lg shadow-orange-600/30">
-              <NavIcon className="w-5 h-5 text-white fill-current" />
-            </div>
-            <div className="flex flex-col text-left">
-              <div className="flex items-baseline gap-1.5 leading-none">
-                <span className="text-orange-500 font-black text-2xl tracking-tight">नक्शा</span>
-                <span className="text-white font-bold text-2xl tracking-tight">Naksha</span>
-              </div>
-              <span className="text-[10px] text-zinc-400 font-medium tracking-widest mt-0.5">Built for India</span>
-            </div>
+            <NakshaLogo size="lg" />
           </Link>
-          <h1 className="text-2xl font-bold text-white tracking-tight pt-2">Create your commuter account</h1>
-          <p className="text-xs text-zinc-400">Join the verified Indian road condition network</p>
+          <h1 className="text-2xl font-black text-[#14121F] font-display tracking-tight pt-2">
+            Create your account
+          </h1>
+          <p className="text-xs text-[#524C61]">
+            Join fellow commuters and start reporting road hazards
+          </p>
         </div>
 
         {/* Card */}
-        <div className="bg-zinc-900/90 border border-zinc-800 rounded-3xl p-7 shadow-2xl space-y-5">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5 text-left">
-              <Label htmlFor="fullName" className="text-xs font-semibold text-zinc-300">
-                Full Name
-              </Label>
-              <Input
-                id="fullName"
+        <div className="bg-[#FFFDF9] border-2 border-[#14121F] rounded-2xl p-7 shadow-[6px_6px_0_#14121F] space-y-5 text-left">
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#14121F]">Full Name *</label>
+              <input
                 type="text"
-                placeholder="Rohan Sharma"
+                placeholder="Arjun Mehta"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="bg-zinc-950 border-zinc-800 text-white rounded-xl text-xs h-11 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                className="w-full h-10 px-3.5 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
               />
             </div>
 
-            <div className="space-y-1.5 text-left">
-              <Label htmlFor="email" className="text-xs font-semibold text-zinc-300">
-                Email Address
-              </Label>
-              <Input
-                id="email"
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#14121F]">Email Address *</label>
+              <input
                 type="email"
-                placeholder="name@example.com"
+                placeholder="commuter@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="bg-zinc-950 border-zinc-800 text-white rounded-xl text-xs h-11 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                className="w-full h-10 px-3.5 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
               />
             </div>
 
-            <div className="space-y-1.5 text-left">
-              <Label htmlFor="phone" className="text-xs font-semibold text-zinc-300">
-                Phone Number (Optional)
-              </Label>
-              <Input
-                id="phone"
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#14121F]">Phone Number (Optional)</label>
+              <input
                 type="tel"
                 placeholder="+91 98765 43210"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="bg-zinc-950 border-zinc-800 text-white rounded-xl text-xs h-11 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                className="w-full h-10 px-3.5 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
               />
             </div>
 
-            <div className="space-y-1.5 text-left">
-              <Label htmlFor="password" className="text-xs font-semibold text-zinc-300">
-                Password
-              </Label>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#14121F]">Password *</label>
               <div className="relative">
-                <Input
-                  id="password"
+                <input
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="At least 6 characters"
+                  placeholder="Min. 6 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="bg-zinc-950 border-zinc-800 text-white rounded-xl text-xs h-11 pr-10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                  className="w-full h-10 px-3.5 pr-10 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-zinc-500 hover:text-zinc-300"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#524C61] hover:text-[#14121F] transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            <div className="space-y-1.5 text-left">
-              <Label htmlFor="confirmPassword" className="text-xs font-semibold text-zinc-300">
-                Confirm Password
-              </Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="Re-enter your password"
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-[#14121F]">Confirm Password *</label>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Repeat password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="bg-zinc-950 border-zinc-800 text-white rounded-xl text-xs h-11 focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                className="w-full h-10 px-3.5 rounded-lg bg-[#FAF5EC] border-[1.5px] border-[#14121F] text-[#14121F] text-sm placeholder:text-[#787287] focus:outline-none focus:ring-2 focus:ring-[#F2A31B] transition-all"
               />
             </div>
 
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold py-6 rounded-xl shadow-lg shadow-orange-600/25 transition-transform active:scale-95"
+              className="ink-btn-primary w-full h-11 text-xs font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60 mt-2"
             >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
-              <ArrowRight className="ml-2 w-4 h-4" />
+              {isLoading ? 'Creating account...' : 'Create Account'}
+              {!isLoading && <ArrowRight className="w-4 h-4" />}
             </Button>
           </form>
 
-          <div className="pt-2 border-t border-zinc-800 text-center text-xs text-zinc-400">
-            Already have an account?{' '}
-            <Link to="/login" className="text-orange-400 hover:text-orange-300 font-semibold">
-              Sign In
-            </Link>
+          {/* Divider */}
+          <div className="border-t-[1.2px] border-[#14121F]/15 pt-4 text-center">
+            <p className="text-xs text-[#524C61]">
+              Already have an account?{' '}
+              <Link to="/login" className="text-[#D8472B] hover:underline font-bold">
+                Sign in
+              </Link>
+            </p>
           </div>
         </div>
 
+        {/* Back link */}
         <div className="text-center">
-          <Link to="/dashboard" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
-            Continue without signing in
+          <Link to="/" className="text-xs text-[#524C61] hover:text-[#14121F] font-semibold transition-colors">
+            &larr; Back to Home
           </Link>
         </div>
       </div>
