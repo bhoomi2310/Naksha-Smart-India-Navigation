@@ -99,3 +99,4 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({
 };
 
 export default AmbientBackground;
+

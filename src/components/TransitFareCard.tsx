@@ -21,7 +21,7 @@ export const TransitFareCard: React.FC<TransitFareCardProps> = ({ route }) => {
           </div>
         </div>
         <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 text-[10px] font-semibold">
-          🌱 {route.carbonSavedGrams}g CO₂ Saved
+          {route.carbonSavedGrams}g CO₂ Saved
         </Badge>
       </div>
 
@@ -40,7 +40,7 @@ export const TransitFareCard: React.FC<TransitFareCardProps> = ({ route }) => {
                 <div>
                   <div className="font-semibold text-zinc-900 dark:text-white">{leg.line || leg.from}</div>
                   <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
-                    {leg.from} ➔ {leg.to} ({leg.durationMins} mins)
+                    {leg.from} → {leg.to} ({leg.durationMins} mins)
                   </div>
                 </div>
               </div>
@@ -69,7 +69,7 @@ export const TransitFareCard: React.FC<TransitFareCardProps> = ({ route }) => {
         {/* Auto Rickshaw Meter */}
         <div className="bg-white dark:bg-zinc-950/70 border border-zinc-200 dark:border-white/10 rounded-xl p-2.5 text-center shadow-xs">
           <div className="text-[10px] text-zinc-500 dark:text-zinc-400 uppercase font-semibold flex items-center justify-center gap-1">
-            <span className="text-xs">🛺</span>
+            <Zap className="w-3 h-3 text-amber-500" />
             Auto Meter
           </div>
           <div className="text-base font-black text-amber-600 dark:text-amber-400 mt-1">

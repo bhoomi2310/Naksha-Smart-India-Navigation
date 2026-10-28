@@ -90,7 +90,7 @@ export const TurnByTurnNavigator: React.FC<TurnByTurnNavigatorProps> = ({
             setIsPlaying(false);
             setIsArrived(true);
             voiceGuidance.speak('You have arrived at your destination. Thank you for navigating with Naksha.', true);
-            toast.success('🎉 You have reached your destination!');
+            toast.success('You have reached your destination!');
             if (timerRef.current) clearInterval(timerRef.current);
             return prevIdx;
           }

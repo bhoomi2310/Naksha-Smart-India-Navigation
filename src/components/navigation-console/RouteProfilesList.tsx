@@ -3,7 +3,7 @@ import { RouteOptionData } from '@/lib/routingService';
 import RouteCard from '@/components/RouteCard';
 import RouteQuickSelector from './RouteQuickSelector';
 import { RouteCalculationLoader } from '@/components/NakshaLoader';
-import { Compass, ChevronDown, LayoutGrid, List, Sparkles } from 'lucide-react';
+import { Compass, ChevronDown, LayoutGrid, List } from 'lucide-react';
 
 interface RouteProfilesListProps {
   routes: RouteOptionData[];
@@ -34,14 +34,9 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
     <div className="space-y-3">
       {/* List Header with Count & View Mode Toggle */}
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-bold text-white flex items-center gap-1.5">
+        <h2 className="text-sm font-semibold text-white flex items-center gap-1.5">
           <Compass className="w-4 h-4 text-orange-400" />
-          <span>Route Profiles</span>
-          {routes.length > 0 && (
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/30">
-              {routes.length}
-            </span>
-          )}
+          <span>Available Routes</span>
         </h2>
 
         {routes.length > 0 && (
@@ -146,12 +141,11 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
                   key={c.label}
                   type="button"
                   onClick={() => onSelectStarterCorridor(c.from, c.to)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-xs bg-zinc-900/80 hover:bg-orange-600/15 border border-zinc-800 hover:border-orange-500/40 text-zinc-300 hover:text-white transition-all text-left group"
+                  className="flex items-center justify-between px-3 py-2 rounded-xl text-xs bg-zinc-900/80 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white transition-all text-left"
                 >
-                  <span className="font-semibold text-[11px]">{c.label}</span>
-                  <span className="text-[10px] text-orange-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" />
-                    Load Route →
+                  <span className="font-medium text-[11px]">{c.label}</span>
+                  <span className="text-[11px] text-orange-400">
+                    View Route →
                   </span>
                 </button>
               ))}
@@ -164,3 +158,4 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
 };
 
 export default RouteProfilesList;
+

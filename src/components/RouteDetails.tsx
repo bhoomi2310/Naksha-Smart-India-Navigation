@@ -32,13 +32,10 @@ export const RouteDetails: React.FC<RouteDetailsProps> = ({
       {/* Route Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-zinc-200 dark:border-zinc-800">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Badge className="bg-zinc-100 dark:bg-zinc-800 text-orange-600 dark:text-orange-400 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold py-0.5 px-2.5 rounded-md">
-              {routeData.tag}
-            </Badge>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">ETA: {routeData.eta}</span>
+          <div className="flex items-center gap-2 mb-1 text-xs text-zinc-500 dark:text-zinc-400">
+            <span>Estimated Arrival: <strong className="text-zinc-900 dark:text-zinc-200">{routeData.eta}</strong></span>
           </div>
-          <h3 className="text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+          <h3 className="text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
             {routeData.type}
           </h3>
           <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">

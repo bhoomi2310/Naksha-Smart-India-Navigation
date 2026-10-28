@@ -43,18 +43,13 @@ export const RouteQuickSelector: React.FC<RouteQuickSelectorProps> = ({
             key={route.id}
             type="button"
             onClick={() => onSelectRoute(route.id)}
-            className={`group relative px-2 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 text-center border overflow-hidden ${
+            className={`px-2 py-1.5 rounded-xl text-xs font-medium transition-colors text-center border ${
               isSelected
-                ? 'bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-600/30 scale-[1.02] ring-1 ring-orange-400/50'
-                : 'bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 border-zinc-800 hover:border-orange-500/40 hover:text-white'
+                ? 'bg-orange-600 text-white border-orange-500 shadow-sm'
+                : 'bg-zinc-900/90 hover:bg-zinc-800 text-zinc-300 border-zinc-800/80 hover:text-white'
             }`}
           >
-            {/* Active Top Highlight */}
-            {isSelected && (
-              <div className="absolute top-0 inset-x-0 h-0.5 bg-amber-300" />
-            )}
-
-            <div className="flex items-center justify-center gap-1 font-bold truncate text-[11px]">
+            <div className="flex items-center justify-center gap-1 font-semibold truncate text-[11px]">
               {getRouteIcon(route.id)}
               <span>{route.type.split(' ')[0]}</span>
             </div>
@@ -62,8 +57,8 @@ export const RouteQuickSelector: React.FC<RouteQuickSelectorProps> = ({
             <div
               className={`text-[10px] mt-0.5 ${
                 isSelected
-                  ? 'text-orange-100 font-semibold'
-                  : 'text-zinc-400 group-hover:text-zinc-300'
+                  ? 'text-orange-100 font-medium'
+                  : 'text-zinc-400'
               }`}
             >
               {route.durationStr}
@@ -76,3 +71,4 @@ export const RouteQuickSelector: React.FC<RouteQuickSelectorProps> = ({
 };
 
 export default RouteQuickSelector;
+

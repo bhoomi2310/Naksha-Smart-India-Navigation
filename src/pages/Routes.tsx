@@ -119,34 +119,25 @@ const RoutesPage: React.FC = () => {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {/* Comparative Page Header */}
-        <div className="glass-panel p-6 rounded-3xl border border-zinc-800/90 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500/60 to-transparent" />
-
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/15 text-orange-400 border border-orange-500/30">
-                  <GitFork className="w-3 h-3" />
-                  Multi-Criteria Routing
-                </span>
-                <span className="text-xs text-zinc-400 font-medium">
-                  Pothole, Lighting & Flood Hazard Models
-                </span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+        <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-zinc-800/80 shadow-md">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
                 Compare Routes & Travel Conditions
               </h1>
               <p className="text-xs text-zinc-400 max-w-2xl leading-relaxed">
-                Analyze travel time, pavement quality (RQI), street illumination, fuel usage, and multi-modal transit fares across 6 intelligent profiles.
+                Analyze travel time, pavement quality (RQI), street illumination, fuel usage, and transit fares across multiple routes.
               </p>
             </div>
 
             <Button
               onClick={handleOpenHazardReport}
-              className="bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 rounded-2xl py-5 px-5 font-semibold transition-all shadow-sm flex items-center gap-2"
+              variant="outline"
+              size="sm"
+              className="h-9 px-3.5 border-zinc-700 bg-zinc-900/90 hover:bg-zinc-800 text-zinc-200 hover:text-white rounded-xl text-xs font-medium flex items-center gap-1.5 transition-colors self-start md:self-auto"
             >
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <span>Report Live Hazard</span>
+              <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+              <span>Report Hazard</span>
             </Button>
           </div>
         </div>

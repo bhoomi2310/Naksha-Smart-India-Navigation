@@ -45,39 +45,39 @@ const vehicleIcon = (heading: number = 0) => createCustomIcon(`
   <div style="position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transform: rotate(${heading}deg); transition: transform 0.3s ease;">
     <div style="position: absolute; width: 42px; height: 42px; background: rgba(255, 119, 34, 0.25); border-radius: 50%; animation: pulse 2s infinite;"></div>
     <div style="width: 32px; height: 32px; background: #18181b; border: 2.5px solid #ff7722; border-radius: 50%; box-shadow: 0 0 16px rgba(255, 119, 34, 0.9); display: flex; align-items: center; justify-content: center;">
-      <span style="font-size: 16px;">🛺</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff7722" stroke="#fff" stroke-width="1.5"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
     </div>
   </div>
 `, [44, 44], [22, 22]);
 
-// Hazard Icons
+// Hazard Icons — using text labels instead of emoji for consistency
 const hazardIcon = (type: RoadHazard['type'], severity: RoadHazard['severity']) => {
-  let emoji = '⚠️';
+  let label = '!';
   let bgColor = '#f59e0b';
 
   if (type === 'pothole') {
-    emoji = '🕳️';
+    label = 'P';
     bgColor = severity === 'critical' ? '#ef4444' : '#f97316';
   } else if (type === 'waterlogging') {
-    emoji = '🌊';
+    label = 'W';
     bgColor = '#06b6d4';
   } else if (type === 'dark_stretch') {
-    emoji = '💡';
+    label = 'D';
     bgColor = '#64748b';
   } else if (type === 'construction') {
-    emoji = '🚧';
+    label = 'C';
     bgColor = '#eab308';
   } else if (type === 'police_check') {
-    emoji = '👮';
+    label = 'PC';
     bgColor = '#3b82f6';
   } else if (type === 'other') {
-    emoji = '⚠️';
+    label = '!';
     bgColor = severity === 'critical' ? '#ef4444' : '#ec4899';
   }
 
   return createCustomIcon(`
-    <div style="background: ${bgColor}; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;">
-      ${emoji}
+    <div style="background: ${bgColor}; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; font-family: sans-serif; cursor: pointer;">
+      ${label}
     </div>
   `, [28, 28], [14, 14]);
 };
@@ -386,8 +386,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             <span>Destination</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-xs">🕳️</span>
-            <span>Pothole/Hazard</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            <span>Hazard</span>
           </div>
         </div>
 

@@ -17,7 +17,6 @@ import {
   Edit2,
   Check,
   ShieldCheck,
-  Sparkles,
   Navigation as NavIcon,
   AlertTriangle
 } from 'lucide-react';
@@ -202,9 +201,8 @@ const Profile = () => {
             {/* Why Create an Account Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-orange-400" />
-                  What you unlock with a free Naksha account
+                <h2 className="text-lg font-bold text-white">
+                  What you get with a free Naksha account
                 </h2>
               </div>
 
