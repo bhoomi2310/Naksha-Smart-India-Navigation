@@ -1,6 +1,7 @@
 {
-  "name": "Naksha - Smart Indian Navigation",
+  "name": "Naksha | Navigation built for India",
   "short_name": "Naksha",
+  "description": "Navigation built for India. Compare Fastest, Safest, or Scenic routes with real road conditions and transit fares.",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -13,8 +14,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ea580c",
-  "background_color": "#09090b",
+  "theme_color": "#D8472B",
+  "background_color": "#F6EFE3",
   "display": "standalone"
 }
-

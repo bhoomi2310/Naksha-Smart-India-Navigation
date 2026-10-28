@@ -14,9 +14,12 @@ export default {
     },
     extend: {
       fontFamily: {
-        'heading': ['Poppins', 'sans-serif'],
-        'body': ['Inter', 'sans-serif'],
-        'sans': ['Inter', 'sans-serif'],
+        display: ["Fraunces", "Instrument Serif", "Georgia", "serif"],
+        heading: ["Fraunces", "Instrument Serif", "Georgia", "serif"],
+        serif: ["Fraunces", "Instrument Serif", "Georgia", "serif"],
+        sans: ["Manrope", "Inter", "sans-serif"],
+        body: ["Manrope", "Inter", "sans-serif"],
+        devanagari: ["Tiro Devanagari Hindi", "Hind", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -24,6 +27,34 @@ export default {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        paper: {
+          DEFAULT: "#F6EFE3",
+          light: "#FFFDF9",
+          card: "#FAF5EC",
+          border: "#E6DCCB",
+          muted: "#EDE4D5",
+        },
+        ink: {
+          DEFAULT: "#14121F",
+          light: "#231F33",
+          muted: "#524C61",
+          subtle: "#787287",
+        },
+        marigold: {
+          DEFAULT: "#F2A31B",
+          light: "#FBD47D",
+          dark: "#C98109",
+        },
+        vermilion: {
+          DEFAULT: "#D8472B",
+          light: "#EA6349",
+          dark: "#B8341B",
+        },
+        teal: {
+          DEFAULT: "#1F6F6B",
+          light: "#2F8E8A",
+          dark: "#144B48",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -65,6 +96,18 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+      boxShadow: {
+        "hard-sm": "2px 2px 0 #14121F",
+        "hard": "3px 3px 0 #14121F",
+        "hard-md": "4px 4px 0 #14121F",
+        "hard-lg": "6px 6px 0 #14121F",
+        "hard-marigold": "4px 4px 0 #F2A31B",
+        "hard-vermilion": "4px 4px 0 #D8472B",
+        "hard-teal": "4px 4px 0 #1F6F6B",
+      },
+      borderWidth: {
+        "1.5": "1.5px",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -72,25 +115,22 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "route-draw": {
+          "0%": { strokeDashoffset: "1000" },
+          "100%": { strokeDashoffset: "0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "route-draw": "route-draw 3s cubic-bezier(0.4, 0, 0.2, 1) forwards",
       },
     },
   },

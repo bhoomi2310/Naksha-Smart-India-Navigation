@@ -36,8 +36,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider
         attribute="class"
-        defaultTheme="dark"
-        forcedTheme="dark"
+        defaultTheme="light"
         enableSystem={false}
         disableTransitionOnChange
       >
