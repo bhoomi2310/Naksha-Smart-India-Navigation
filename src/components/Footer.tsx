@@ -1,24 +1,85 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import NakshaLogo from '@/components/NakshaLogo';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800/80 py-8 px-4 sm:px-6 lg:px-8 mt-auto transition-colors">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-        <div>
-          <div className="text-lg font-bold text-zinc-900 dark:text-white flex items-center justify-center sm:justify-start gap-2">
-            <span className="text-orange-500 font-black">नक्शा</span> Naksha
+    <footer className="w-full bg-[#FAF5EC] border-t-[1.5px] border-[#14121F] text-[#14121F] mt-auto">
+      {/* Rangoli / Jaali divider on top of footer */}
+      <div className="jaali-border-divider opacity-70" aria-hidden="true" />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8 text-left">
+          {/* Brand Info */}
+          <div className="md:col-span-2 space-y-3">
+            <Link to="/" className="inline-block" aria-label="Naksha Home">
+              <NakshaLogo size="md" />
+            </Link>
+            <p className="text-xs sm:text-sm text-[#524C61] max-w-sm leading-relaxed">
+              India-first navigation engine comparing real-time elevated flyovers, streetlighting coverage, safe night corridors, and multi-modal transit fares.
+            </p>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#FFFDF9] border-[1.2px] border-[#14121F] shadow-[2px_2px_0_#14121F] text-[11px] font-bold text-[#14121F]">
+              <span className="w-2 h-2 rounded-full bg-[#D8472B]" aria-hidden="true" />
+              <span>Made with care in India</span>
+            </div>
           </div>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Built for India</p>
+
+          {/* Navigation Links */}
+          <div className="space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#14121F]">
+              Explore
+            </div>
+            <ul className="space-y-2 text-xs text-[#524C61]">
+              <li>
+                <Link to="/dashboard" className="hover:text-[#D8472B] transition-colors">
+                  Live Navigation
+                </Link>
+              </li>
+              <li>
+                <Link to="/routes" className="hover:text-[#D8472B] transition-colors">
+                  Route Profiles
+                </Link>
+              </li>
+              <li>
+                <a href="#route-profiles" className="hover:text-[#D8472B] transition-colors">
+                  Corridor Comparison
+                </a>
+              </li>
+              <li>
+                <Link to="/profile" className="hover:text-[#D8472B] transition-colors">
+                  Saved Trips
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Map Attribution & Legal */}
+          <div className="space-y-2.5">
+            <div className="text-xs font-bold uppercase tracking-wider text-[#14121F]">
+              Data Attribution
+            </div>
+            <p className="text-xs text-[#524C61] leading-relaxed">
+              Map data &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline hover:text-[#D8472B]">OpenStreetMap</a> contributors. Routing powered by <a href="http://project-osrm.org/" target="_blank" rel="noreferrer" className="underline hover:text-[#D8472B]">OSRM</a> and local crowdsourced road telemetry.
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
-          <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('replay-naksha-loader'))}
-            className="text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors cursor-pointer"
-          >
-            Replay Loader Animation
-          </button>
-          <span>•</span>
-          <span>© {new Date().getFullYear()} Naksha. Built for India.</span>
+
+        {/* Bottom bar */}
+        <div className="pt-6 border-t-[1.5px] border-[#14121F]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#524C61]">
+          <div>
+            &copy; {new Date().getFullYear()} Naksha. Built for India.
+          </div>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/routes" className="hover:text-[#D8472B] transition-colors">
+              6 Route Profiles
+            </Link>
+            <span aria-hidden="true">&bull;</span>
+            <Link to="/settings" className="hover:text-[#D8472B] transition-colors">
+              Settings
+            </Link>
+            <span aria-hidden="true">&bull;</span>
+            <span className="text-[#14121F] font-semibold">Delhi NCR &bull; Mumbai &bull; Bengaluru</span>
+          </div>
         </div>
       </div>
     </footer>
