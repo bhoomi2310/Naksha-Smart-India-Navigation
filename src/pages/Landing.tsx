@@ -9,6 +9,7 @@ import { AmbientBackground } from '@/components/ui/AmbientBackground';
 // Modular Landing Page Components
 import LandingNavbar from '@/components/landing/LandingNavbar';
 import HeroSection from '@/components/landing/HeroSection';
+import ScrollRouteRoad from '@/components/landing/ScrollRouteRoad';
 import PerspectiveDeck from '@/components/landing/PerspectiveDeck';
 import RouteProfilesSection from '@/components/landing/RouteProfilesSection';
 import FreeAccessSection from '@/components/landing/FreeAccessSection';
@@ -20,6 +21,8 @@ const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
+  const [activeChip, setActiveChip] = useState<'fastest' | 'safest' | 'scenic'>('fastest');
+  const [activeWaypoint, setActiveWaypoint] = useState<'delhi' | 'corridor' | 'cyberhub'>('delhi');
   const loggedIn = isAuthenticated();
   const { scrollProgress, scrollY } = useScrollReveal();
 
@@ -33,6 +36,12 @@ const Landing: React.FC = () => {
       {/* Warm Cartographic Paper Background with Grain */}
       <AmbientBackground variant="hero" />
 
+      {/* Scroll-Driven Route Road & Auto-Rickshaw Sprite passing down the page */}
+      <ScrollRouteRoad
+        onWaypointChange={setActiveWaypoint}
+        onActiveChipChange={setActiveChip}
+      />
+
       {/* Subtle Top Scroll Progress Bar */}
       <ScrollProgressBar progress={scrollProgress} />
 
@@ -45,8 +54,12 @@ const Landing: React.FC = () => {
         onOpenProfile={() => navigate('/profile')}
       />
 
-      {/* Asymmetric Split Hero: Fraunces Headline, Swash Underline, Framed Auto-Rickshaw Poster */}
-      <HeroSection onStartNavigation={() => navigate('/dashboard')} />
+      {/* Full-bleed Hero with masked auto illustration, 2-line headline, and floating comparison card */}
+      <HeroSection
+        onStartNavigation={() => navigate('/dashboard')}
+        activeChip={activeChip}
+        activeWaypoint={activeWaypoint}
+      />
 
       {/* Interactive Printed Route Switcher Deck */}
       <PerspectiveDeck

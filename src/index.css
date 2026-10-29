@@ -250,6 +250,29 @@
   background: #B8341B;
 }
 
+/* Auto-rickshaw sprite animations & floating UI */
+@keyframes auto-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2.5px);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-float-gentle {
+  animation: float-gentle 3s ease-in-out infinite;
+}
+
 /* Respect user's motion preference */
 @media (prefers-reduced-motion: reduce) {
   *,

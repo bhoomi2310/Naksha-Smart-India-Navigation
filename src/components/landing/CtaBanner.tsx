@@ -15,9 +15,9 @@ export const CtaBanner: React.FC<CtaBannerProps> = ({ onOpenDashboard }) => {
 
       <div className="reveal-on-scroll relative p-8 sm:p-12 rounded-3xl bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] text-center space-y-6 overflow-hidden">
         
-        {/* Subtle cropped watermark texture of auto-rickshaw at ~4% opacity */}
+        {/* Cropped, desaturated, 8% opacity truck-art pattern texture */}
         <div 
-          className="absolute right-0 bottom-0 w-64 h-64 pointer-events-none opacity-[0.05] bg-no-repeat bg-contain bg-right-bottom"
+          className="absolute -right-8 -bottom-10 w-80 h-80 pointer-events-none opacity-[0.08] grayscale contrast-125 mix-blend-multiply bg-no-repeat bg-cover bg-[position:30%_75%]"
           style={{ backgroundImage: `url(${autoRickshawWebP})` }}
           aria-hidden="true"
         />
