@@ -8,9 +8,11 @@ interface RouteProfilesSectionProps {
 
 export const RouteProfilesSection: React.FC<RouteProfilesSectionProps> = ({ onSelectRoute }) => {
   return (
-    <section id="route-profiles" className="relative z-10 py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
-      {/* Jaali separator */}
-      <div className="jaali-border-divider mb-12 opacity-60" aria-hidden="true" />
+    <section id="route-profiles" className="relative z-10 py-16 sm:py-20 px-6 md:px-12 lg:px-8 max-w-6xl mx-auto w-full">
+      {/* Jaali separator with clear 64px vertical clearance for road trip lane */}
+      <div data-roadtrip-divider="1" className="py-8 my-2 flex items-center justify-center" aria-hidden="true">
+        <div className="jaali-border-divider opacity-60 w-full" />
+      </div>
 
       {/* Section Header */}
       <div className="reveal-on-scroll text-center mb-12 space-y-3">

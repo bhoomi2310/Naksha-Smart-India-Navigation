@@ -4,7 +4,7 @@ import NakshaLogo from '@/components/NakshaLogo';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="relative z-10 w-full bg-[#FAF5EC] border-t-[1.5px] border-[#14121F] text-[#14121F] mt-auto">
+    <footer id="landing-footer" data-roadtrip-park="true" className="relative z-10 w-full bg-[#FAF5EC] border-t-[1.5px] border-[#14121F] text-[#14121F] mt-auto">
 
       {/* Rangoli / Jaali divider on top of footer */}
       <div className="jaali-border-divider opacity-70" aria-hidden="true" />

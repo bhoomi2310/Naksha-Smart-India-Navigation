@@ -9,7 +9,7 @@ import { AmbientBackground } from '@/components/ui/AmbientBackground';
 // Modular Landing Page Components
 import LandingNavbar from '@/components/landing/LandingNavbar';
 import HeroSection from '@/components/landing/HeroSection';
-import ScrollRouteRoad from '@/components/landing/ScrollRouteRoad';
+import RoadTrip from '@/components/landing/RoadTrip';
 import PerspectiveDeck from '@/components/landing/PerspectiveDeck';
 import RouteProfilesSection from '@/components/landing/RouteProfilesSection';
 import FreeAccessSection from '@/components/landing/FreeAccessSection';
@@ -34,8 +34,8 @@ const Landing: React.FC = () => {
       {/* Warm Cartographic Paper Background with Grain */}
       <AmbientBackground variant="hero" />
 
-      {/* Scroll-Driven Route Road & Auto-Rickshaw Sprite */}
-      <ScrollRouteRoad />
+      {/* Scroll-Driven Auto-Rickshaw Road Trip Serpentine Animation */}
+      <RoadTrip />
 
       {/* Subtle Top Scroll Progress Bar */}
       <ScrollProgressBar progress={scrollProgress} />

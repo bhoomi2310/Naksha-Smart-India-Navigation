@@ -55,7 +55,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
   };
 
   return (
-    <section className="relative w-full min-h-[580px] sm:min-h-[640px] overflow-hidden">
+    <section id="hero-section" data-roadtrip-hero="true" className="relative w-full min-h-[580px] sm:min-h-[640px] overflow-hidden">
 
       {/*
         HERO BACKGROUND: Auto illustration as full-bleed right panel.

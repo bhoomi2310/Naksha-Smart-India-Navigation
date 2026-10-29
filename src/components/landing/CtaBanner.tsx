@@ -8,9 +8,11 @@ interface CtaBannerProps {
 
 export const CtaBanner: React.FC<CtaBannerProps> = ({ onOpenDashboard }) => {
   return (
-    <section className="relative z-10 py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
-      {/* Jaali separator */}
-      <div className="jaali-border-divider mb-12 opacity-60" aria-hidden="true" />
+    <section id="cta-section" className="relative z-10 py-14 sm:py-20 px-6 md:px-12 lg:px-8 max-w-5xl mx-auto w-full">
+      {/* Jaali separator with clear 64px vertical clearance for road trip lane */}
+      <div data-roadtrip-divider="3" className="py-8 my-2 flex items-center justify-center" aria-hidden="true">
+        <div className="jaali-border-divider opacity-60 w-full" />
+      </div>
 
       <div className="reveal-on-scroll relative p-8 sm:p-12 rounded-3xl bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] text-center space-y-6 overflow-hidden">
 

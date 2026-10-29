@@ -18,7 +18,7 @@ export const PerspectiveDeck: React.FC<PerspectiveDeckProps> = ({
   const selectedProfile = ROUTE_PROFILES.find((p) => p.id === selectedProfileId) || ROUTE_PROFILES[0];
 
   return (
-    <div id="preview" className="relative max-w-5xl mx-auto w-full z-10 px-4 py-8">
+    <div id="preview" className="relative max-w-5xl mx-auto w-full z-10 px-6 md:px-12 py-8">
       {/* Tab selection for mobile or easy switching */}
       <div className="flex justify-center items-center gap-2 mb-6">
         <button
