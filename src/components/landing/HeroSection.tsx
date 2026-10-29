@@ -100,14 +100,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
       <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14 sm:pt-14 sm:pb-20 flex items-center min-h-[580px] sm:min-h-[640px]">
         <div className="max-w-[46%] sm:max-w-[50%] lg:max-w-[44%] text-left space-y-5 sm:space-y-6 pt-12 sm:pt-0">
 
-          {/* Eyebrow label */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FFFDF9] border-[1.2px] border-[#14121F] shadow-[2px_2px_0_#14121F]">
-            <span className="w-2 h-2 rounded-full bg-[#D8472B]" aria-hidden="true" />
-            <span className="text-[11px] font-bold text-[#14121F] tracking-wide uppercase">
-              India&apos;s Commuter Navigation Engine
-            </span>
-          </div>
-
           {/*
             Headline: 2 lines on desktop using clamp().
             Line 1: Navigation built for India.
