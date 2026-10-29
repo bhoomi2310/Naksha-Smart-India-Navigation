@@ -22,9 +22,6 @@ export const FreeAccessSection: React.FC<FreeAccessSectionProps> = ({
 
       {/* Header */}
       <div className="reveal-on-scroll text-center mb-12 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FFFDF9] border-[1.2px] border-[#14121F] shadow-[2px_2px_0_#14121F] text-xs font-bold text-[#14121F]">
-          <span>Public Infrastructure</span>
-        </div>
         <h2 className="text-3xl sm:text-4xl font-black text-[#14121F] font-display tracking-tight">
           100% Free Public Map. No Subscriptions.
         </h2>

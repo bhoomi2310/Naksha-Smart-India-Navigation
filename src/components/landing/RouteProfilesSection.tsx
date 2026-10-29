@@ -14,9 +14,6 @@ export const RouteProfilesSection: React.FC<RouteProfilesSectionProps> = ({ onSe
 
       {/* Section Header */}
       <div className="reveal-on-scroll text-center mb-12 space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FFFDF9] border-[1.2px] border-[#14121F] shadow-[2px_2px_0_#14121F] text-xs font-bold text-[#14121F]">
-          <span>Tailored For Indian Roads</span>
-        </div>
         <h2 className="text-3xl sm:text-4xl font-black text-[#14121F] font-display tracking-tight">
           6 Ways to Travel Your City
         </h2>
@@ -44,18 +41,13 @@ export const RouteProfilesSection: React.FC<RouteProfilesSectionProps> = ({ onSe
               onClick={onSelectRoute}
               className={`reveal-on-scroll ${delayClass} p-6 rounded-2xl bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] hover:-translate-y-1 hover:shadow-[5px_5px_0_#14121F] transition-all duration-200 cursor-pointer group text-left space-y-4`}
             >
-              {/* Top Row: Icon with distinct color tint + subtle arrow badge */}
+              {/* Top Row: Icon only */}
               <div className="flex items-center justify-between">
                 <div
                   className="w-11 h-11 rounded-xl border-[1.5px] border-[#14121F] shadow-[2px_2px_0_#14121F] flex items-center justify-center transition-transform group-hover:scale-105"
                   style={{ backgroundColor: profile.bgTint, color: profile.accentColor }}
                 >
                   <Icon className="w-5 h-5" />
-                </div>
-                
-                <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-[11px] font-bold text-[#14121F] group-hover:bg-[#F2A31B] transition-colors">
-                  <span>{profile.timeExample}</span>
-                  <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </div>
 

@@ -19,10 +19,6 @@ export const Footer: React.FC = () => {
             <p className="text-xs sm:text-sm text-[#524C61] max-w-sm leading-relaxed">
               India-first navigation engine comparing real-time elevated flyovers, streetlighting coverage, safe night corridors, and multi-modal transit fares.
             </p>
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#FFFDF9] border-[1.2px] border-[#14121F] shadow-[2px_2px_0_#14121F] text-[11px] font-bold text-[#14121F]">
-              <span className="w-2 h-2 rounded-full bg-[#D8472B]" aria-hidden="true" />
-              <span>Made with care in India</span>
-            </div>
           </div>
 
           {/* Navigation Links */}

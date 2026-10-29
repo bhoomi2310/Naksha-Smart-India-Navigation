@@ -66,48 +66,48 @@ const Settings = () => {
         </div>
 
         {/* Indian Road Condition Settings */}
-        <div className="ink-card rounded-2xl p-5 space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-zinc-800">
-            <div className="p-1.5 rounded-lg bg-orange-600/10 text-orange-400 border border-orange-500/20">
+        <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] rounded-2xl p-5 space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-[#14121F]/15">
+            <div className="p-1.5 rounded-lg bg-[#FDF0ED] text-[#D8472B] border-[1.2px] border-[#14121F]">
               <Map className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-white">Road & Routing Preferences</h3>
-              <p className="text-xs text-zinc-400">Control how Naksha evaluates potholes, signals, and hazards</p>
+              <h3 className="text-sm font-bold text-[#14121F]">Road &amp; Routing Preferences</h3>
+              <p className="text-xs text-[#524C61]">Control how Naksha evaluates potholes, signals, and hazards</p>
             </div>
           </div>
 
           <div className="space-y-3.5 text-xs">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-white text-xs font-medium">Night Safety & Streetlight Filter</Label>
-                <p className="text-[11px] text-zinc-400">Prioritize paths with over 90% operational streetlights after dark</p>
+                <Label className="text-[#14121F] text-xs font-bold">Night Safety &amp; Streetlight Filter</Label>
+                <p className="text-[11px] text-[#524C61]">Prioritize paths with over 90% operational streetlights after dark</p>
               </div>
               <Switch checked={nightSafetyFilter} onCheckedChange={setNightSafetyFilter} />
             </div>
 
-            <Separator className="bg-zinc-800" />
+            <Separator className="bg-[#14121F]/15" />
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-white text-xs font-medium">Monsoon Waterlogging Warnings</Label>
-                <p className="text-[11px] text-zinc-400">Alerts when rain exceeds 2mm on planned underpasses</p>
+                <Label className="text-[#14121F] text-xs font-bold">Monsoon Waterlogging Warnings</Label>
+                <p className="text-[11px] text-[#524C61]">Alerts when rain exceeds 2mm on planned underpasses</p>
               </div>
               <Switch checked={monsoonAlerts} onCheckedChange={setMonsoonAlerts} />
             </div>
 
-            <Separator className="bg-zinc-800" />
+            <Separator className="bg-[#14121F]/15" />
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-white text-xs font-medium">Pothole Reroute Sensitivity</Label>
-                <p className="text-[11px] text-zinc-400">Reroute when road segment contains frequent craters</p>
+                <Label className="text-[#14121F] text-xs font-bold">Pothole Reroute Sensitivity</Label>
+                <p className="text-[11px] text-[#524C61]">Reroute when road segment contains frequent craters</p>
               </div>
               <Select value={potholeSensitivity} onValueChange={setPotholeSensitivity}>
-                <SelectTrigger className="w-40 bg-zinc-950 border-zinc-700 text-white rounded-lg text-xs h-8">
+                <SelectTrigger className="w-40 bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-[#14121F] rounded-lg text-xs h-8 shadow-[1px_1px_0_#14121F]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-zinc-800 text-white text-xs">
+                <SelectContent className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] text-[#14121F] text-xs shadow-[3px_3px_0_#14121F]">
                   <SelectItem value="high">High (Avoid all)</SelectItem>
                   <SelectItem value="medium">Medium (Major only)</SelectItem>
                   <SelectItem value="low">Low (Standard)</SelectItem>
@@ -118,38 +118,38 @@ const Settings = () => {
         </div>
 
         {/* Audio & Voice Guidance */}
-        <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-5 space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-zinc-800">
-            <div className="p-1.5 rounded-lg bg-purple-600/10 text-purple-400 border border-purple-500/20">
+        <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] rounded-2xl p-5 space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-[#14121F]/15">
+            <div className="p-1.5 rounded-lg bg-[#EAF4F3] text-[#1F6F6B] border-[1.2px] border-[#14121F]">
               <Volume2 className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-white">Audio Guidance</h3>
-              <p className="text-xs text-zinc-400">Spoken navigation prompts during live drive simulation</p>
+              <h3 className="text-sm font-bold text-[#14121F]">Audio Guidance</h3>
+              <p className="text-xs text-[#524C61]">Spoken navigation prompts during live drive simulation</p>
             </div>
           </div>
 
           <div className="space-y-3.5 text-xs">
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-white text-xs font-medium">Spoken Turn Prompts</Label>
-                <p className="text-[11px] text-zinc-400">Speak directions as you approach turns and flyovers</p>
+                <Label className="text-[#14121F] text-xs font-bold">Spoken Turn Prompts</Label>
+                <p className="text-[11px] text-[#524C61]">Speak directions as you approach turns and flyovers</p>
               </div>
               <Switch checked={voiceGuidance} onCheckedChange={setVoiceGuidance} />
             </div>
 
-            <Separator className="bg-zinc-800" />
+            <Separator className="bg-[#14121F]/15" />
 
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
-                <Label className="text-white text-xs font-medium">Voice Language Accent</Label>
-                <p className="text-[11px] text-zinc-400">Speech synthesis voice profile</p>
+                <Label className="text-[#14121F] text-xs font-bold">Voice Language Accent</Label>
+                <p className="text-[11px] text-[#524C61]">Speech synthesis voice profile</p>
               </div>
               <Select value={voiceLanguage} onValueChange={setVoiceLanguage}>
-                <SelectTrigger className="w-44 bg-zinc-950 border-zinc-700 text-white rounded-lg text-xs h-8">
+                <SelectTrigger className="w-44 bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-[#14121F] rounded-lg text-xs h-8 shadow-[1px_1px_0_#14121F]">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-900 border-zinc-800 text-white text-xs">
+                <SelectContent className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] text-[#14121F] text-xs shadow-[3px_3px_0_#14121F]">
                   <SelectItem value="en-IN">Indian English (en-IN)</SelectItem>
                   <SelectItem value="hi-IN">Hindi Voice (hi-IN)</SelectItem>
                   <SelectItem value="en-GB">Standard English</SelectItem>
@@ -163,7 +163,7 @@ const Settings = () => {
         <div className="flex justify-end pt-2">
           <Button
             onClick={handleSavePreferences}
-            className="bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs px-6 py-4 rounded-xl"
+            className="ink-btn-primary px-6 h-10 rounded-xl text-xs font-bold"
           >
             Save Preferences
           </Button>

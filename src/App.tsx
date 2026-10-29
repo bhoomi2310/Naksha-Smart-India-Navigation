@@ -29,6 +29,13 @@ const App = () => {
 
     const handleReplay = () => setShowInitialLoader(true);
     window.addEventListener('replay-naksha-loader', handleReplay);
+    
+    // Ensure light paper theme is enforced across all routes
+    document.documentElement.classList.remove('dark');
+    try {
+      localStorage.setItem('theme', 'light');
+    } catch {}
+
     return () => window.removeEventListener('replay-naksha-loader', handleReplay);
   }, []);
 
@@ -37,6 +44,7 @@ const App = () => {
       <ThemeProvider
         attribute="class"
         defaultTheme="light"
+        forcedTheme="light"
         enableSystem={false}
         disableTransitionOnChange
       >

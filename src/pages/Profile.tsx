@@ -169,7 +169,7 @@ const Profile = () => {
                       setAuthMode('login');
                       setIsAuthModalOpen(true);
                     }}
-                    className="bg-orange-600 hover:bg-orange-500 text-white font-semibold text-xs h-10 px-6 rounded-xl shadow-lg shadow-orange-600/20"
+                    className="ink-btn-primary text-xs h-10 px-6 rounded-xl"
                   >
                     Sign In
                   </Button>
@@ -179,16 +179,16 @@ const Profile = () => {
                       setIsAuthModalOpen(true);
                     }}
                     variant="outline"
-                    className="border-zinc-700 bg-zinc-900/80 hover:bg-zinc-800 text-zinc-200 text-xs font-semibold h-10 px-6 rounded-xl"
+                    className="ink-btn-secondary text-xs h-10 px-6 rounded-xl"
                   >
                     Create Free Account
                   </Button>
                   <Link to="/dashboard">
                     <Button
                       variant="ghost"
-                      className="text-zinc-400 hover:text-white text-xs h-10 px-4 rounded-xl flex items-center gap-1.5"
+                      className="text-[#524C61] hover:text-[#14121F] text-xs h-10 px-4 rounded-xl flex items-center gap-1.5"
                     >
-                      <Compass className="w-4 h-4" />
+                      <Compass className="w-4 h-4 text-[#D8472B]" />
                       Explore Navigation
                     </Button>
                   </Link>
@@ -199,38 +199,38 @@ const Profile = () => {
             {/* Why Create an Account Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold text-white">
+                <h2 className="text-lg font-bold text-[#14121F]">
                   What you get with a free Naksha account
                 </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-                  <div className="w-9 h-9 rounded-xl bg-orange-600/10 text-orange-400 border border-orange-500/20 flex items-center justify-center">
+                <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] rounded-2xl p-5 space-y-2">
+                  <div className="w-9 h-9 rounded-xl bg-[#FDF0ED] text-[#D8472B] border-[1.2px] border-[#14121F] flex items-center justify-center">
                     <RouteIcon className="w-4 h-4" />
                   </div>
-                  <h3 className="text-sm font-bold text-white">Trip History & Stats</h3>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <h3 className="text-sm font-bold text-[#14121F]">Trip History &amp; Stats</h3>
+                  <p className="text-xs text-[#524C61] leading-relaxed">
                     Automatically log every trip taken, total kilometers navigated, and minutes saved through smart traffic avoidance.
                   </p>
                 </div>
 
-                <div className="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+                <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] rounded-2xl p-5 space-y-2">
+                  <div className="w-9 h-9 rounded-xl bg-[#EAF4F3] text-[#1F6F6B] border-[1.2px] border-[#14121F] flex items-center justify-center">
                     <Leaf className="w-4 h-4" />
                   </div>
-                  <h3 className="text-sm font-bold text-white">Eco Yatri Score</h3>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <h3 className="text-sm font-bold text-[#14121F]">Eco Yatri Score</h3>
+                  <p className="text-xs text-[#524C61] leading-relaxed">
                     Monitor your carbon reduction score and fuel economy based on low-congestion corridor selection and transit use.
                   </p>
                 </div>
 
-                <div className="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-5 space-y-2">
-                  <div className="w-9 h-9 rounded-xl bg-amber-600/10 text-amber-400 border border-amber-500/20 flex items-center justify-center">
+                <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] rounded-2xl p-5 space-y-2">
+                  <div className="w-9 h-9 rounded-xl bg-[#FEF8EA] text-[#C98109] border-[1.2px] border-[#14121F] flex items-center justify-center">
                     <AlertTriangle className="w-4 h-4" />
                   </div>
-                  <h3 className="text-sm font-bold text-white">Verified Citizen Hazard Reports</h3>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <h3 className="text-sm font-bold text-[#14121F]">Verified Citizen Hazard Reports</h3>
+                  <p className="text-xs text-[#524C61] leading-relaxed">
                     Submit verified pothole, waterlogging, and broken streetlight warnings to alert fellow Indian commuters.
                   </p>
                 </div>
@@ -243,22 +243,22 @@ const Profile = () => {
         {loggedIn && profile && (
           <div className="space-y-6">
             {/* Profile Overview Card */}
-            <div className="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-6 sm:p-7 shadow-xl">
+            <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[4px_4px_0_#14121F] rounded-2xl p-6 sm:p-7 text-[#14121F]">
               <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
                 <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-                  <div className="w-16 h-16 rounded-2xl bg-orange-600/10 border border-orange-500/30 flex items-center justify-center text-xl font-bold text-orange-400 shadow-inner">
+                  <div className="w-16 h-16 rounded-2xl bg-[#FDF0ED] border-[1.5px] border-[#14121F] shadow-[2px_2px_0_#14121F] flex items-center justify-center text-xl font-bold text-[#D8472B]">
                     {name ? name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'U'}
                   </div>
 
                   <div>
                     <div className="flex items-center justify-center sm:justify-start gap-2.5">
-                      <h1 className="text-xl font-bold text-white">{name}</h1>
-                      <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-semibold">
+                      <h1 className="text-xl font-bold text-[#14121F]">{name}</h1>
+                      <Badge className="bg-[#EAF4F3] text-[#1F6F6B] border-[1.2px] border-[#1F6F6B] text-[10px] font-semibold">
                         Active Commuter
                       </Badge>
                     </div>
-                    <p className="text-xs text-zinc-400 mt-1">{profile.email}</p>
-                    <p className="text-xs text-zinc-500 mt-0.5">
+                    <p className="text-xs text-[#524C61] mt-1">{profile.email}</p>
+                    <p className="text-xs text-[#524C61] mt-0.5">
                       {phone ? `${phone} • ` : ''}India
                     </p>
                   </div>
@@ -275,14 +275,14 @@ const Profile = () => {
                         }}
                         variant="outline"
                         size="sm"
-                        className="border-zinc-700 text-zinc-300 rounded-xl text-xs h-9"
+                        className="ink-btn-secondary text-xs h-9"
                       >
                         Cancel
                       </Button>
                       <Button
                         onClick={handleSave}
                         size="sm"
-                        className="bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs h-9"
+                        className="ink-btn-primary text-xs h-9"
                       >
                         <Check className="w-3.5 h-3.5 mr-1" />
                         Save Changes
@@ -293,7 +293,7 @@ const Profile = () => {
                       onClick={() => setIsEditing(true)}
                       variant="outline"
                       size="sm"
-                      className="border-zinc-700 bg-zinc-800/80 text-zinc-300 hover:text-white rounded-xl text-xs h-9"
+                      className="ink-btn-secondary text-xs h-9 flex items-center"
                     >
                       <Edit2 className="w-3.5 h-3.5 mr-1.5" />
                       Edit Profile
@@ -304,7 +304,7 @@ const Profile = () => {
                     onClick={handleSignOut}
                     variant="ghost"
                     size="sm"
-                    className="text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl text-xs h-9"
+                    className="text-[#524C61] hover:text-[#D8472B] hover:bg-[#FDF0ED] rounded-xl text-xs h-9 border-[1.2px] border-transparent hover:border-[#D8472B]/30"
                   >
                     <LogOut className="w-3.5 h-3.5 mr-1.5" />
                     Sign Out
@@ -313,23 +313,23 @@ const Profile = () => {
               </div>
 
               {isEditing && (
-                <div className="mt-5 pt-5 border-t border-zinc-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="mt-5 pt-5 border-t border-[#14121F]/15 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-xs text-zinc-300">Full Name</Label>
+                    <Label className="text-xs font-bold text-[#14121F]">Full Name</Label>
                     <Input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Your full name"
-                      className="mt-1 bg-zinc-950 border-zinc-700 text-white rounded-xl text-xs h-10"
+                      className="mt-1 bg-[#FFFDF9] border-[1.5px] border-[#14121F] text-[#14121F] rounded-xl text-xs h-10 shadow-[2px_2px_0_#14121F]"
                     />
                   </div>
                   <div>
-                    <Label className="text-xs text-zinc-300">Phone Number</Label>
+                    <Label className="text-xs font-bold text-[#14121F]">Phone Number</Label>
                     <Input
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="mt-1 bg-zinc-950 border-zinc-700 text-white rounded-xl text-xs h-10"
+                      className="mt-1 bg-[#FFFDF9] border-[1.5px] border-[#14121F] text-[#14121F] rounded-xl text-xs h-10 shadow-[2px_2px_0_#14121F]"
                     />
                   </div>
                 </div>
@@ -338,55 +338,55 @@ const Profile = () => {
 
             {/* Real Stats Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-2xl text-center">
-                <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Routes Taken</div>
-                <div className="text-2xl font-black text-white mt-1">{profile.stats.routesTaken}</div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">Trips logged</div>
+              <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] p-4 rounded-2xl text-center">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-[#524C61]">Routes Taken</div>
+                <div className="text-2xl font-black text-[#14121F] mt-1">{profile.stats.routesTaken}</div>
+                <div className="text-[10px] text-[#524C61] mt-0.5">Trips logged</div>
               </div>
 
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-2xl text-center">
-                <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Distance</div>
-                <div className="text-2xl font-black text-cyan-300 mt-1">
+              <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] p-4 rounded-2xl text-center">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-[#524C61]">Distance</div>
+                <div className="text-2xl font-black text-[#1F6F6B] mt-1">
                   {profile.stats.distanceTraveled} km
                 </div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">Total traveled</div>
+                <div className="text-[10px] text-[#524C61] mt-0.5">Total traveled</div>
               </div>
 
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-2xl text-center">
-                <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Time Saved</div>
-                <div className="text-2xl font-black text-emerald-400 mt-1">
+              <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] p-4 rounded-2xl text-center">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-[#524C61]">Time Saved</div>
+                <div className="text-2xl font-black text-[#1F6F6B] mt-1">
                   {profile.stats.timeSaved >= 60 
                     ? `${(profile.stats.timeSaved / 60).toFixed(1)} hrs` 
                     : `${profile.stats.timeSaved} mins`}
                 </div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">Traffic bypasses</div>
+                <div className="text-[10px] text-[#524C61] mt-0.5">Traffic bypasses</div>
               </div>
 
-              <div className="bg-zinc-900/80 border border-zinc-800 p-4 rounded-2xl text-center">
-                <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400">Eco Yatri Score</div>
-                <div className="text-2xl font-black text-lime-400 mt-1">
+              <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] p-4 rounded-2xl text-center">
+                <div className="text-[10px] uppercase font-bold tracking-wider text-[#524C61]">Eco Yatri Score</div>
+                <div className="text-2xl font-black text-[#D8472B] mt-1">
                   {profile.stats.ecoScore}%
                 </div>
-                <div className="text-[10px] text-zinc-500 mt-0.5">Fuel & emissions</div>
+                <div className="text-[10px] text-[#524C61] mt-0.5">Fuel &amp; emissions</div>
               </div>
             </div>
 
             {/* Recent Trips Log */}
-            <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+            <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[4px_4px_0_#14121F] rounded-2xl p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#14121F]/15">
                 <div>
-                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                    <RouteIcon className="w-4 h-4 text-orange-400" />
-                    Recorded Journeys & Commute History
+                  <h2 className="text-sm font-bold text-[#14121F] flex items-center gap-2">
+                    <RouteIcon className="w-4 h-4 text-[#D8472B]" />
+                    Recorded Journeys &amp; Commute History
                   </h2>
-                  <p className="text-xs text-zinc-400 mt-0.5">
+                  <p className="text-xs text-[#524C61] mt-0.5">
                     Live routes calculated and traveled from the Navigation Console
                   </p>
                 </div>
                 <Link to="/dashboard">
                   <Button
                     size="sm"
-                    className="bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold rounded-xl h-8 px-3"
+                    className="ink-btn-primary text-xs font-semibold rounded-xl h-8 px-3"
                   >
                     Start New Trip
                   </Button>
@@ -395,12 +395,12 @@ const Profile = () => {
 
               {profile.recentTrips.length === 0 ? (
                 <div className="py-10 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-zinc-800 text-zinc-500 flex items-center justify-center mx-auto">
-                    <Compass className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-[#14121F] flex items-center justify-center mx-auto shadow-[2px_2px_0_#14121F]">
+                    <Compass className="w-6 h-6 text-[#D8472B]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-300">No journeys recorded yet</h3>
-                    <p className="text-xs text-zinc-500 max-w-sm mx-auto mt-1">
+                    <h3 className="text-sm font-bold text-[#14121F]">No journeys recorded yet</h3>
+                    <p className="text-xs text-[#524C61] max-w-sm mx-auto mt-1">
                       Choose an origin and destination on the Navigation Console and start navigation to log your first journey.
                     </p>
                   </div>
@@ -408,23 +408,23 @@ const Profile = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-zinc-700 text-zinc-300 text-xs rounded-xl"
+                      className="ink-btn-secondary text-xs rounded-xl"
                     >
                       Plan Route Now
                     </Button>
                   </Link>
                 </div>
               ) : (
-                <div className="divide-y divide-zinc-800/80">
+                <div className="divide-y divide-[#14121F]/15">
                   {profile.recentTrips.map((trip, idx) => (
                     <div key={idx} className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold text-white">{trip.from}</span>
-                          <ArrowRight className="w-3 h-3 text-zinc-500 flex-shrink-0" />
-                          <span className="font-semibold text-white">{trip.to}</span>
+                          <span className="font-bold text-[#14121F]">{trip.from}</span>
+                          <ArrowRight className="w-3 h-3 text-[#524C61] flex-shrink-0" />
+                          <span className="font-bold text-[#14121F]">{trip.to}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-zinc-400 text-[11px]">
+                        <div className="flex items-center gap-2 text-[#524C61] text-[11px]">
                           <span>{trip.date}</span>
                           <span>•</span>
                           <span className="capitalize">{trip.type} route</span>
@@ -439,9 +439,9 @@ const Profile = () => {
 
                       <div className="flex items-center gap-3">
                         <div className="text-right">
-                          <div className="font-semibold text-white">{trip.duration}</div>
+                          <div className="font-bold text-[#14121F]">{trip.duration}</div>
                           {trip.saved && (
-                            <div className="text-[10px] text-emerald-400">Saved {trip.saved}</div>
+                            <div className="text-[10px] font-bold text-[#1F6F6B]">Saved {trip.saved}</div>
                           )}
                         </div>
                       </div>

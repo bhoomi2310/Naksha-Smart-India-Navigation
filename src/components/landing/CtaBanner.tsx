@@ -15,11 +15,6 @@ export const CtaBanner: React.FC<CtaBannerProps> = ({ onOpenDashboard }) => {
       <div className="reveal-on-scroll relative p-8 sm:p-12 rounded-3xl bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] text-center space-y-6 overflow-hidden">
 
         <div className="relative z-10 max-w-xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-xs font-bold text-[#14121F]">
-            <Compass className="w-3.5 h-3.5 text-[#D8472B]" />
-            <span>Ready for your next journey?</span>
-          </div>
-
           <h2 className="text-3xl sm:text-4xl font-black text-[#14121F] font-display tracking-tight">
             Navigation Built for Indian Cities.
           </h2>
