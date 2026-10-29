@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, Compass, Settings, User, LogOut, GitFork } from 'lucide-react';
+import { Menu, Compass, Settings, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { isAuthenticated, authAPI } from '@/lib/api';
@@ -23,13 +23,11 @@ export const Navigation = () => {
   const navItems = loggedIn
     ? [
         { icon: Compass, label: 'Navigation', href: '/dashboard' },
-        { icon: GitFork, label: 'Route Profiles', href: '/routes' },
         { icon: User, label: 'Profile & Trips', href: '/profile' },
         { icon: Settings, label: 'Settings', href: '/settings' },
       ]
     : [
         { icon: Compass, label: 'Navigation', href: '/dashboard' },
-        { icon: GitFork, label: 'Route Profiles', href: '/routes' },
       ];
 
   const handleLogout = () => {
