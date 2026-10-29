@@ -35,7 +35,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
           </div>
 
           {/* Big Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-[#14121F] font-display tracking-tight leading-[1.08]">
+          <h1 className="text-2xl sm:text-5xl lg:text-6xl font-black text-[#14121F] font-display tracking-tight leading-[1.15] sm:leading-[1.08]">
             Navigation built for India.
             <br />
             <span className="text-[#14121F]">Fastest, Safest, or </span>
@@ -43,7 +43,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
               <span className="relative z-10">Scenic.</span>
               {/* Hand-drawn marigold swash SVG underline */}
               <svg
-                className="absolute left-0 -bottom-2 w-full h-3.5 text-[#F2A31B] pointer-events-none"
+                className="absolute left-0 -bottom-1.5 sm:-bottom-2 w-full h-3 sm:h-3.5 text-[#F2A31B] pointer-events-none"
                 viewBox="0 0 150 16"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -61,18 +61,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
           </h1>
 
           {/* Short, concrete human subcopy (no em dashes) */}
-          <p className="text-base sm:text-lg text-[#524C61] max-w-xl font-normal leading-relaxed">
+          <p className="text-sm sm:text-lg text-[#524C61] max-w-xl font-normal leading-relaxed">
             Pick routes based on real Indian road conditions: bypass ground-level bottleneck jams via signal-free flyovers, stay on verified illuminated roads after sunset, or take calm tree-lined heritage avenues.
           </p>
 
           {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
             <Button
               size="lg"
               onClick={onStartNavigation}
-              className="ink-btn-primary text-sm font-bold px-7 py-5 rounded-xl flex items-center gap-2"
+              className="ink-btn-primary text-sm font-bold px-7 py-5 rounded-xl flex items-center justify-center gap-2"
             >
-              Start Navigation
+              <span>Start Navigation</span>
               <ArrowRight className="w-4 h-4" />
             </Button>
 
@@ -80,10 +80,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
               variant="outline"
               size="lg"
               onClick={scrollToProfiles}
-              className="ink-btn-secondary text-sm font-semibold px-6 py-5 rounded-xl flex items-center gap-2"
+              className="ink-btn-secondary text-sm font-semibold px-6 py-5 rounded-xl flex items-center justify-center gap-2"
             >
               <Compass className="w-4 h-4 text-[#D8472B]" />
-              Explore {profileCount} Profiles
+              <span>Explore {profileCount} Profiles</span>
             </Button>
           </div>
 

@@ -66,7 +66,7 @@ export const NakshaLogo: React.FC<NakshaLogoProps> = ({
               Naksha
             </span>
           </div>
-          <span className="text-[10px] text-[#524C61] font-semibold tracking-wider mt-0.5">
+          <span className="hidden sm:block text-[10px] text-[#524C61] font-semibold tracking-wider mt-0.5">
             Built for India
           </span>
         </div>
@@ -76,3 +76,4 @@ export const NakshaLogo: React.FC<NakshaLogoProps> = ({
 };
 
 export default NakshaLogo;
+

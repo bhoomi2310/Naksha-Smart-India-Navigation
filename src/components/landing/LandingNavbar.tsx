@@ -114,11 +114,11 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
           </div>
 
           {/* Mobile Hamburger Drawer */}
-          <div className="flex sm:hidden items-center gap-2">
+          <div className="flex sm:hidden items-center gap-1.5">
             <Button
               size="sm"
               onClick={onOpenDashboard}
-              className="ink-btn-primary text-xs rounded-md px-3 py-1.5"
+              className="ink-btn-primary text-xs rounded-md px-2.5 py-1"
             >
               Open Map
             </Button>
