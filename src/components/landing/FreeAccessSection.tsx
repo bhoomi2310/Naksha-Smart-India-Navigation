@@ -16,7 +16,7 @@ export const FreeAccessSection: React.FC<FreeAccessSectionProps> = ({
   onOpenProfile,
 }) => {
   return (
-    <section id="access" className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
+    <section id="access" className="relative z-10 py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full">
       {/* Jaali separator */}
       <div className="jaali-border-divider mb-12 opacity-60" aria-hidden="true" />
 
