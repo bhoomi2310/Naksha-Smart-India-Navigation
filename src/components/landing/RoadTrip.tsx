@@ -470,13 +470,14 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
     >
       <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${layout.width} ${layout.height}`}>
         <defs>
-          {/* Progressive stroke-dashoffset reveal clip mask over 1.4s */}
-          <clipPath id="roadtrip-reveal-clip">
+          {/* Progressive stroke-dashoffset reveal mask over 1.4s */}
+          <mask id="roadtrip-reveal-mask" maskUnits="userSpaceOnUse">
+            <rect x="0" y="0" width={layout.width} height={layout.height} fill="#000000" />
             <path
               d={layout.pathD}
               fill="none"
               stroke="#ffffff"
-              strokeWidth={isDesktop ? 30 : 22}
+              strokeWidth={isDesktop ? 36 : 28}
               strokeLinecap="round"
               strokeLinejoin="round"
               style={{
@@ -485,14 +486,14 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
                 transition: 'stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1)',
               }}
             />
-          </clipPath>
+          </mask>
         </defs>
 
         {/* Hidden measurement path */}
         <path ref={pathRef} d={layout.pathD} fill="none" stroke="transparent" strokeWidth="1" />
 
-        {/* Revealed Road: clipped so asphalt and dashed marigold center line reveal in unison */}
-        <g clipPath="url(#roadtrip-reveal-clip)">
+        {/* Revealed Road: masked so asphalt and dashed marigold center line reveal in unison */}
+        <g mask="url(#roadtrip-reveal-mask)">
           {/* Soft ink asphalt stroke at 10% opacity */}
           <path
             d={layout.pathD}
