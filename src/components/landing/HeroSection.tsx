@@ -55,10 +55,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
   };
 
   return (
-    <section className="relative w-full min-h-[580px] sm:min-h-[640px] pt-8 pb-14 sm:pt-14 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto flex items-center overflow-hidden">
+    <section className="relative w-full min-h-[580px] sm:min-h-[640px] overflow-hidden">
 
       {/*
         HERO BACKGROUND: Auto illustration as full-bleed right panel.
+        Positioned absolute on the full-width section — reaches true screen edge.
         Fades into paper background via mask-image — no overlay, no blur.
         On desktop: covers the right 70%, fade starts from 38% left.
         On mobile: top banner with bottom fade.
@@ -95,8 +96,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
         </div>
       </div>
 
-      {/* Hero Content: Left column only — no right card, no tags */}
-      <div className="relative z-10 w-full">
+      {/* Text content: constrained to max-w-6xl with standard padding */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-14 sm:pt-14 sm:pb-20 flex items-center min-h-[580px] sm:min-h-[640px]">
         <div className="max-w-[46%] sm:max-w-[50%] lg:max-w-[44%] text-left space-y-5 sm:space-y-6 pt-12 sm:pt-0">
 
           {/* Eyebrow label */}
@@ -167,8 +168,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
         </div>
       </div>
 
-    </section>
-  );
+    </section>);
 };
 
 export default HeroSection;
