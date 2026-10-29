@@ -19,6 +19,19 @@ export const PerspectiveDeck: React.FC<PerspectiveDeckProps> = ({
 
   return (
     <div id="preview" className="relative max-w-5xl mx-auto w-full z-10 px-6 md:px-12 py-8">
+      {/* Traditional Indian Jaali Diamond Divider */}
+      <div data-roadtrip-divider="1" className="py-8 my-2 flex items-center justify-center" aria-hidden="true">
+        <svg className="w-64 h-3 text-[#14121F]/30" viewBox="0 0 256 12" fill="none">
+          <line x1="0" y1="6" x2="256" y2="6" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+          <path d="M 64 6 L 80 1 L 96 6 L 80 11 Z" fill="#FDF0ED" stroke="#D8472B" strokeWidth="1.2" />
+          <path d="M 112 6 L 128 1 L 144 6 L 128 11 Z" fill="#FEF8EA" stroke="#F2A31B" strokeWidth="1.2" />
+          <path d="M 160 6 L 176 1 L 192 6 L 176 11 Z" fill="#EAF4F3" stroke="#1F6F6B" strokeWidth="1.2" />
+          <circle cx="80" cy="6" r="1.5" fill="#D8472B" />
+          <circle cx="128" cy="6" r="1.5" fill="#F2A31B" />
+          <circle cx="176" cy="6" r="1.5" fill="#1F6F6B" />
+        </svg>
+      </div>
+
       {/* Tab selection for mobile or easy switching */}
       <div className="flex justify-center items-center gap-2 mb-6">
         <button

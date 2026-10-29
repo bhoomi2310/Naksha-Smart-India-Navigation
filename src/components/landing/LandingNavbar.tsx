@@ -57,10 +57,10 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
               Navigation
             </Link>
             <a
-              href="#route-profiles"
+              href="#preview"
               className="pb-1 text-[#524C61] hover:text-[#D8472B] transition-colors border-b-2 border-transparent"
             >
-              Corridors
+              Route Preview
             </a>
             <a
               href="#access"
@@ -143,11 +143,11 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
                       </Link>
 
                       <a
-                        href="#route-profiles"
+                        href="#preview"
                         onClick={() => setMobileMenuOpen(false)}
                         className="p-2.5 text-xs font-semibold text-[#524C61] hover:text-[#14121F]"
                       >
-                        Corridors
+                        Route Preview
                       </a>
 
                       <a

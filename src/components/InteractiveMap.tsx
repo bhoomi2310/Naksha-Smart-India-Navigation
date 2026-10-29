@@ -132,7 +132,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   onReportHazardClick,
   className = ''
 }) => {
-  const [mapStyle, setMapStyle] = useState<'dark' | 'street' | 'satellite'>('dark');
+  const [mapStyle, setMapStyle] = useState<'carto' | 'street' | 'satellite'>('street');
   const [showPotholeHeatmap, setShowPotholeHeatmap] = useState(true);
 
   // Selected route object
@@ -144,43 +144,43 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
   const endPoint = activeRoute?.coordinates?.[activeRoute.coordinates.length - 1];
 
   const tileUrls = {
-    dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    carto: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
     street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+    satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   };
 
   const tileAttributions = {
-    dark: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
+    carto: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
     street: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
     satellite: 'Tiles &copy; Esri - Source: Esri, i-cubed, USDA, USGS'
   };
 
   return (
-    <div className={`relative w-full h-full min-h-[480px] rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-950 ${className}`}>
+    <div className={`relative w-full h-full min-h-[480px] rounded-2xl overflow-hidden border-[1.5px] border-[#14121F] shadow-[3px_3px_0_#14121F] bg-[#FAF5EC] ${className}`}>
       {/* Top Map Action Toolbar */}
       <div className="absolute top-4 left-4 z-[500] flex flex-wrap items-center gap-2">
         {/* Style Selector */}
-        <div className="flex bg-black/75 backdrop-blur-md rounded-xl p-1 border border-white/15 shadow-lg">
+        <div className="flex bg-[#FAF5EC]/95 backdrop-blur-md rounded-xl p-1 border-[1.5px] border-[#14121F] shadow-[2px_2px_0_#14121F]">
           <button
-            onClick={() => setMapStyle('dark')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              mapStyle === 'dark' ? 'bg-orange-500 text-white shadow-md' : 'text-zinc-300 hover:text-white'
+            onClick={() => setMapStyle('carto')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              mapStyle === 'carto' ? 'bg-[#D8472B] text-[#FFFDF9] shadow-[1px_1px_0_#14121F]' : 'text-[#524C61] hover:text-[#14121F]'
             }`}
           >
-            Cyber Dark
+            Paper Map
           </button>
           <button
             onClick={() => setMapStyle('street')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              mapStyle === 'street' ? 'bg-orange-500 text-white shadow-md' : 'text-zinc-300 hover:text-white'
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              mapStyle === 'street' ? 'bg-[#D8472B] text-[#FFFDF9] shadow-[1px_1px_0_#14121F]' : 'text-[#524C61] hover:text-[#14121F]'
             }`}
           >
             Street Map
           </button>
           <button
             onClick={() => setMapStyle('satellite')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              mapStyle === 'satellite' ? 'bg-orange-500 text-white shadow-md' : 'text-zinc-300 hover:text-white'
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              mapStyle === 'satellite' ? 'bg-[#D8472B] text-[#FFFDF9] shadow-[1px_1px_0_#14121F]' : 'text-[#524C61] hover:text-[#14121F]'
             }`}
           >
             Satellite
@@ -190,36 +190,36 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         {/* Pothole & Hazard Toggle */}
         <button
           onClick={() => setShowPotholeHeatmap(!showPotholeHeatmap)}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium backdrop-blur-md border shadow-lg transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold backdrop-blur-md border-[1.5px] border-[#14121F] shadow-[2px_2px_0_#14121F] transition-all ${
             showPotholeHeatmap
-              ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-              : 'bg-black/70 text-zinc-400 border-white/10 hover:text-white'
+              ? 'bg-[#FEF8EA] text-[#C98109]'
+              : 'bg-[#FAF5EC]/95 text-[#524C61] hover:text-[#14121F]'
           }`}
         >
-          <AlertTriangle className="w-3.5 h-3.5" />
+          <AlertTriangle className="w-3.5 h-3.5 text-[#D8472B]" />
           <span>Hazards</span>
         </button>
       </div>
 
       {/* Live Map Telemetry Badge */}
       {activeRoute && (
-        <div className="absolute top-4 right-4 z-[500] bg-black/80 backdrop-blur-md border border-white/15 px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-4">
+        <div className="absolute top-4 right-4 z-[500] bg-[#FFFDF9]/95 backdrop-blur-md border-[1.5px] border-[#14121F] px-4 py-2 rounded-xl shadow-[3px_3px_0_#14121F] flex items-center gap-4 text-[#14121F]">
           <div>
-            <div className="text-[10px] uppercase font-semibold tracking-wider text-zinc-400">Road Quality Index</div>
+            <div className="text-[10px] uppercase font-bold tracking-wider text-[#524C61]">Road Quality Index</div>
             <div className="flex items-center gap-1.5">
-              <span className={`text-base font-bold ${
-                activeRoute.roadQualityIndex >= 85 ? 'text-emerald-400' : activeRoute.roadQualityIndex >= 70 ? 'text-amber-400' : 'text-rose-400'
+              <span className={`text-base font-black ${
+                activeRoute.roadQualityIndex >= 85 ? 'text-[#1F6F6B]' : activeRoute.roadQualityIndex >= 70 ? 'text-[#C98109]' : 'text-[#D8472B]'
               }`}>
                 {activeRoute.roadQualityIndex}/100
               </span>
-              <span className="text-xs text-zinc-400">RQI</span>
+              <span className="text-xs font-bold text-[#524C61]">RQI</span>
             </div>
           </div>
-          <div className="h-8 w-px bg-white/15"></div>
+          <div className="h-7 w-[1px] bg-[#14121F]/15"></div>
           <div>
-            <div className="text-[10px] uppercase font-semibold tracking-wider text-zinc-400">Live Weather</div>
-            <div className="text-xs font-medium text-cyan-300">
-              {activeRoute.weather?.temperature || 28}°C • {activeRoute.weather?.conditionText || 'Clear'}
+            <div className="text-[10px] uppercase font-bold tracking-wider text-[#524C61]">Live Weather</div>
+            <div className="text-xs font-bold text-[#1F6F6B]">
+              {activeRoute.weather?.temperature || 28}°C · {activeRoute.weather?.conditionText || 'Clear'}
             </div>
           </div>
         </div>
@@ -237,7 +237,6 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           key={mapStyle}
           attribution={tileAttributions[mapStyle]}
           url={tileUrls[mapStyle]}
-          className={mapStyle === 'dark' ? 'map-tiles-dark' : ''}
         />
 
         <MapBoundsController 
@@ -376,17 +375,17 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
       {/* Floating Bottom Quick Legend & Action */}
       <div className="absolute bottom-4 left-4 right-4 z-[500] flex flex-wrap items-center justify-between gap-2 pointer-events-none">
-        <div className="bg-black/80 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-3 text-xs text-zinc-300 pointer-events-auto">
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <div className="bg-[#FAF5EC]/95 backdrop-blur-md border-[1.5px] border-[#14121F] px-3.5 py-1.5 rounded-xl shadow-[2px_2px_0_#14121F] flex items-center gap-3 text-xs text-[#14121F] font-bold pointer-events-auto">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1F6F6B] border border-[#14121F]"></span>
             <span>Origin</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#D8472B] border border-[#14121F]"></span>
             <span>Destination</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#F2A31B] border border-[#14121F]"></span>
             <span>Hazard</span>
           </div>
         </div>
@@ -395,10 +394,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           <Button
             size="sm"
             onClick={onReportHazardClick}
-            className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-medium text-xs shadow-lg shadow-orange-500/30 rounded-xl pointer-events-auto border border-orange-400/30"
+            className="ink-btn-secondary h-8 px-3 rounded-xl text-xs font-bold flex items-center gap-1.5 pointer-events-auto"
           >
-            <AlertTriangle className="w-3.5 h-3.5 mr-1.5" />
-            Report Road Hazard
+            <AlertTriangle className="w-3.5 h-3.5 text-[#D8472B]" />
+            <span>Report Hazard</span>
           </Button>
         )}
       </div>

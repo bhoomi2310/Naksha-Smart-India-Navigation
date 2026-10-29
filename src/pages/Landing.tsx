@@ -11,7 +11,6 @@ import LandingNavbar from '@/components/landing/LandingNavbar';
 import HeroSection from '@/components/landing/HeroSection';
 import RoadTrip from '@/components/landing/RoadTrip';
 import PerspectiveDeck from '@/components/landing/PerspectiveDeck';
-import RouteProfilesSection from '@/components/landing/RouteProfilesSection';
 import FreeAccessSection from '@/components/landing/FreeAccessSection';
 import CtaBanner from '@/components/landing/CtaBanner';
 import ScrollProgressBar from '@/components/landing/ScrollProgressBar';
@@ -57,9 +56,6 @@ const Landing: React.FC = () => {
         onNavigateToDashboard={() => navigate('/dashboard')}
         onNavigateToRoutes={() => navigate('/routes')}
       />
-
-      {/* 6 Specialized Indian Route Profiles with Distinct Truck-Art Accent Colors */}
-      <RouteProfilesSection onSelectRoute={() => navigate('/routes')} />
 
       {/* Free Public Navigation vs Commuter Contributor Network */}
       <FreeAccessSection

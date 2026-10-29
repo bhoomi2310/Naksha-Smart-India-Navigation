@@ -61,6 +61,7 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
 
   const containerRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const maskPathRef = useRef<SVGPathElement>(null);
   const spriteRef = useRef<HTMLDivElement>(null);
 
   const [screenMode, setScreenMode] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
@@ -378,6 +379,12 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
 
         sprite.style.transform = `translate3d(${pt.x}px, ${pt.y}px, 0) rotate(${currentAngleRef.current.toFixed(1)}deg)`;
 
+        // Update mask path strokeDashoffset dynamically so road draws right behind the auto
+        if (maskPathRef.current) {
+          const remain = Math.max(0, actualTotalLen - dist);
+          maskPathRef.current.style.strokeDashoffset = `${remain}px`;
+        }
+
         // Check if parked at end: when target is near total length or page reached bottom
         const maxScrollDoc = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
         const isAtBottom = maxScrollDoc > 0 && window.scrollY >= maxScrollDoc - 90;
@@ -470,10 +477,11 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
     >
       <svg className="w-full h-full overflow-visible" viewBox={`0 0 ${layout.width} ${layout.height}`}>
         <defs>
-          {/* Progressive stroke-dashoffset reveal mask over 1.4s */}
+          {/* Progressive stroke-dashoffset reveal mask tracking the auto */}
           <mask id="roadtrip-reveal-mask" maskUnits="userSpaceOnUse">
             <rect x="0" y="0" width={layout.width} height={layout.height} fill="#000000" />
             <path
+              ref={maskPathRef}
               d={layout.pathD}
               fill="none"
               stroke="#ffffff"
@@ -482,8 +490,7 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
               strokeLinejoin="round"
               style={{
                 strokeDasharray: `${layout.totalLength} ${layout.totalLength + 60}`,
-                strokeDashoffset: isRoadRevealed ? 0 : layout.totalLength,
-                transition: 'stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                strokeDashoffset: `${layout.totalLength}px`,
               }}
             />
           </mask>
@@ -492,7 +499,28 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
         {/* Hidden measurement path */}
         <path ref={pathRef} d={layout.pathD} fill="none" stroke="transparent" strokeWidth="1" />
 
-        {/* Revealed Road: masked so asphalt and dashed marigold center line reveal in unison */}
+        {/* Faint planned guide ribbon visible ahead of the auto */}
+        <path
+          d={layout.pathD}
+          fill="none"
+          stroke="#E8DECD"
+          strokeWidth={isDesktop ? 14 : 10}
+          strokeOpacity="0.45"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d={layout.pathD}
+          fill="none"
+          stroke="#14121F"
+          strokeWidth="1.2"
+          strokeDasharray="6 8"
+          strokeOpacity="0.14"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Traveled Road: masked dynamically to draw right behind the auto */}
         <g mask="url(#roadtrip-reveal-mask)">
           {/* Soft ink asphalt stroke at 10% opacity */}
           <path
@@ -515,21 +543,15 @@ export const RoadTrip: React.FC<RoadTripProps> = ({ config: userConfig, classNam
             strokeLinecap="round"
             strokeLinejoin="round"
           />
-        </g>
 
-        {/* Waypoint dots at turns and start */}
-        {layout.waypoints.map((wp, i) => (
-          <g
-            key={i}
-            style={{
-              opacity: isRoadRevealed ? 1 : 0,
-              transition: `opacity 0.35s ease ${Math.min(1.2, i * 0.15)}s`,
-            }}
-          >
-            <circle cx={wp.x} cy={wp.y} r={isDesktop ? 5 : 4} fill="#14121F" stroke="#14121F" strokeWidth="1" />
-            <circle cx={wp.x} cy={wp.y} r={isDesktop ? 2.5 : 2} fill="#FFFDF9" />
-          </g>
-        ))}
+          {/* Waypoint dots at turns and start */}
+          {layout.waypoints.map((wp, i) => (
+            <g key={i}>
+              <circle cx={wp.x} cy={wp.y} r={isDesktop ? 5 : 4} fill="#14121F" stroke="#14121F" strokeWidth="1" />
+              <circle cx={wp.x} cy={wp.y} r={isDesktop ? 2.5 : 2} fill="#FFFDF9" />
+            </g>
+          ))}
+        </g>
 
         {/* Destination Pin dropped at the parking spot */}
         {isParked && <DestinationPin x={layout.xL + 26} y={layout.yPark} isAnimated={true} />}
