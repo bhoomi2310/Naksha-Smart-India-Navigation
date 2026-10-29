@@ -99,17 +99,18 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={open => !open && onClose()}>
-      <DialogContent className="p-0 border-0 max-w-sm sm:max-w-md bg-transparent shadow-none">
+      <DialogContent className="p-0 border-0 max-w-sm sm:max-w-md bg-transparent shadow-none [&>button]:hidden">
         <div className="relative rounded-2xl bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] text-[#14121F] overflow-hidden">
           
           {/* Top accent bar */}
           <div className="h-1.5 w-full bg-[#D8472B]" />
 
-          {/* Close button */}
+          {/* Close button (single, crisp ink-bordered button) */}
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="absolute right-4 top-4 p-1.5 rounded-lg border-[1.2px] border-[#14121F] bg-[#FAF5EC] hover:bg-[#FDF0ED] text-[#14121F] transition-colors"
+            className="absolute right-4 top-4 z-20 p-1.5 rounded-lg border-[1.2px] border-[#14121F] bg-[#FAF5EC] hover:bg-[#FDF0ED] text-[#14121F] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>

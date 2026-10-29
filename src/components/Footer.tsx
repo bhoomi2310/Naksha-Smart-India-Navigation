@@ -36,16 +36,6 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/routes" className="hover:text-[#D8472B] transition-colors">
-                  Route Profiles
-                </Link>
-              </li>
-              <li>
-                <a href="#route-profiles" className="hover:text-[#D8472B] transition-colors">
-                  Corridor Comparison
-                </a>
-              </li>
-              <li>
                 <Link to="/profile" className="hover:text-[#D8472B] transition-colors">
                   Saved Trips
                 </Link>
@@ -70,15 +60,9 @@ export const Footer: React.FC = () => {
             &copy; {new Date().getFullYear()} Naksha. Built for India.
           </div>
           <div className="flex items-center gap-4 text-xs">
-            <Link to="/routes" className="hover:text-[#D8472B] transition-colors">
-              6 Route Profiles
-            </Link>
-            <span aria-hidden="true">&bull;</span>
             <Link to="/settings" className="hover:text-[#D8472B] transition-colors">
               Settings
             </Link>
-            <span aria-hidden="true">&bull;</span>
-            <span className="text-[#14121F] font-semibold">Delhi NCR &bull; Mumbai &bull; Bengaluru</span>
           </div>
         </div>
       </div>

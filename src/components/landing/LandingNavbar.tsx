@@ -56,16 +56,6 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
             >
               Navigation
             </Link>
-            <Link
-              to="/routes"
-              className={`pb-1 transition-colors hover:text-[#D8472B] ${
-                location.pathname === '/routes'
-                  ? 'border-b-2 border-[#D8472B] text-[#D8472B]'
-                  : 'border-b-2 border-transparent'
-              }`}
-            >
-              Route Profiles
-            </Link>
             <a
               href="#route-profiles"
               className="pb-1 text-[#524C61] hover:text-[#D8472B] transition-colors border-b-2 border-transparent"
@@ -152,21 +142,12 @@ export const LandingNavbar: React.FC<LandingNavbarProps> = ({
                         <span>Live Navigation</span>
                       </Link>
 
-                      <Link
-                        to="/routes"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2.5 p-2.5 rounded-lg border-[1.5px] border-[#14121F] bg-[#FFFDF9] shadow-[2px_2px_0_#14121F] text-xs font-bold hover:bg-[#FAF5EC]"
-                      >
-                        <GitFork className="w-4 h-4 text-[#1F6F6B]" />
-                        <span>Route Profiles</span>
-                      </Link>
-
                       <a
                         href="#route-profiles"
                         onClick={() => setMobileMenuOpen(false)}
                         className="p-2.5 text-xs font-semibold text-[#524C61] hover:text-[#14121F]"
                       >
-                        6 Ways to Travel
+                        Corridors
                       </a>
 
                       <a
