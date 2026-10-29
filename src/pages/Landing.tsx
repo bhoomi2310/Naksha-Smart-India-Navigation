@@ -21,8 +21,6 @@ const Landing: React.FC = () => {
   const navigate = useNavigate();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
-  const [activeChip, setActiveChip] = useState<'fastest' | 'safest' | 'scenic'>('fastest');
-  const [activeWaypoint, setActiveWaypoint] = useState<'delhi' | 'corridor' | 'cyberhub'>('delhi');
   const loggedIn = isAuthenticated();
   const { scrollProgress, scrollY } = useScrollReveal();
 
@@ -36,16 +34,13 @@ const Landing: React.FC = () => {
       {/* Warm Cartographic Paper Background with Grain */}
       <AmbientBackground variant="hero" />
 
-      {/* Scroll-Driven Route Road & Auto-Rickshaw Sprite passing down the page */}
-      <ScrollRouteRoad
-        onWaypointChange={setActiveWaypoint}
-        onActiveChipChange={setActiveChip}
-      />
+      {/* Scroll-Driven Route Road & Auto-Rickshaw Sprite */}
+      <ScrollRouteRoad />
 
       {/* Subtle Top Scroll Progress Bar */}
       <ScrollProgressBar progress={scrollProgress} />
 
-      {/* Sticky Header with Border on Scroll & Mobile Drawer */}
+      {/* Sticky Header */}
       <LandingNavbar
         loggedIn={loggedIn}
         scrollY={scrollY}
@@ -54,12 +49,8 @@ const Landing: React.FC = () => {
         onOpenProfile={() => navigate('/profile')}
       />
 
-      {/* Full-bleed Hero with masked auto illustration, 2-line headline, and floating comparison card */}
-      <HeroSection
-        onStartNavigation={() => navigate('/dashboard')}
-        activeChip={activeChip}
-        activeWaypoint={activeWaypoint}
-      />
+      {/* Full-bleed hero with masked auto illustration */}
+      <HeroSection onStartNavigation={() => navigate('/dashboard')} />
 
       {/* Interactive Printed Route Switcher Deck */}
       <PerspectiveDeck
