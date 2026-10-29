@@ -1,7 +1,6 @@
 import React from 'react';
 import { ArrowRight, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import autoRickshawWebP from '@/assets/auto-rickshaw.webp';
 
 interface CtaBannerProps {
   onOpenDashboard: () => void;
@@ -14,13 +13,6 @@ export const CtaBanner: React.FC<CtaBannerProps> = ({ onOpenDashboard }) => {
       <div className="jaali-border-divider mb-12 opacity-60" aria-hidden="true" />
 
       <div className="reveal-on-scroll relative p-8 sm:p-12 rounded-3xl bg-[#FFFDF9] border-2 border-[#14121F] shadow-[6px_6px_0_#14121F] text-center space-y-6 overflow-hidden">
-        
-        {/* Cropped, desaturated, 8% opacity truck-art pattern texture */}
-        <div 
-          className="absolute -right-8 -bottom-10 w-80 h-80 pointer-events-none opacity-[0.08] grayscale contrast-125 mix-blend-multiply bg-no-repeat bg-cover bg-[position:30%_75%]"
-          style={{ backgroundImage: `url(${autoRickshawWebP})` }}
-          aria-hidden="true"
-        />
 
         <div className="relative z-10 max-w-xl mx-auto space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-[#FAF5EC] border-[1.2px] border-[#14121F] text-xs font-bold text-[#14121F]">

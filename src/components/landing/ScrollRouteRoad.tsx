@@ -2,20 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * Renders a scroll-driven dashed road SVG that spans the full landing page.
- * A flat SVG auto-rickshaw sprite travels along it as the user scrolls.
- * Small marigold waypoint dots glow as the sprite passes, with no text labels.
+ * Small marigold waypoint dots glow as the user scrolls through sections.
+ * No auto-rickshaw sprite — only the animated road line.
  *
  * On prefers-reduced-motion: hidden entirely.
- * On mobile (<768px): simplified vertical path.
  */
 export const ScrollRouteRoad: React.FC = () => {
   const roadPathRef = useRef<SVGPathElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [spritePos, setSpritePos] = useState<{ x: number; y: number; angle: number }>({
-    x: 140,
-    y: 440,
-    angle: 0,
-  });
   const [activeStage, setActiveStage] = useState<0 | 1 | 2>(0);
   const [pathLength, setPathLength] = useState(0);
   const [drawnLength, setDrawnLength] = useState(0);
@@ -49,7 +43,7 @@ export const ScrollRouteRoad: React.FC = () => {
 
     let ticking = false;
 
-    const updateSprite = () => {
+    const update = () => {
       if (!roadPathRef.current || !containerRef.current) {
         ticking = false;
         return;
@@ -57,22 +51,12 @@ export const ScrollRouteRoad: React.FC = () => {
 
       const rect = containerRef.current.getBoundingClientRect();
       const totalScrollable = containerRef.current.offsetHeight - window.innerHeight;
-      const scrollY = -rect.top;
-      let progress = totalScrollable > 0 ? scrollY / totalScrollable : 0;
+      const scrolled = -rect.top;
+      let progress = totalScrollable > 0 ? scrolled / totalScrollable : 0;
       progress = Math.max(0, Math.min(1, progress));
 
-      const path = roadPathRef.current;
-      const totalLen = path.getTotalLength();
-      const currentDist = progress * totalLen;
-      setDrawnLength(currentDist);
-
-      const pt = path.getPointAtLength(currentDist);
-      const delta = 4;
-      const p1 = path.getPointAtLength(Math.max(0, currentDist - delta));
-      const p2 = path.getPointAtLength(Math.min(totalLen, currentDist + delta));
-      const angleDeg = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI;
-
-      setSpritePos({ x: pt.x, y: pt.y, angle: angleDeg });
+      const totalLen = roadPathRef.current.getTotalLength();
+      setDrawnLength(progress * totalLen);
 
       const stage: 0 | 1 | 2 = progress < 0.35 ? 0 : progress < 0.72 ? 1 : 2;
       setActiveStage(stage);
@@ -82,13 +66,13 @@ export const ScrollRouteRoad: React.FC = () => {
 
     const onScroll = () => {
       if (!ticking) {
-        requestAnimationFrame(updateSprite);
+        requestAnimationFrame(update);
         ticking = true;
       }
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    updateSprite();
+    update();
     return () => window.removeEventListener('scroll', onScroll);
   }, [prefersReducedMotion]);
 
@@ -102,18 +86,9 @@ export const ScrollRouteRoad: React.FC = () => {
   const roadD = isMobile ? mobileRoadD : desktopRoadD;
   const vbW = isMobile ? 400 : 1200;
 
-  // Three waypoints along the path — dots only, no labels
   const waypoints = isMobile
-    ? [
-        { x: 80, y: 420 },
-        { x: 300, y: 1700 },
-        { x: 140, y: 2500 },
-      ]
-    : [
-        { x: 140, y: 440 },
-        { x: 1060, y: 1000 },
-        { x: 700, y: 3050 },
-      ];
+    ? [{ x: 80, y: 420 }, { x: 300, y: 1700 }, { x: 140, y: 2500 }]
+    : [{ x: 140, y: 440 }, { x: 1060, y: 1000 }, { x: 700, y: 3050 }];
 
   return (
     <div
@@ -162,64 +137,16 @@ export const ScrollRouteRoad: React.FC = () => {
         {waypoints.map((wp, i) => {
           const isPassed = i <= activeStage;
           const isCurrent = i === activeStage;
-
           return (
             <g key={i}>
               {isCurrent && (
                 <circle cx={wp.x} cy={wp.y} r="14" fill="#F2A31B" fillOpacity="0.22" className="animate-ping" />
               )}
-              <circle
-                cx={wp.x}
-                cy={wp.y}
-                r="7"
-                fill={isPassed ? '#F2A31B' : '#FFFDF9'}
-                stroke="#14121F"
-                strokeWidth="2"
-              />
+              <circle cx={wp.x} cy={wp.y} r="7" fill={isPassed ? '#F2A31B' : '#FFFDF9'} stroke="#14121F" strokeWidth="2" />
               <circle cx={wp.x} cy={wp.y} r="3" fill={isPassed ? '#D8472B' : '#14121F'} />
             </g>
           );
         })}
-
-        {/* Flat SVG auto-rickshaw sprite */}
-        <g
-          transform={`translate(${spritePos.x}, ${spritePos.y}) rotate(${spritePos.angle}) translate(-24, -15)`}
-          className="transition-transform duration-75 ease-out"
-        >
-          {/* Shadow */}
-          <ellipse cx="28" cy="36" rx="20" ry="2.5" fill="#14121F" fillOpacity="0.18" />
-          {/* Chassis */}
-          <rect x="8" y="27" width="40" height="8" rx="2" fill="#14121F" />
-          {/* Body: marigold */}
-          <path
-            d="M 10 20 L 14 13 H 36 L 46 22 L 48 28 H 8 Z"
-            fill="#F2A31B"
-            stroke="#14121F"
-            strokeWidth="1.4"
-            strokeLinejoin="round"
-          />
-          {/* Roof: teal */}
-          <path
-            d="M 14 13 C 16 8, 30 6, 42 9 L 46 13 H 14 Z"
-            fill="#1F6F6B"
-            stroke="#14121F"
-            strokeWidth="1.4"
-          />
-          {/* Windshield */}
-          <path d="M 42 12 L 47 20 H 40 L 36 12 Z" fill="#EAF4F3" fillOpacity="0.9" stroke="#14121F" strokeWidth="1" />
-          {/* Passenger window */}
-          <rect x="18" y="15" width="16" height="12" rx="2" fill="#FFFDF9" fillOpacity="0.8" stroke="#14121F" strokeWidth="1" />
-          {/* Vermilion stripe */}
-          <rect x="8" y="23" width="40" height="2.5" fill="#D8472B" />
-          {/* Headlight */}
-          <circle cx="49" cy="22" r="2.2" fill="#FFFDF9" stroke="#D8472B" strokeWidth="1" />
-          {/* Rear wheel */}
-          <circle cx="16" cy="32" r="5.5" fill="#14121F" />
-          <circle cx="16" cy="32" r="2.5" fill="#FFFDF9" />
-          {/* Front wheel */}
-          <circle cx="42" cy="33" r="4.5" fill="#14121F" />
-          <circle cx="42" cy="33" r="2" fill="#FFFDF9" />
-        </g>
       </svg>
     </div>
   );

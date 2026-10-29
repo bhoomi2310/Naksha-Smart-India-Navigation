@@ -1,17 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import NakshaLogo from '@/components/NakshaLogo';
-import autoRickshawWebP from '@/assets/auto-rickshaw.webp';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="relative w-full bg-[#FAF5EC] border-t-[1.5px] border-[#14121F] text-[#14121F] mt-auto overflow-hidden">
-      {/* Cropped, desaturated, 8% opacity truck-art pattern texture */}
-      <div
-        className="absolute -right-12 -top-12 w-96 h-96 pointer-events-none opacity-[0.08] grayscale contrast-125 mix-blend-multiply bg-no-repeat bg-cover bg-[position:40%_65%]"
-        style={{ backgroundImage: `url(${autoRickshawWebP})` }}
-        aria-hidden="true"
-      />
+    <footer className="w-full bg-[#FAF5EC] border-t-[1.5px] border-[#14121F] text-[#14121F] mt-auto overflow-hidden">
 
       {/* Rangoli / Jaali divider on top of footer */}
       <div className="jaali-border-divider opacity-70" aria-hidden="true" />
