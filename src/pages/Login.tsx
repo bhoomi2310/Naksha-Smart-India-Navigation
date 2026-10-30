@@ -22,8 +22,10 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      await authAPI.login(email.trim(), password);
-      toast.success('Signed in successfully');
+      const res = await authAPI.login(email.trim(), password);
+      const u = res?.user || res;
+      const displayName = u?.fullName || u?.full_name || email.split('@')[0];
+      toast.success(`Welcome back, ${displayName}!`);
       navigate('/dashboard');
     } catch (err: any) {
       toast.error(err.message || 'Invalid email or password');

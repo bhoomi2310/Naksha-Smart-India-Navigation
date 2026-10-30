@@ -12,7 +12,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // PostgreSQL connection pool configuration
-const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || '';
+const NEON_DEFAULT_URL = 'postgresql://neondb_owner:npg_batP0vIN9Ayz@ep-calm-recipe-b3nd5yvv-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require';
+const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.DATABASE_URL_POOLED || NEON_DEFAULT_URL;
 let pool = null;
 let isPostgresConnected = false;
 
@@ -161,10 +162,7 @@ export async function findUserById(id) {
         saved: t.saved_time,
         date: new Date(t.created_at).toLocaleDateString()
       })),
-      achievements: [
-        { title: 'Desi Navigator', description: 'Explored over 20 unique Indian arterial routes', icon: '🧭' },
-        { title: 'Monsoon Survivor', description: 'Avoided 5 flooded underpasses with live hazard alerts', icon: '🌊' }
-      ]
+      achievements: []
     };
   }
 
@@ -209,7 +207,7 @@ export async function createUser({ id, email, password, fullName, phone = '' }) 
       phone,
       stats: { routesTaken: 0, timeSaved: 0, distanceTraveled: 0, ecoScore: 80 },
       recentTrips: [],
-      achievements: [{ title: 'First Journey', description: 'Joined Naksha Smart India Navigation', icon: '🚀' }],
+      achievements: [],
       createdAt: new Date().toISOString()
     };
     users.push(newUser);

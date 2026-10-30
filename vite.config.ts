@@ -21,6 +21,12 @@ export default defineConfig(({ mode }) => {
       host: "localhost",
       port: 8081,
       strictPort: false,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+        },
+      },
     },
     plugins,
     resolve: {

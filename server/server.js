@@ -374,10 +374,14 @@ app.post('/api/hazards/report', async (req, res) => {
 
 // Start Server & Initialize PostgreSQL
 initDatabase().then(() => {
-  app.listen(PORT, () => {
-    console.log(`\n🚀 Naksha Backend Server running on http://localhost:${PORT}`);
-    console.log(`📦 Tech Stack: Node.js (Express) + PostgreSQL (pg) + React`);
-    console.log(`📍 Geocoding: OpenStreetMap Nominatim`);
-    console.log(`🛣️ Routing: OpenStreetMap OSRM Public Engine\n`);
-  });
+  if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Naksha Backend Server running on http://localhost:${PORT}`);
+      console.log(`📦 Tech Stack: Node.js (Express) + PostgreSQL (pg) + React`);
+      console.log(`📍 Geocoding: OpenStreetMap Nominatim`);
+      console.log(`🛣️ Routing: OpenStreetMap OSRM Public Engine\n`);
+    });
+  }
 });
+
+export default app;

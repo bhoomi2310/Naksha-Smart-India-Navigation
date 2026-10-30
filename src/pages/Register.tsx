@@ -33,8 +33,10 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      await authAPI.register(email.trim(), password, fullName.trim(), phone.trim());
-      toast.success('Account created successfully! Welcome to Naksha.');
+      const res = await authAPI.register(email.trim(), password, fullName.trim(), phone.trim());
+      const u = res?.user || res;
+      const displayName = u?.fullName || u?.full_name || fullName.trim();
+      toast.success(`Account created! Welcome to Naksha, ${displayName}.`);
       navigate('/dashboard');
     } catch (err: any) {
       toast.error(err.message || 'Registration failed');

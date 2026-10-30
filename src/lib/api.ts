@@ -1,4 +1,15 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  if (typeof window !== 'undefined') {
+    // In production on Vercel or any live host, use same-origin /api to hit the serverless DB functions
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      return '/api';
+    }
+  }
+  return 'http://localhost:3001/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Helper function to get auth token
 const getToken = () => {
@@ -73,22 +84,24 @@ async function apiRequest<T>(
 // Auth API with graceful client-side fallback
 export const authAPI = {
   register: async (email: string, password: string, fullName: string, phone?: string) => {
+    const trimmedName = fullName.trim();
     try {
       const data = await apiRequest<{ token: string; user: any }>('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ email, password, fullName, phone }),
+        body: JSON.stringify({ email: email.trim(), password, fullName: trimmedName, phone: phone?.trim() }),
       });
+      const user = data.user || data;
       setToken(data.token);
-      setLocalUser(data.user);
+      setLocalUser(user);
       return data;
     } catch (err: any) {
       console.warn('Backend unavailable, using local session:', err.message);
-      // Graceful local commuter account fallback
+      // Graceful local commuter account fallback with exact name
       const localUser = {
         id: 'usr_' + Date.now().toString(36),
-        email,
-        fullName: fullName || email.split('@')[0],
-        phone: phone || '',
+        email: email.trim(),
+        fullName: trimmedName || email.split('@')[0],
+        phone: phone?.trim() || '',
         createdAt: new Date().toISOString(),
       };
       const token = 'naksha_local_token_' + btoa(email);
@@ -102,10 +115,11 @@ export const authAPI = {
     try {
       const data = await apiRequest<{ token: string; user: any }>('/auth/login', {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
+      const user = data.user || data;
       setToken(data.token);
-      setLocalUser(data.user);
+      setLocalUser(user);
       return data;
     } catch (err: any) {
       console.warn('Backend unavailable, using local session:', err.message);
@@ -115,7 +129,7 @@ export const authAPI = {
         ? existingUser
         : {
             id: 'usr_' + Date.now().toString(36),
-            email,
+            email: email.trim(),
             fullName: email.split('@')[0],
             createdAt: new Date().toISOString(),
           };
@@ -135,7 +149,12 @@ export const authAPI = {
 
   getProfile: async () => {
     try {
-      return await apiRequest<any>('/user/profile');
+      const data = await apiRequest<any>('/user/profile');
+      const u = data?.user || data;
+      if (u && u.id) {
+        setLocalUser(u);
+      }
+      return data;
     } catch {
       const user = getLocalUser();
       if (user) {
@@ -157,10 +176,13 @@ export const authAPI = {
     }
 
     try {
-      return await apiRequest<any>('/user/profile', {
+      const data = await apiRequest<any>('/user/profile', {
         method: 'PUT',
         body: JSON.stringify(payload),
       });
+      const user = data.user || data;
+      setLocalUser(user);
+      return data;
     } catch {
       const user = getLocalUser() || {};
       const updated = { ...user, ...payload };

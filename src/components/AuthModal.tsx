@@ -49,6 +49,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     e.preventDefault();
 
     if (currentMode === 'register') {
+      if (!formData.fullName.trim()) {
+        toast.error('Please enter your full name');
+        return;
+      }
+      if (formData.password.length < 6) {
+        toast.error('Password must be at least 6 characters');
+        return;
+      }
       if (formData.password !== formData.confirmPassword) {
         toast.error('Passwords do not match');
         return;
@@ -63,7 +71,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     try {
       if (currentMode === 'login') {
         const res = await authAPI.login(formData.email.trim(), formData.password);
-        toast.success(`Welcome back, ${res.user?.fullName || 'Commuter'}!`);
+        const u = res?.user || res;
+        const displayName = u?.fullName || u?.full_name || formData.email.split('@')[0];
+        toast.success(`Welcome back, ${displayName}!`);
         onClose();
         onSuccess?.();
         setTimeout(() => navigate('/dashboard'), 150);
@@ -73,7 +83,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           formData.password, 
           formData.fullName.trim()
         );
-        toast.success(`Account created! Welcome to Naksha, ${res.user?.fullName || 'Commuter'}!`);
+        const u = res?.user || res;
+        const displayName = u?.fullName || u?.full_name || formData.fullName.trim();
+        toast.success(`Account created! Welcome to Naksha, ${displayName}!`);
         onClose();
         onSuccess?.();
         setTimeout(() => navigate('/dashboard'), 150);

@@ -72,21 +72,43 @@ const Profile = () => {
   const loadProfile = async () => {
     setIsLoading(true);
     try {
-      const data = await authAPI.getProfile();
-      if (data) {
+      const res = await authAPI.getProfile();
+      const u = res?.user || res;
+      if (u) {
+        // Check for any local trips to merge with database trips
+        let localTrips: any[] = [];
+        try {
+          const stored = localStorage.getItem('naksha_saved_trips');
+          if (stored) localTrips = JSON.parse(stored);
+        } catch {}
+
+        const serverTrips = Array.isArray(u.recentTrips) ? u.recentTrips : [];
+        const combinedTrips = [...serverTrips, ...localTrips];
+        const seen = new Set<string>();
+        const uniqueTrips = combinedTrips.filter((t: any) => {
+          const key = `${t.from}_${t.to}_${t.duration}_${t.date || ''}`;
+          if (seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        });
+
+        const fallbackName = u.email ? u.email.split('@')[0] : 'Commuter';
+        const userFullName = u.fullName || u.full_name || fallbackName;
+        const totalRoutes = uniqueTrips.length > 0 ? Math.max(u.stats?.routesTaken ?? 0, uniqueTrips.length) : (u.stats?.routesTaken ?? 0);
+
         const userObj: UserProfile = {
-          id: data.id || '',
-          fullName: data.fullName || data.full_name || 'Commuter',
-          email: data.email || '',
-          phone: data.phone || '',
-          createdAt: data.createdAt,
+          id: u.id || '',
+          fullName: userFullName,
+          email: u.email || '',
+          phone: u.phone || '',
+          createdAt: u.createdAt,
           stats: {
-            routesTaken: data.stats?.routesTaken ?? 0,
-            timeSaved: data.stats?.timeSaved ?? 0,
-            distanceTraveled: data.stats?.distanceTraveled ?? 0,
-            ecoScore: data.stats?.ecoScore ?? 80,
+            routesTaken: totalRoutes,
+            timeSaved: u.stats?.timeSaved ?? 0,
+            distanceTraveled: u.stats?.distanceTraveled ?? 0,
+            ecoScore: u.stats?.ecoScore ?? 80,
           },
-          recentTrips: Array.isArray(data.recentTrips) ? data.recentTrips : []
+          recentTrips: uniqueTrips
         };
         setProfile(userObj);
         setName(userObj.fullName);
@@ -110,14 +132,15 @@ const Profile = () => {
     }
 
     try {
-      await authAPI.updateProfile(name.trim(), phone.trim());
+      const res = await authAPI.updateProfile(name.trim(), phone.trim());
+      const u = res?.user || res;
       setProfile(prev => prev ? ({
         ...prev,
-        fullName: name.trim(),
-        phone: phone.trim()
+        fullName: u?.fullName || name.trim(),
+        phone: u?.phone || phone.trim()
       }) : null);
       setIsEditing(false);
-      toast.success('Profile updated successfully');
+      toast.success('Profile updated successfully in Naksha database');
     } catch (e: any) {
       toast.error(e.message || 'Failed to update profile');
     }
