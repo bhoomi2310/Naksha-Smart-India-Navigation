@@ -1,5 +1,6 @@
 import React from 'react';
 import { RouteOptionData } from '@/lib/routingService';
+import { voiceGuidance } from '@/lib/voiceGuidance';
 import { 
   Clock, 
   MapPin, 
@@ -8,7 +9,14 @@ import {
   Leaf, 
   AlertTriangle, 
   Play, 
-  Compass
+  Compass,
+  Volume2,
+  CornerUpLeft,
+  CornerUpRight,
+  ArrowUp,
+  ArrowUpLeft,
+  ArrowUpRight,
+  CheckCircle2
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -26,6 +34,17 @@ export const RouteDetails: React.FC<RouteDetailsProps> = ({
   onReportHazard 
 }) => {
   if (!routeData) return null;
+
+  const renderStepIcon = (type: string, modifier?: string) => {
+    const mod = modifier?.toLowerCase() || '';
+    if (type === 'arrive') return <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />;
+    if (type === 'depart') return <Navigation className="w-3.5 h-3.5 text-[#1F6F6B]" />;
+    if (mod.includes('left')) return <CornerUpLeft className="w-3.5 h-3.5 text-[#D8472B]" />;
+    if (mod.includes('right')) return <CornerUpRight className="w-3.5 h-3.5 text-[#D8472B]" />;
+    if (mod.includes('slight left')) return <ArrowUpLeft className="w-3.5 h-3.5 text-[#C98109]" />;
+    if (mod.includes('slight right')) return <ArrowUpRight className="w-3.5 h-3.5 text-[#C98109]" />;
+    return <ArrowUp className="w-3.5 h-3.5 text-[#1F6F6B]" />;
+  };
 
   return (
     <div className="bg-[#FFFDF9] border-[1.5px] border-[#14121F] shadow-[4px_4px_0_#14121F] rounded-2xl p-5 text-[#14121F] space-y-5">
@@ -108,23 +127,64 @@ export const RouteDetails: React.FC<RouteDetailsProps> = ({
               <Compass className="w-3.5 h-3.5 text-[#1F6F6B]" />
               Turn-by-Turn Maneuvers ({routeData.steps.length} Steps)
             </h4>
-            <span className="text-[11px] font-semibold text-[#524C61]">OSRM Step Directions</span>
+            <span className="text-[11px] font-semibold text-[#1F6F6B] bg-[#EAF4F3] px-2 py-0.5 rounded border border-[#9DCBC8]">
+              Google Maps Level Precision
+            </span>
           </div>
 
-          <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1 divide-y divide-[#14121F]/10 bg-[#FAF5EC] rounded-xl p-2.5 border-[1.2px] border-[#14121F]/20">
+          <div className="space-y-2 max-h-64 overflow-y-auto pr-1 divide-y divide-[#14121F]/10 bg-[#FAF5EC] rounded-xl p-3 border-[1.2px] border-[#14121F]/20">
             {routeData.steps.map((step, idx) => (
-              <div key={idx} className="flex items-start justify-between py-1.5 text-xs">
-                <div className="flex items-start gap-2">
-                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#FFFDF9] border border-[#14121F] flex items-center justify-center font-bold text-[10px] text-[#D8472B]">
-                    {idx + 1}
-                  </span>
-                  <div>
-                    <div className="font-bold text-[#14121F]">{step.instruction}</div>
-                    <div className="text-[10px] text-[#524C61]">{step.name}</div>
+              <div key={idx} className="pt-2 first:pt-0 flex items-start justify-between gap-3 text-xs">
+                <div className="flex items-start gap-2.5 min-w-0">
+                  <div className="flex-shrink-0 flex items-center gap-1 mt-0.5">
+                    <span className="w-5 h-5 rounded-full bg-[#FFFDF9] border border-[#14121F] flex items-center justify-center font-bold text-[10px] text-[#D8472B]">
+                      {idx + 1}
+                    </span>
+                    <span className="p-1 rounded bg-[#FFFDF9] border border-[#14121F]/20">
+                      {renderStepIcon(step.type, step.modifier)}
+                    </span>
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="font-bold text-[#14121F] flex items-center gap-1.5 flex-wrap">
+                      <span>{step.instruction}</span>
+                      {step.roadRef && (
+                        <span className="bg-[#1F6F6B]/15 text-[#1F6F6B] border border-[#1F6F6B]/30 px-1.5 py-0.2 rounded text-[9px] font-bold">
+                          {step.roadRef}
+                        </span>
+                      )}
+                      {step.exitNumber && (
+                        <span className="bg-[#C98109]/15 text-[#C98109] border border-[#C98109]/30 px-1.5 py-0.2 rounded text-[9px] font-bold">
+                          Exit {step.exitNumber}
+                        </span>
+                      )}
+                    </div>
+                    {step.spokenInstruction && (
+                      <div className="text-[10px] text-[#524C61] mt-0.5 flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => voiceGuidance.speak(step.spokenInstruction, true)}
+                          className="hover:text-[#D8472B] inline-flex items-center gap-1 text-[#1F6F6B] font-semibold"
+                          title="Listen to voice navigation cue"
+                        >
+                          <Volume2 className="w-3 h-3" />
+                          <span>Voice:</span>
+                        </button>
+                        <span className="italic truncate">&quot;{step.spokenInstruction}&quot;</span>
+                      </div>
+                    )}
                   </div>
                 </div>
-                <div className="text-[#524C61] font-semibold text-[11px] pl-2 whitespace-nowrap">
-                  {step.distance > 1000 ? `${(step.distance / 1000).toFixed(1)} km` : `${step.distance} m`}
+
+                <div className="text-right flex-shrink-0">
+                  <div className="text-[#14121F] font-bold text-[11px] whitespace-nowrap">
+                    {step.distance > 1000 ? `${(step.distance / 1000).toFixed(1)} km` : `${step.distance} m`}
+                  </div>
+                  {step.duration > 0 && (
+                    <div className="text-[10px] text-[#524C61]">
+                      {step.duration >= 60 ? `${Math.round(step.duration / 60)} min` : `${step.duration}s`}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

@@ -7,12 +7,19 @@ export interface Coordinates {
 
 export interface TurnStep {
   instruction: string;
+  spokenInstruction: string;
   distance: number; // in meters
   duration: number; // in seconds
   name: string;
   type: string;
   modifier?: string;
   location: [number, number]; // [lng, lat]
+  cardinal?: string;
+  roadRef?: string;
+  destination?: string;
+  exitNumber?: number;
+  coordStartIndex?: number;
+  coordEndIndex?: number;
 }
 
 export interface RoadHazard {
@@ -451,39 +458,165 @@ function generateHazardsForPath(coords: [number, number][], rainMm: number): Roa
   return hazards;
 }
 
-// Transform OSRM steps into human-readable Indian navigation instructions
-function parseOSRMSteps(steps: any[]): TurnStep[] {
+// Helper for cardinal compass directions
+function getCardinalDirection(bearing: number): string {
+  if (bearing === undefined || bearing === null || isNaN(bearing)) return 'ahead';
+  const directions = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest'];
+  const normalized = ((bearing % 360) + 360) % 360;
+  const index = Math.round(normalized / 45) % 8;
+  return directions[index];
+}
+
+// Format distance in meters to clean spoken / readable string
+function formatMetersForVoice(meters: number): string {
+  if (meters >= 1000) {
+    const km = (meters / 1000).toFixed(1);
+    return `${km} kilometers`;
+  }
+  return `${Math.round(meters)} meters`;
+}
+
+// Ordinal number string for roundabout exits
+function getOrdinalSuffix(n: number): string {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+// Transform OSRM steps into Google Maps quality Indian navigation instructions
+function parseOSRMSteps(
+  steps: any[], 
+  coords?: [number, number][], 
+  destName?: string
+): TurnStep[] {
   if (!steps || steps.length === 0) return [];
 
-  return steps.map((s) => {
+  let runningCoordIdx = 0;
+
+  return steps.map((s, idx) => {
     const maneuver = s.maneuver || {};
     const type = maneuver.type || 'continue';
     const modifier = maneuver.modifier || '';
-    const streetName = s.name ? s.name : 'Main Arterial Road';
+    const bearing = maneuver.bearing_after ?? maneuver.bearing_before ?? 0;
+    const cardinal = getCardinalDirection(bearing);
+    const distanceMeters = Math.round(s.distance || 0);
+    const durationSecs = Math.round(s.duration || 0);
+    const distStr = formatMetersForVoice(distanceMeters);
+    const exitNumber = typeof maneuver.exit === 'number' ? maneuver.exit : undefined;
+
+    // Highway / Express Corridor reference (e.g. NH 48, Ring Road)
+    const roadRef = s.ref ? s.ref.trim() : undefined;
+    let streetName = s.name ? s.name.trim() : '';
+
+    if (streetName && roadRef && !streetName.toLowerCase().includes(roadRef.toLowerCase())) {
+      streetName = `${streetName} (${roadRef})`;
+    } else if (!streetName && roadRef) {
+      streetName = roadRef;
+    } else if (!streetName) {
+      const nextStep = steps[idx + 1];
+      if (type === 'arrive') {
+        streetName = destName ? destName.split(',')[0].trim() : 'Destination';
+      } else if (type === 'on ramp' || type === 'off ramp') {
+        streetName = 'Elevated Flyover Ramp';
+      } else if (type === 'roundabout' || type === 'rotary') {
+        streetName = s.rotary_name ? s.rotary_name.trim() : 'Roundabout Chowk';
+      } else if (nextStep && nextStep.name) {
+        streetName = `Connecting Road towards ${nextStep.name.split('(')[0].trim()}`;
+      } else {
+        streetName = 'Main Arterial Road';
+      }
+    }
+
+    const destination = s.destinations ? s.destinations.trim() : undefined;
+    const destContext = destination ? ` towards ${destination}` : '';
 
     let instruction = `Continue on ${streetName}`;
+    let spokenInstruction = `Continue on ${streetName} for ${distStr}.`;
+
     if (type === 'depart') {
-      instruction = `Head towards ${streetName}`;
+      instruction = `Head ${cardinal} on ${streetName}${destContext}`;
+      spokenInstruction = `Head ${cardinal} on ${streetName} for ${distStr}.`;
     } else if (type === 'arrive') {
-      instruction = `Arrive at your destination on ${streetName}`;
+      const sideText = modifier ? ` on the ${modifier}` : '';
+      instruction = `Arrive at your destination${sideText}`;
+      spokenInstruction = `You have arrived at your destination${sideText}. Journey completed.`;
     } else if (type === 'turn') {
-      instruction = `Turn ${modifier || 'sharp'} onto ${streetName}`;
-    } else if (type === 'roundabout') {
-      instruction = `Take the roundabout exit towards ${streetName}`;
+      instruction = `Turn ${modifier || 'ahead'} onto ${streetName}${destContext}`;
+      spokenInstruction = `In ${distStr}, turn ${modifier || 'ahead'} onto ${streetName}.`;
+    } else if (type === 'end of road') {
+      instruction = `At the T-junction, turn ${modifier || 'right'} onto ${streetName}`;
+      spokenInstruction = `At the end of the road, turn ${modifier || 'right'} onto ${streetName}.`;
+    } else if (type === 'roundabout' || type === 'rotary') {
+      const exitStr = exitNumber ? `${getOrdinalSuffix(exitNumber)} exit` : 'exit';
+      instruction = `At the roundabout, take the ${exitStr} onto ${streetName}`;
+      spokenInstruction = `At the roundabout, take the ${exitStr} onto ${streetName}.`;
+    } else if (type === 'exit rotary' || type === 'exit roundabout') {
+      instruction = `Take the roundabout exit onto ${streetName}`;
+      spokenInstruction = `Exit the roundabout onto ${streetName} and continue for ${distStr}.`;
     } else if (type === 'fork') {
-      instruction = `Keep ${modifier} at the fork onto ${streetName}`;
+      instruction = `Keep ${modifier || 'left'} at the fork onto ${streetName}`;
+      spokenInstruction = `Keep ${modifier || 'left'} at the fork onto ${streetName}.`;
     } else if (type === 'on ramp' || type === 'off ramp') {
-      instruction = `Take the flyover / ramp towards ${streetName}`;
+      instruction = `Take the flyover ramp onto ${streetName}`;
+      spokenInstruction = `Take the elevated flyover ramp onto ${streetName}.`;
+    } else if (type === 'merge') {
+      instruction = `Merge ${modifier || 'safely'} onto ${streetName}`;
+      spokenInstruction = `Merge ${modifier || 'safely'} onto ${streetName}.`;
+    } else if (type === 'new name') {
+      instruction = `Continue straight onto ${streetName}`;
+      spokenInstruction = `Continue straight onto ${streetName} for ${distStr}.`;
     }
+
+    // Coordinate index mapping along full route polyline
+    const numStepCoords = s.geometry?.coordinates?.length || 1;
+    const coordStartIndex = runningCoordIdx;
+    const maxCoord = coords && coords.length > 0 ? coords.length - 1 : 0;
+    const coordEndIndex = Math.min(maxCoord, runningCoordIdx + numStepCoords - 1);
+    runningCoordIdx = coordEndIndex;
 
     return {
       instruction,
-      distance: Math.round(s.distance || 0),
-      duration: Math.round(s.duration || 0),
+      spokenInstruction,
+      distance: distanceMeters,
+      duration: durationSecs,
       name: streetName,
       type,
       modifier,
-      location: maneuver.location || [0, 0]
+      location: maneuver.location || [0, 0],
+      cardinal,
+      roadRef,
+      destination,
+      exitNumber,
+      coordStartIndex,
+      coordEndIndex
+    };
+  });
+}
+
+// Align or scale turn steps across any route's coordinate polyline
+function alignStepsToCoords(steps: TurnStep[], targetCoords: [number, number][]): TurnStep[] {
+  if (!steps.length || !targetCoords.length) return steps;
+  const lastStep = steps[steps.length - 1];
+  if (lastStep?.coordEndIndex === targetCoords.length - 1 && steps[0]?.coordStartIndex === 0) {
+    return steps;
+  }
+
+  const baseMax = Math.max(1, lastStep?.coordEndIndex || steps.length);
+  const targetMax = targetCoords.length - 1;
+  const scale = targetMax / baseMax;
+
+  return steps.map((s, idx) => {
+    const startIdx = Math.min(targetMax, Math.round((s.coordStartIndex ?? idx) * scale));
+    const nextStart = idx < steps.length - 1
+      ? Math.min(targetMax, Math.round(((steps[idx + 1].coordStartIndex ?? (idx + 1))) * scale))
+      : targetMax;
+    const endIdx = Math.max(startIdx, nextStart);
+
+    return {
+      ...s,
+      coordStartIndex: startIdx,
+      coordEndIndex: endIdx,
+      location: [targetCoords[startIdx][1], targetCoords[startIdx][0]]
     };
   });
 }
@@ -617,12 +750,60 @@ async function calculateIndianMultimodalTransit(
     ];
 
     const steps: TurnStep[] = [
-      { instruction: `Walk 11 min (800m) from ${fromAddress.split(',')[0]} to Tau Devi Lal Biodiversity Park`, distance: 800, duration: 660, name: 'Feeder Walk', type: 'depart' },
-      { instruction: 'Board Bus 116F towards Gurugram Railway Station (12 stops, 18 min)', distance: 4800, duration: 1080, name: 'Bus 116F', type: 'turn' },
-      { instruction: 'Alight at IFFCO Chowk & walk 4 min to IFFCO Chowk Metro Gate 1', distance: 200, duration: 240, name: 'Station Access', type: 'turn' },
-      { instruction: 'Board Delhi Metro Yellow Line towards Samaypur Badli (9 stops to Hauz Khas)', distance: 18200, duration: 1920, name: 'Yellow Line', type: 'turn' },
-      { instruction: 'Transfer to Magenta Line ➔ Blue Line to Dwarka Mor (16 stops, 45 min)', distance: 19500, duration: 2700, name: 'Blue Line', type: 'turn' },
-      { instruction: `Exit Dwarka Mor Gate 1 & walk 7 min to ${toAddress.split(',')[0]}`, distance: 600, duration: 420, name: 'Arrival', type: 'arrive' }
+      { 
+        instruction: `Walk 11 min (800m) from ${fromAddress.split(',')[0]} to Tau Devi Lal Biodiversity Park`, 
+        spokenInstruction: `Walk 800 meters from ${fromAddress.split(',')[0]} to Tau Devi Lal Biodiversity Park.`,
+        distance: 800, 
+        duration: 660, 
+        name: 'Feeder Walk', 
+        type: 'depart',
+        location: [fromGeo.lng, fromGeo.lat]
+      },
+      { 
+        instruction: 'Board Bus 116F towards Gurugram Railway Station (12 stops, 18 min)', 
+        spokenInstruction: 'Board Bus 116F towards Gurugram Railway Station for 12 stops.',
+        distance: 4800, 
+        duration: 1080, 
+        name: 'Bus 116F', 
+        type: 'turn',
+        location: [77.0872, 28.4412]
+      },
+      { 
+        instruction: 'Alight at IFFCO Chowk & walk 4 min to IFFCO Chowk Metro Gate 1', 
+        spokenInstruction: 'Alight at IFFCO Chowk and walk 4 minutes to Metro Gate 1.',
+        distance: 200, 
+        duration: 240, 
+        name: 'Station Access', 
+        type: 'turn',
+        location: [77.0725, 28.4721]
+      },
+      { 
+        instruction: 'Board Delhi Metro Yellow Line towards Samaypur Badli (9 stops to Hauz Khas)', 
+        spokenInstruction: 'Board Delhi Metro Yellow Line towards Samaypur Badli.',
+        distance: 18200, 
+        duration: 1920, 
+        name: 'Yellow Line', 
+        type: 'turn',
+        location: [77.0725, 28.4721]
+      },
+      { 
+        instruction: 'Transfer to Magenta Line to Blue Line towards Dwarka Mor (16 stops, 45 min)', 
+        spokenInstruction: 'Transfer to Magenta Line and then Blue Line towards Dwarka Mor.',
+        distance: 19500, 
+        duration: 2700, 
+        name: 'Blue Line', 
+        type: 'turn',
+        location: [77.1250, 28.5400]
+      },
+      { 
+        instruction: `Exit Dwarka Mor Gate 1 & walk 7 min to ${toAddress.split(',')[0]}`, 
+        spokenInstruction: `Exit Dwarka Mor Gate 1 and walk 7 minutes to your destination.`,
+        distance: 600, 
+        duration: 420, 
+        name: 'Arrival', 
+        type: 'arrive',
+        location: [toGeo.lng, toGeo.lat]
+      }
     ];
 
     return {
@@ -634,7 +815,7 @@ async function calculateIndianMultimodalTransit(
       features: ['Bus 116F + Yellow & Blue Line', 'Transfer at IFFCO Chowk & Hauz Khas', 'Exact ₹84 Fare'],
       legs,
       coords: transitCoords,
-      steps
+      steps: alignStepsToCoords(steps, transitCoords)
     };
   }
 
@@ -669,12 +850,44 @@ async function calculateIndianMultimodalTransit(
         { mode: 'walk', from: 'Cyber City Station', to: toAddress.split(',')[0], durationMins: 3, distanceKm: 0.3, fareInr: 0 }
       ],
       coords,
-      steps: [
-        { instruction: `Walk 4 min to Rajiv Chowk Metro Gate 2`, distance: 300, duration: 240, name: 'Access', type: 'depart' },
-        { instruction: 'Board Yellow Line towards Millennium City Centre to Sikanderpur (17 stops)', distance: 24500, duration: 2520, name: 'Yellow Line', type: 'turn' },
-        { instruction: 'Interchange to Rapid Metro Gurugram towards Cyber City (3 stops)', distance: 3100, duration: 480, name: 'Rapid Metro', type: 'turn' },
-        { instruction: `Exit station & arrive at ${toAddress.split(',')[0]}`, distance: 300, duration: 180, name: 'Arrival', type: 'arrive' }
-      ]
+      steps: alignStepsToCoords([
+        { 
+          instruction: `Walk 4 min to Rajiv Chowk Metro Gate 2`, 
+          spokenInstruction: `Walk 4 minutes to Rajiv Chowk Metro Gate 2.`,
+          distance: 300, 
+          duration: 240, 
+          name: 'Access', 
+          type: 'depart',
+          location: [coords[0][1], coords[0][0]]
+        },
+        { 
+          instruction: 'Board Yellow Line towards Millennium City Centre to Sikanderpur (17 stops)', 
+          spokenInstruction: 'Board Yellow Line towards Millennium City Centre to Sikanderpur.',
+          distance: 24500, 
+          duration: 2520, 
+          name: 'Yellow Line', 
+          type: 'turn',
+          location: [coords[1][1], coords[1][0]]
+        },
+        { 
+          instruction: 'Interchange to Rapid Metro Gurugram towards Cyber City (3 stops)', 
+          spokenInstruction: 'Interchange to Rapid Metro Gurugram towards Cyber City for 3 stops.',
+          distance: 3100, 
+          duration: 480, 
+          name: 'Rapid Metro', 
+          type: 'turn',
+          location: [coords[2][1], coords[2][0]]
+        },
+        { 
+          instruction: `Exit station & arrive at ${toAddress.split(',')[0]}`, 
+          spokenInstruction: `Exit station and arrive at your destination.`,
+          distance: 300, 
+          duration: 180, 
+          name: 'Arrival', 
+          type: 'arrive',
+          location: [coords[coords.length - 1][1], coords[coords.length - 1][0]]
+        }
+      ], coords)
     };
   }
 
@@ -710,11 +923,35 @@ async function calculateIndianMultimodalTransit(
         { mode: 'walk', from: 'Rajiv Chowk Gate 2', to: toAddress.split(',')[0], durationMins: 3, distanceKm: 0.3, fareInr: 0 }
       ],
       coords,
-      steps: [
-        { instruction: 'Walk 5 min to Dwarka Mor Metro Station', distance: 400, duration: 300, name: 'Access', type: 'depart' },
-        { instruction: 'Board Blue Line towards Noida Electronic City / Vaishali (21 stops, 44 min)', distance: 22800, duration: 2640, name: 'Blue Line', type: 'turn' },
-        { instruction: `Exit Rajiv Chowk Gate 2 into ${toAddress.split(',')[0]}`, distance: 300, duration: 180, name: 'Arrival', type: 'arrive' }
-      ]
+      steps: alignStepsToCoords([
+        { 
+          instruction: 'Walk 5 min to Dwarka Mor Metro Station', 
+          spokenInstruction: 'Walk 5 minutes to Dwarka Mor Metro Station.',
+          distance: 400, 
+          duration: 300, 
+          name: 'Access', 
+          type: 'depart',
+          location: [coords[0][1], coords[0][0]]
+        },
+        { 
+          instruction: 'Board Blue Line towards Noida Electronic City / Vaishali (21 stops, 44 min)', 
+          spokenInstruction: 'Board Blue Line towards Noida Electronic City or Vaishali for 21 stops.',
+          distance: 22800, 
+          duration: 2640, 
+          name: 'Blue Line', 
+          type: 'turn',
+          location: [coords[1][1], coords[1][0]]
+        },
+        { 
+          instruction: `Exit Rajiv Chowk Gate 2 into ${toAddress.split(',')[0]}`, 
+          spokenInstruction: `Exit Rajiv Chowk Gate 2 towards your destination.`,
+          distance: 300, 
+          duration: 180, 
+          name: 'Arrival', 
+          type: 'arrive',
+          location: [coords[coords.length - 1][1], coords[coords.length - 1][0]]
+        }
+      ], coords)
     };
   }
 
@@ -790,11 +1027,35 @@ async function calculateIndianMultimodalTransit(
     features: ['High-Frequency Metro Corridor', 'Air-Conditioned Coaches', `Exact ₹${totalTransitFareInr} Ticket Fare`],
     legs,
     coords: genericCoords,
-    steps: [
-      { instruction: `Head towards nearest transit hub on ${fromAddress.split(',')[0]}`, distance: 800, duration: 600, name: 'First Mile', type: 'depart' },
-      { instruction: `Board scheduled public transit towards interchange station`, distance: Math.round(dist * 500), duration: Math.round(durMins * 30), name: 'Transit Arterial', type: 'turn' },
-      { instruction: `Arrive at destination station and exit towards ${toAddress.split(',')[0]}`, distance: 500, duration: 420, name: 'Arrival', type: 'arrive' }
-    ]
+    steps: alignStepsToCoords([
+      { 
+        instruction: `Head towards nearest transit hub on ${fromAddress.split(',')[0]}`, 
+        spokenInstruction: `Head towards nearest transit hub on ${fromAddress.split(',')[0]} for 800 meters.`,
+        distance: 800, 
+        duration: 600, 
+        name: 'First Mile', 
+        type: 'depart',
+        location: [fromGeo.lng, fromGeo.lat]
+      },
+      { 
+        instruction: `Board scheduled public transit towards interchange station`, 
+        spokenInstruction: `Board scheduled public transit towards interchange station.`,
+        distance: Math.round(dist * 500), 
+        duration: Math.round(durMins * 30), 
+        name: 'Transit Arterial', 
+        type: 'turn',
+        location: [genericCoords[1][1], genericCoords[1][0]]
+      },
+      { 
+        instruction: `Arrive at destination station and exit towards ${toAddress.split(',')[0]}`, 
+        spokenInstruction: `Arrive at destination station and exit towards your destination.`,
+        distance: 500, 
+        duration: 420, 
+        name: 'Arrival', 
+        type: 'arrive',
+        location: [toGeo.lng, toGeo.lat]
+      }
+    ], genericCoords)
   };
 }
 
@@ -832,7 +1093,7 @@ export async function calculateIndianRoutes(
     const coords: [number, number][] = routeObj.geometry.coordinates.map((c: [number, number]) => [c[1], c[0]]);
     const distKm = (routeObj.distance || 8500) / 1000;
     const durMins = (routeObj.duration || 1440) / 60;
-    const steps = routeObj.legs?.[0]?.steps ? parseOSRMSteps(routeObj.legs[0].steps) : [];
+    const steps = routeObj.legs?.[0]?.steps ? parseOSRMSteps(routeObj.legs[0].steps, coords, toAddress) : [];
     return { coords, distKm, durMins, steps };
   };
 
@@ -1025,10 +1286,47 @@ export async function calculateIndianRoutes(
     }
 
     const defaultSteps: TurnStep[] = [
-      { instruction: `Head northeast on ${fromAddress.split(',')[0]}`, distance: 500, duration: 90, name: 'Main Road', type: 'depart', location: [fromGeo.lng, fromGeo.lat] },
-      { instruction: `Take arterial flyover towards ${toAddress.split(',')[0]}`, distance: Math.round(cfg.distKm * 700), duration: Math.round(cfg.durMins * 40), name: 'Expressway Flyover', type: 'turn', location: [(fromGeo.lng + toGeo.lng) / 2, (fromGeo.lat + toGeo.lat) / 2] },
-      { instruction: `Arrive safely at destination on ${toAddress.split(',')[0]}`, distance: 300, duration: 60, name: 'Destination Road', type: 'arrive', location: [toGeo.lng, toGeo.lat] }
+      { 
+        instruction: `Head northeast on ${fromAddress.split(',')[0]}`, 
+        spokenInstruction: `Starting navigation. Head northeast on ${fromAddress.split(',')[0]} for 500 meters.`,
+        distance: 500, 
+        duration: 90, 
+        name: `${fromAddress.split(',')[0]} Arterial Road`, 
+        type: 'depart', 
+        location: [fromGeo.lng, fromGeo.lat],
+        cardinal: 'northeast',
+        coordStartIndex: 0,
+        coordEndIndex: Math.max(1, Math.floor(cfg.coords.length * 0.3))
+      },
+      { 
+        instruction: `Take arterial corridor towards ${toAddress.split(',')[0]}`, 
+        spokenInstruction: `Take arterial corridor towards ${toAddress.split(',')[0]} for ${(cfg.distKm * 0.7).toFixed(1)} kilometers.`,
+        distance: Math.round(cfg.distKm * 700), 
+        duration: Math.round(cfg.durMins * 40), 
+        name: 'Expressway Flyover', 
+        type: 'turn', 
+        location: [(fromGeo.lng + toGeo.lng) / 2, (fromGeo.lat + toGeo.lat) / 2],
+        cardinal: 'ahead',
+        coordStartIndex: Math.max(1, Math.floor(cfg.coords.length * 0.3)),
+        coordEndIndex: Math.max(2, Math.floor(cfg.coords.length * 0.85))
+      },
+      { 
+        instruction: `Arrive at destination on ${toAddress.split(',')[0]}`, 
+        spokenInstruction: `You have arrived at your destination on ${toAddress.split(',')[0]}. Navigation completed.`,
+        distance: 300, 
+        duration: 60, 
+        name: `${toAddress.split(',')[0]} Approach Road`, 
+        type: 'arrive', 
+        location: [toGeo.lng, toGeo.lat],
+        cardinal: 'ahead',
+        coordStartIndex: Math.max(2, Math.floor(cfg.coords.length * 0.85)),
+        coordEndIndex: Math.max(0, cfg.coords.length - 1)
+      }
     ];
+
+    const finalSteps = cfg.steps.length > 0
+      ? alignStepsToCoords(cfg.steps, cfg.coords)
+      : defaultSteps;
 
     return {
       id: cfg.id,
@@ -1046,7 +1344,7 @@ export async function calculateIndianRoutes(
       summary: cfg.summary,
       features: cfg.features,
       coordinates: cfg.coords,
-      steps: cfg.steps.length > 0 ? cfg.steps : defaultSteps,
+      steps: finalSteps,
       hazards,
       roadQualityIndex: cfg.rqi,
       lightingScore: cfg.lighting,
