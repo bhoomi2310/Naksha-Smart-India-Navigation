@@ -22,7 +22,7 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
   onStartNavigation,
   onSelectStarterCorridor,
 }) => {
-  const [viewMode, setViewMode] = useState<'detailed' | 'compact'>('detailed');
+  const [viewMode, setViewMode] = useState<'tiles' | 'compact'>('tiles');
 
   const starterCorridors = [
     { label: 'Delhi → Gurgaon CyberHub', from: 'Connaught Place, Delhi', to: 'Cyber City, Gurgaon' },
@@ -43,27 +43,27 @@ export const RouteProfilesList: React.FC<RouteProfilesListProps> = ({
           <div className="flex items-center gap-1 bg-[#FFFDF9] border-[1.2px] border-[#14121F] p-0.5 rounded-lg shadow-[1px_1px_0_#14121F]">
             <button
               type="button"
-              onClick={() => setViewMode('detailed')}
-              className={`p-1 rounded-md text-xs transition-colors ${
-                viewMode === 'detailed'
-                  ? 'bg-[#D8472B] text-white shadow-sm'
-                  : 'text-[#524C61] hover:text-[#14121F]'
-              }`}
-              title="Detailed Cards"
-              aria-label="Detailed cards view"
-            >
-              <List className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
               onClick={() => setViewMode('compact')}
               className={`p-1 rounded-md text-xs transition-colors ${
                 viewMode === 'compact'
                   ? 'bg-[#D8472B] text-white shadow-sm'
                   : 'text-[#524C61] hover:text-[#14121F]'
               }`}
-              title="Compact View"
-              aria-label="Compact view"
+              title="Compact List View"
+              aria-label="Compact list view"
+            >
+              <List className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('tiles')}
+              className={`p-1 rounded-md text-xs transition-colors ${
+                viewMode === 'tiles'
+                  ? 'bg-[#D8472B] text-white shadow-sm'
+                  : 'text-[#524C61] hover:text-[#14121F]'
+              }`}
+              title="Full Tile View"
+              aria-label="Full tile view"
             >
               <LayoutGrid className="w-3.5 h-3.5" />
             </button>

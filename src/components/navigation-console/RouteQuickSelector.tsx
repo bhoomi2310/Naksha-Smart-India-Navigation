@@ -55,13 +55,13 @@ export const RouteQuickSelector: React.FC<RouteQuickSelectorProps> = ({
             </div>
 
             <div
-              className={`text-[10px] mt-0.5 ${
+              className={`text-[10px] mt-0.5 truncate ${
                 isSelected
                   ? 'text-[#FFFDF9] font-bold'
                   : 'text-[#524C61] font-semibold'
               }`}
             >
-              {Math.round(route.duration / 60)} min
+              {route.durationStr || `${Math.round(route.durationMins || 0)} min`}
             </div>
           </button>
         );
