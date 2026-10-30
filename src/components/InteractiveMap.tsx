@@ -145,14 +145,14 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   const tileUrls = {
     carto: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    street: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    street: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   };
 
   const tileAttributions = {
     carto: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
-    street: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>',
-    satellite: 'Tiles &copy; Esri - Source: Esri, i-cubed, USDA, USGS'
+    street: 'Tiles &copy; Esri - English Worldwide Street Map',
+    satellite: 'Tiles &copy; Esri - Source: Esri, Maxar, Earthstar Geographics'
   };
 
   return (
@@ -238,6 +238,16 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
           attribution={tileAttributions[mapStyle]}
           url={tileUrls[mapStyle]}
         />
+
+        {/* English place names overlay for Satellite view */}
+        {mapStyle === 'satellite' && (
+          <TileLayer
+            key="satellite-english-labels"
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+            attribution="Labels &copy; Esri"
+            zIndex={200}
+          />
+        )}
 
         <MapBoundsController 
           coordinates={activeRoute?.coordinates || []} 
