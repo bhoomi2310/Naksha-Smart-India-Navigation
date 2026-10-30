@@ -275,20 +275,10 @@ export const tripsAPI = {
     type: string;
     saved?: string;
   }) => {
-    try {
-      return await apiRequest<{ success: boolean; message: string }>('/trips/save', {
-        method: 'POST',
-        body: JSON.stringify(tripData),
-      });
-    } catch {
-      try {
-        const stored = localStorage.getItem('naksha_saved_trips');
-        const list = stored ? JSON.parse(stored) : [];
-        list.unshift({ id: 'trip_' + Date.now(), ...tripData, date: new Date().toISOString() });
-        localStorage.setItem('naksha_saved_trips', JSON.stringify(list));
-      } catch {}
-      return { success: true, message: 'Trip saved to your local log' };
-    }
+    return await apiRequest<{ success: boolean; message: string }>('/trips/save', {
+      method: 'POST',
+      body: JSON.stringify(tripData),
+    });
   },
 };
 

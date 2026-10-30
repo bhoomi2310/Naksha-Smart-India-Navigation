@@ -72,29 +72,18 @@ const Profile = () => {
   const loadProfile = async () => {
     setIsLoading(true);
     try {
+      // Clear any legacy client-side mock trips from localStorage
+      try {
+        localStorage.removeItem('naksha_saved_trips');
+      } catch {}
+
       const res = await authAPI.getProfile();
       const u = res?.user || res;
       if (u) {
-        // Check for any local trips to merge with database trips
-        let localTrips: any[] = [];
-        try {
-          const stored = localStorage.getItem('naksha_saved_trips');
-          if (stored) localTrips = JSON.parse(stored);
-        } catch {}
-
         const serverTrips = Array.isArray(u.recentTrips) ? u.recentTrips : [];
-        const combinedTrips = [...serverTrips, ...localTrips];
-        const seen = new Set<string>();
-        const uniqueTrips = combinedTrips.filter((t: any) => {
-          const key = `${t.from}_${t.to}_${t.duration}_${t.date || ''}`;
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
-
         const fallbackName = u.email ? u.email.split('@')[0] : 'Commuter';
         const userFullName = u.fullName || u.full_name || fallbackName;
-        const totalRoutes = uniqueTrips.length > 0 ? Math.max(u.stats?.routesTaken ?? 0, uniqueTrips.length) : (u.stats?.routesTaken ?? 0);
+        const totalRoutes = u.stats?.routesTaken ?? serverTrips.length;
 
         const userObj: UserProfile = {
           id: u.id || '',
@@ -108,7 +97,7 @@ const Profile = () => {
             distanceTraveled: u.stats?.distanceTraveled ?? 0,
             ecoScore: u.stats?.ecoScore ?? 80,
           },
-          recentTrips: uniqueTrips
+          recentTrips: serverTrips
         };
         setProfile(userObj);
         setName(userObj.fullName);
@@ -281,9 +270,11 @@ const Profile = () => {
                       </Badge>
                     </div>
                     <p className="text-xs text-[#524C61] mt-1">{profile.email}</p>
-                    <p className="text-xs text-[#524C61] mt-0.5">
-                      {phone ? `${phone} • ` : ''}India
-                    </p>
+                    {phone && (
+                      <p className="text-xs text-[#524C61] mt-0.5">
+                        {phone}
+                      </p>
+                    )}
                   </div>
                 </div>
 
