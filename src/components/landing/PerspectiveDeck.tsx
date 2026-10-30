@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Compass, ShieldCheck, ArrowRight, Train, Car, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ROUTE_PROFILES } from '@/data/routeProfilesData';
@@ -17,8 +17,19 @@ export const PerspectiveDeck: React.FC<PerspectiveDeckProps> = ({
 
   const selectedProfile = ROUTE_PROFILES.find((p) => p.id === selectedProfileId) || ROUTE_PROFILES[0];
 
+  useEffect(() => {
+    const handleSwitch = (e: CustomEvent) => {
+      if (e.detail) setActiveDeckCard(e.detail);
+    };
+    window.addEventListener('switch-deck-tab', handleSwitch as EventListener);
+    return () => window.removeEventListener('switch-deck-tab', handleSwitch as EventListener);
+  }, []);
+
   return (
-    <div id="preview" className="relative max-w-5xl mx-auto w-full z-10 px-6 md:px-12 py-8">
+    <div id="preview" className="relative max-w-5xl mx-auto w-full z-10 px-6 md:px-12 py-8 scroll-mt-20">
+      {/* Anchor for route profiles navigation */}
+      <div id="route-profiles" className="scroll-mt-24" />
+
       {/* Traditional Indian Jaali Diamond Divider */}
       <div data-roadtrip-divider="1" className="py-8 my-2 flex items-center justify-center" aria-hidden="true">
         <svg className="w-64 h-3 text-[#14121F]/30" viewBox="0 0 256 12" fill="none">

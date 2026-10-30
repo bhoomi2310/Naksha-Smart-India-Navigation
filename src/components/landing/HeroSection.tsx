@@ -50,8 +50,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onStartNavigation }) =
   }, []);
 
   const scrollToProfiles = () => {
-    const el = document.getElementById('route-profiles');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    window.dispatchEvent(new CustomEvent('switch-deck-tab', { detail: 'route' }));
+    const el = document.getElementById('route-profiles') || document.getElementById('preview');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
