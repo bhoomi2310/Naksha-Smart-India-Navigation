@@ -63,6 +63,7 @@ export interface RouteOptionData {
   hazards: RoadHazard[];
   roadQualityIndex: number; // 0 to 100
   lightingScore: number; // 0 to 100
+  nightSafetyIndex?: number; // 0 to 100 alias for lightingScore
   potholeDensity: number; // per km
   waterlogRisk: 'Low' | 'Moderate' | 'High';
   carbonSavedGrams: number;
@@ -1348,6 +1349,7 @@ export async function calculateIndianRoutes(
       hazards,
       roadQualityIndex: cfg.rqi,
       lightingScore: cfg.lighting,
+      nightSafetyIndex: cfg.lighting,
       potholeDensity: cfg.potholes,
       waterlogRisk: cfg.waterlog as any,
       carbonSavedGrams: cfg.carbonSaved,

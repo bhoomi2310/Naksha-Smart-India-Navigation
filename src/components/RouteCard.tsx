@@ -177,7 +177,7 @@ export const RouteCard: React.FC<RouteCardProps> = ({
 
         <div className="flex items-center gap-1">
           <Moon className="w-3 h-3 text-[#1F6F6B]" />
-          <span>{route.lightingScore ?? 92}% lit</span>
+          <span>{route.lightingScore ?? (route as any).nightSafetyIndex ?? 92}% lit</span>
         </div>
       </div>
 
